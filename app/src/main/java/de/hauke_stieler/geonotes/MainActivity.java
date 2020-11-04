@@ -44,12 +44,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        final Context context = getApplicationContext();
+
         // Keep device on
         final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "geonotes:wakelock");
         wakeLock.acquire();
 
-        Configuration.getInstance().setUserAgentValue(getApplicationContext().getPackageName());
+        Configuration.getInstance().setUserAgentValue(context.getPackageName());
 
         map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
@@ -65,15 +67,14 @@ public class MainActivity extends AppCompatActivity {
         GeoPoint startPoint = new GeoPoint(53.563, 9.9866);
         mapController.setCenter(startPoint);
 
-        locationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(getApplicationContext()), map);
+        locationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(context), map);
         locationOverlay.enableMyLocation();
         map.getOverlays().add(this.locationOverlay);
 
-        compassOverlay = new CompassOverlay(getApplicationContext(), new InternalCompassOrientationProvider(getApplicationContext()), map);
+        compassOverlay = new CompassOverlay(context, new InternalCompassOrientationProvider(context), map);
         compassOverlay.enableCompass();
         map.getOverlays().add(this.compassOverlay);
 
-        final Context context = getApplicationContext();
         final DisplayMetrics dm = context.getResources().getDisplayMetrics();
         scaleBarOverlay = new ScaleBarOverlay(map);
         scaleBarOverlay.setCentred(true);
