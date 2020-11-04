@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.util.DisplayMetrics;
+import android.view.Window;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -24,6 +25,7 @@ import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
+import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
@@ -83,7 +85,10 @@ public class MainActivity extends AppCompatActivity {
 
         Marker marker = new Marker(map);
         marker.setPosition(new GeoPoint(53.563, 9.9866));
-        marker.setSubDescription("some text");
+        marker.setSnippet("some text");
+        marker.setInfoWindow(new MarkerWindow(R.layout.maker_window, map, marker1 -> {
+            map.getOverlays().remove(marker);
+        }));
         marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker, MapView mapView) {
