@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.util.DisplayMetrics;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +16,11 @@ import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.ItemizedOverlay;
+import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
+import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
@@ -31,11 +37,17 @@ public class MainActivity extends AppCompatActivity {
     private MyLocationNewOverlay locationOverlay;
     private CompassOverlay compassOverlay;
     private ScaleBarOverlay scaleBarOverlay;
+    private PowerManager.WakeLock wakeLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Keep device on
+        final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "geonotes:wakelock");
+        wakeLock.acquire();
 
         Configuration.getInstance().setUserAgentValue(getApplicationContext().getPackageName());
 
@@ -65,28 +77,42 @@ public class MainActivity extends AppCompatActivity {
         final DisplayMetrics dm = context.getResources().getDisplayMetrics();
         scaleBarOverlay = new ScaleBarOverlay(map);
         scaleBarOverlay.setCentred(true);
-        scaleBarOverlay.setScaleBarOffset(dm.widthPixels / 2, 10);
+        scaleBarOverlay.setScaleBarOffset(dm.widthPixels / 2, 20);
         map.getOverlays().add(this.scaleBarOverlay);
+
+        Marker marker = new Marker(map);
+        marker.setPosition(new GeoPoint(53.563, 9.9866));
+        marker.setSubDescription("some text");
+        marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker, MapView mapView) {
+                if (!marker.isInfoWindowShown()) {
+                    marker.showInfoWindow();
+                } else {
+                    marker.closeInfoWindow();
+                }
+                return true;
+            }
+        });
+        map.getOverlays().add(marker);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        //this will refresh the osmdroid configuration on resuming.
-        //if you make changes to the configuration, use
-        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
-        map.onResume(); //needed for compass, my location overlays, v6.0.0 and up
+        map.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        //this will refresh the osmdroid configuration on resuming.
-        //if you make changes to the configuration, use
-        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        //Configuration.getInstance().save(this, prefs);
-        map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
+        map.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        wakeLock.release();
+        super.onDestroy();
     }
 
     @Override
