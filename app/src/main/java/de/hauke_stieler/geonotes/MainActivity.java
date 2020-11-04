@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -14,6 +15,11 @@ import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.ScaleBarOverlay;
+import org.osmdroid.views.overlay.compass.CompassOverlay;
+import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
 
@@ -22,6 +28,9 @@ public class MainActivity extends AppCompatActivity {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
 
     private MapView map = null;
+    private MyLocationNewOverlay locationOverlay;
+    private CompassOverlay compassOverlay;
+    private ScaleBarOverlay scaleBarOverlay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +49,24 @@ public class MainActivity extends AppCompatActivity {
         });
 
         IMapController mapController = map.getController();
-        mapController.setZoom(9.5);
-        GeoPoint startPoint = new GeoPoint(48.8583, 2.2944);
+        mapController.setZoom(17.0);
+        GeoPoint startPoint = new GeoPoint(53.563, 9.9866);
         mapController.setCenter(startPoint);
+
+        locationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(getApplicationContext()), map);
+        locationOverlay.enableMyLocation();
+        map.getOverlays().add(this.locationOverlay);
+
+        compassOverlay = new CompassOverlay(getApplicationContext(), new InternalCompassOrientationProvider(getApplicationContext()), map);
+        compassOverlay.enableCompass();
+        map.getOverlays().add(this.compassOverlay);
+
+        final Context context = getApplicationContext();
+        final DisplayMetrics dm = context.getResources().getDisplayMetrics();
+        scaleBarOverlay = new ScaleBarOverlay(map);
+        scaleBarOverlay.setCentred(true);
+        scaleBarOverlay.setScaleBarOffset(dm.widthPixels / 2, 10);
+        map.getOverlays().add(this.scaleBarOverlay);
     }
 
     @Override
