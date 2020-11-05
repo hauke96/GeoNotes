@@ -26,6 +26,8 @@ public class MarkerWindow extends InfoWindow {
 
     private MarkerEventHandler markerEventHandler;
 
+    private Marker selectedMarker;
+
     /**
      * resource id value meaning "undefined resource id"
      */
@@ -99,6 +101,7 @@ public class MarkerWindow extends InfoWindow {
         }
 
         Marker marker = (Marker) item;
+        this.selectedMarker = marker;
 
         // Title
         TextView titleView = mView.findViewById(mTitleId /*R.id.title*/);
@@ -135,6 +138,10 @@ public class MarkerWindow extends InfoWindow {
 
     @Override
     public void onClose() {
-        //by default, do nothing
+        this.selectedMarker = null;
+    }
+
+    public Marker getSelectedMarker() {
+        return selectedMarker;
     }
 }

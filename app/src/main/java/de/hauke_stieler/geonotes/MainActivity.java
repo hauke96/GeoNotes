@@ -123,10 +123,15 @@ public class MainActivity extends AppCompatActivity {
         MapEventsReceiver mapEventsReceiver = new MapEventsReceiver() {
             @Override
             public boolean singleTapConfirmedHelper(GeoPoint p) {
-                long id = noteStore.addNote("", p.getLatitude(), p.getLongitude());
+                if (markerInfoWindow.isOpen()) {
+                    markerInfoWindow.getSelectedMarker().setPosition(p);
+                } else {
 
-                Marker marker = createMarker(id, "", p, markerInfoWindow, markerClickListener);
-                marker.showInfoWindow();
+                    long id = noteStore.addNote("", p.getLatitude(), p.getLongitude());
+
+                    Marker marker = createMarker(id, "", p, markerInfoWindow, markerClickListener);
+                    marker.showInfoWindow();
+                }
 
                 return false;
             }
