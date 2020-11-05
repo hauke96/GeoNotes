@@ -6,7 +6,10 @@ import android.text.Spanned;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import org.osmdroid.api.IMapView;
@@ -17,6 +20,7 @@ import org.osmdroid.views.overlay.infowindow.InfoWindow;
 public class MarkerWindow extends InfoWindow {
     public interface MarkerEventHandler {
         void onDelete(Marker marker);
+
         void onSave(Marker marker);
     }
 
@@ -51,6 +55,22 @@ public class MarkerWindow extends InfoWindow {
                 return true;
             }
         });
+
+        // Show/hide keyboard on edit field focus
+        EditText descriptionView = (EditText) mView.findViewById(mDescriptionId /*R.id.description*/);
+        if (descriptionView != null) {
+            descriptionView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    InputMethodManager inputMethodManager = (InputMethodManager) mView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if (hasFocus) {
+                        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                    } else {
+                        inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                    }
+                }
+            });
+        }
     }
 
     private static void setResIds(Context context) {
@@ -93,9 +113,10 @@ public class MarkerWindow extends InfoWindow {
             snippet = "";
         }
         Spanned snippetHtml = Html.fromHtml(snippet);
-        TextView descriptionView = (TextView) mView.findViewById(mDescriptionId /*R.id.description*/);
+        EditText descriptionView = (EditText) mView.findViewById(mDescriptionId /*R.id.description*/);
         if (descriptionView != null) {
             descriptionView.setText(snippetHtml);
+            descriptionView.requestFocus();
         }
 
         Button deleteButton = (Button) mView.findViewById(mDeleteButtonId /* R.id.delete_button */);
