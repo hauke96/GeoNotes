@@ -6,7 +6,10 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.util.DisplayMetrics;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.Window;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -14,12 +17,14 @@ import androidx.core.content.ContextCompat;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
+import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
+import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
@@ -64,43 +69,63 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.ACCESS_FINE_LOCATION
         });
 
+        // Initial location and zoom
         IMapController mapController = map.getController();
         mapController.setZoom(17.0);
         GeoPoint startPoint = new GeoPoint(53.563, 9.9866);
         mapController.setCenter(startPoint);
 
+        // Add location icon
         locationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(context), map);
         locationOverlay.enableMyLocation();
         map.getOverlays().add(this.locationOverlay);
 
+        // Add compass
         compassOverlay = new CompassOverlay(context, new InternalCompassOrientationProvider(context), map);
         compassOverlay.enableCompass();
         map.getOverlays().add(this.compassOverlay);
 
+        // Add scale bar
         final DisplayMetrics dm = context.getResources().getDisplayMetrics();
         scaleBarOverlay = new ScaleBarOverlay(map);
         scaleBarOverlay.setCentred(true);
         scaleBarOverlay.setScaleBarOffset(dm.widthPixels / 2, 20);
         map.getOverlays().add(this.scaleBarOverlay);
 
-        Marker marker = new Marker(map);
-        marker.setPosition(new GeoPoint(53.563, 9.9866));
-        marker.setSnippet("some text");
-        marker.setInfoWindow(new MarkerWindow(R.layout.maker_window, map, marker1 -> {
-            map.getOverlays().remove(marker);
-        }));
-        marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker, MapView mapView) {
-                if (!marker.isInfoWindowShown()) {
-                    marker.showInfoWindow();
-                } else {
-                    marker.closeInfoWindow();
-                }
-                return true;
+        // General marker info window
+        MarkerWindow markerInfoWindow = new MarkerWindow(R.layout.maker_window, map, marker -> map.getOverlays().remove(marker));
+
+        // Add marker stuff
+        Marker.OnMarkerClickListener markerClickListener = (marker1, mapView) -> {
+            if (!marker1.isInfoWindowShown()) {
+                marker1.showInfoWindow();
+            } else {
+                marker1.closeInfoWindow();
             }
-        });
-        map.getOverlays().add(marker);
+            return true;
+        };
+
+        // React to touches on the map
+        MapEventsReceiver mReceive = new MapEventsReceiver() {
+            @Override
+            public boolean singleTapConfirmedHelper(GeoPoint p) {
+                Marker marker = new Marker(map);
+                marker.setPosition(p);
+                marker.setSnippet("some text");
+                marker.setInfoWindow(markerInfoWindow);
+                marker.setOnMarkerClickListener(markerClickListener);
+                marker.showInfoWindow();
+                map.getOverlays().add(marker);
+
+                return false;
+            }
+
+            @Override
+            public boolean longPressHelper(GeoPoint p) {
+                return false;
+            }
+        };
+        map.getOverlays().add(new MapEventsOverlay(mReceive));
     }
 
     @Override
