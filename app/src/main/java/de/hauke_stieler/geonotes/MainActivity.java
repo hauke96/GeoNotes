@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private CompassOverlay compassOverlay;
     private ScaleBarOverlay scaleBarOverlay;
     private PowerManager.WakeLock wakeLock;
+    private NoteStore noteStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         final Context context = getApplicationContext();
+
+        noteStore = new NoteStore(context);
 
         // Keep device on
         final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -106,16 +109,13 @@ public class MainActivity extends AppCompatActivity {
         };
 
         // React to touches on the map
-        MapEventsReceiver mReceive = new MapEventsReceiver() {
+        MapEventsReceiver mapEventsReceiver = new MapEventsReceiver() {
             @Override
             public boolean singleTapConfirmedHelper(GeoPoint p) {
-                Marker marker = new Marker(map);
-                marker.setPosition(p);
-                marker.setSnippet("some text");
-                marker.setInfoWindow(markerInfoWindow);
-                marker.setOnMarkerClickListener(markerClickListener);
+                long id = noteStore.addNote("", p.getLatitude(), p.getLongitude());
+
+                Marker marker = createMarker(id, "", p, markerInfoWindow, markerClickListener);
                 marker.showInfoWindow();
-                map.getOverlays().add(marker);
 
                 return false;
             }
@@ -125,7 +125,24 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         };
-        map.getOverlays().add(new MapEventsOverlay(mReceive));
+        map.getOverlays().add(new MapEventsOverlay(mapEventsReceiver));
+
+        for (Note n : noteStore.getAllNotes()) {
+            createMarker(n.id, "", new GeoPoint(n.lat, n.lon), markerInfoWindow, markerClickListener);
+        }
+    }
+
+    private Marker createMarker(long id, String description, GeoPoint p, MarkerWindow markerInfoWindow, Marker.OnMarkerClickListener markerClickListener) {
+        Marker marker = new Marker(map);
+        marker.setPosition(p);
+        marker.setId("" + id);
+        marker.setSnippet(description);
+        marker.setInfoWindow(markerInfoWindow);
+        marker.setOnMarkerClickListener(markerClickListener);
+
+        map.getOverlays().add(marker);
+
+        return marker;
     }
 
     @Override
