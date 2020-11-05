@@ -69,6 +69,12 @@ public class NoteStore extends SQLiteOpenHelper {
         db.update(NOTES_TABLE_NAME, values, NOTES_COL_ID + " = ?", new String[]{"" + id});
     }
 
+    public void removeNote(long id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.delete(NOTES_TABLE_NAME, NOTES_COL_ID + " = ?", new String[]{"" + id});
+    }
+
     public List<Note> getAllNotes() {
         SQLiteDatabase db = this.getReadableDatabase();
 

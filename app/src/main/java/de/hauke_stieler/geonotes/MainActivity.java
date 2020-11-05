@@ -99,23 +99,22 @@ public class MainActivity extends AppCompatActivity {
         MarkerWindow markerInfoWindow = new MarkerWindow(R.layout.maker_window, map, new MarkerWindow.MarkerEventHandler() {
             @Override
             public void onDelete(Marker marker) {
-                // TODO delete from store
+                noteStore.removeNote(Long.parseLong(marker.getId()));
                 map.getOverlays().remove(marker);
             }
 
             @Override
             public void onSave(Marker marker) {
-                // TODO null checks
                 noteStore.updateDescription(Long.parseLong(marker.getId()), marker.getSnippet());
             }
         });
 
         // Add marker stuff
-        Marker.OnMarkerClickListener markerClickListener = (marker1, mapView) -> {
-            if (!marker1.isInfoWindowShown()) {
-                marker1.showInfoWindow();
+        Marker.OnMarkerClickListener markerClickListener = (marker, mapView) -> {
+            if (!marker.isInfoWindowShown()) {
+                marker.showInfoWindow();
             } else {
-                marker1.closeInfoWindow();
+                marker.closeInfoWindow();
             }
             return true;
         };
