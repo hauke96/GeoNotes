@@ -196,6 +196,9 @@ public class MainActivity extends AppCompatActivity {
         marker.setInfoWindow(markerInfoWindow);
         marker.setOnMarkerClickListener(markerClickListener);
 
+        Drawable currentDraw = ResourcesCompat.getDrawable(getResources(), R.drawable.note, null);
+        marker.setIcon(currentDraw);
+
         map.getOverlays().add(marker);
 
         return marker;
