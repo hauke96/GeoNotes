@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -19,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
@@ -138,17 +141,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSave(Marker marker) {
                 noteStore.updateDescription(Long.parseLong(marker.getId()), marker.getSnippet());
+                setNormalIcon(marker);
             }
         });
 
         // Add marker stuff
         markerClickListener = (marker, mapView) -> {
             if (!marker.isInfoWindowShown()) {
-                marker.showInfoWindow();
                 centerLocationWithOffset(marker.getPosition());
-                markerInfoWindow.focusEditField();
+                selectMarker(marker);
             } else {
                 marker.closeInfoWindow();
+                setNormalIcon(marker);
             }
             return true;
         };
@@ -163,8 +167,7 @@ public class MainActivity extends AppCompatActivity {
                     long id = noteStore.addNote("", p.getLatitude(), p.getLongitude());
 
                     Marker marker = createMarker(id, "", p, markerClickListener);
-                    marker.showInfoWindow();
-                    markerInfoWindow.focusEditField();
+                    selectMarker(marker);
                 }
 
                 centerLocationWithOffset(p);
@@ -180,6 +183,28 @@ public class MainActivity extends AppCompatActivity {
         map.getOverlays().add(new MapEventsOverlay(mapEventsReceiver));
     }
 
+    private void selectMarker(Marker marker) {
+        Marker selectedMarker = markerInfoWindow.getSelectedMarker();
+        if(selectedMarker!=null){
+            // This icon will not be the selected marker after "showInfoWindow", therefore we set the normal icon here.
+            setNormalIcon(selectedMarker);
+        }
+
+        setSelectedIcon(marker);
+        marker.showInfoWindow();
+        markerInfoWindow.focusEditField();
+    }
+
+    private void setSelectedIcon(Marker marker) {
+        Drawable draw = ResourcesCompat.getDrawable(getResources(), R.drawable.note_selected, null);
+        marker.setIcon(draw);
+    }
+
+    private void setNormalIcon(Marker marker) {
+        Drawable draw = ResourcesCompat.getDrawable(getResources(), R.drawable.note, null);
+        marker.setIcon(draw);
+    }
+
     private void centerLocationWithOffset(GeoPoint p) {
         Point locationInPixels = new Point();
         map.getProjection().toPixels(p, locationInPixels);
@@ -191,13 +216,11 @@ public class MainActivity extends AppCompatActivity {
     private Marker createMarker(long id, String description, GeoPoint p, Marker.OnMarkerClickListener markerClickListener) {
         Marker marker = new Marker(map);
         marker.setPosition(p);
-        marker.setId("" + id);
         marker.setSnippet(description);
         marker.setInfoWindow(markerInfoWindow);
         marker.setOnMarkerClickListener(markerClickListener);
 
-        Drawable currentDraw = ResourcesCompat.getDrawable(getResources(), R.drawable.note, null);
-        marker.setIcon(currentDraw);
+        setNormalIcon(marker);
 
         map.getOverlays().add(marker);
 

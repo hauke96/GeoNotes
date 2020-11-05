@@ -1,6 +1,7 @@
 package de.hauke_stieler.geonotes;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
@@ -15,6 +16,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+
+import androidx.core.content.res.ResourcesCompat;
 
 import org.osmdroid.api.IMapView;
 import org.osmdroid.views.MapView;
@@ -120,7 +123,7 @@ public class MarkerWindow extends InfoWindow {
         }
 
         Marker marker = (Marker) item;
-        this.selectedMarker = marker;
+        selectedMarker = marker;
 
         // Title
         TextView titleView = mView.findViewById(mTitleId /*R.id.title*/);
