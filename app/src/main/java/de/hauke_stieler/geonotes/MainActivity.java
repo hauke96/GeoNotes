@@ -96,7 +96,19 @@ public class MainActivity extends AppCompatActivity {
         map.getOverlays().add(this.scaleBarOverlay);
 
         // General marker info window
-        MarkerWindow markerInfoWindow = new MarkerWindow(R.layout.maker_window, map, marker -> map.getOverlays().remove(marker));
+        MarkerWindow markerInfoWindow = new MarkerWindow(R.layout.maker_window, map, new MarkerWindow.MarkerEventHandler() {
+            @Override
+            public void onDelete(Marker marker) {
+                // TODO delete from store
+                map.getOverlays().remove(marker);
+            }
+
+            @Override
+            public void onSave(Marker marker) {
+                // TODO null checks
+                noteStore.updateDescription(Long.parseLong(marker.getId()), marker.getSnippet());
+            }
+        });
 
         // Add marker stuff
         Marker.OnMarkerClickListener markerClickListener = (marker1, mapView) -> {
@@ -128,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
         map.getOverlays().add(new MapEventsOverlay(mapEventsReceiver));
 
         for (Note n : noteStore.getAllNotes()) {
-            createMarker(n.id, "", new GeoPoint(n.lat, n.lon), markerInfoWindow, markerClickListener);
+            createMarker(n.id, n.description, new GeoPoint(n.lat, n.lon), markerInfoWindow, markerClickListener);
         }
     }
 

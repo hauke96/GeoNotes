@@ -17,6 +17,7 @@ import org.osmdroid.views.overlay.infowindow.InfoWindow;
 public class MarkerWindow extends InfoWindow {
     public interface MarkerEventHandler {
         void onDelete(Marker marker);
+        void onSave(Marker marker);
     }
 
     private MarkerEventHandler markerEventHandler;
@@ -105,6 +106,8 @@ public class MarkerWindow extends InfoWindow {
 
         Button saveButton = (Button) mView.findViewById(mSaveButtonId /* R.id.save_button */);
         saveButton.setOnClickListener(v -> {
+            marker.setSnippet(descriptionView.getText().toString());
+            markerEventHandler.onSave(marker);
             close();
         });
     }
