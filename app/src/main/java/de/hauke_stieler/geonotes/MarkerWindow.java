@@ -36,7 +36,7 @@ public class MarkerWindow extends InfoWindow {
             mDeleteButtonId = UNDEFINED_RES_ID,
             mSaveButtonId = UNDEFINED_RES_ID,
             mSubDescriptionId = UNDEFINED_RES_ID,
-            mImageId = UNDEFINED_RES_ID; //resource ids
+            mImageId = UNDEFINED_RES_ID;
 
     public MarkerWindow(int layoutResId, MapView mapView, MarkerEventHandler markerEventHandler) {
         super(layoutResId, mapView);
@@ -57,7 +57,7 @@ public class MarkerWindow extends InfoWindow {
         });
 
         // Show/hide keyboard on edit field focus
-        EditText descriptionView = (EditText) mView.findViewById(mDescriptionId /*R.id.description*/);
+        EditText descriptionView = mView.findViewById(mDescriptionId /*R.id.description*/);
         if (descriptionView != null) {
             descriptionView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
@@ -101,7 +101,7 @@ public class MarkerWindow extends InfoWindow {
         Marker marker = (Marker) item;
 
         // Title
-        TextView titleView = ((TextView) mView.findViewById(mTitleId /*R.id.title*/));
+        TextView titleView = mView.findViewById(mTitleId /*R.id.title*/);
         String title = marker.getTitle();
         if (title != null && titleView != null) {
             titleView.setText(title);
@@ -113,19 +113,19 @@ public class MarkerWindow extends InfoWindow {
             snippet = "";
         }
         Spanned snippetHtml = Html.fromHtml(snippet);
-        EditText descriptionView = (EditText) mView.findViewById(mDescriptionId /*R.id.description*/);
+        EditText descriptionView = mView.findViewById(mDescriptionId /*R.id.description*/);
         if (descriptionView != null) {
             descriptionView.setText(snippetHtml);
             descriptionView.requestFocus();
         }
 
-        Button deleteButton = (Button) mView.findViewById(mDeleteButtonId /* R.id.delete_button */);
+        Button deleteButton = mView.findViewById(mDeleteButtonId /* R.id.delete_button */);
         deleteButton.setOnClickListener(v -> {
             markerEventHandler.onDelete(marker);
             close();
         });
 
-        Button saveButton = (Button) mView.findViewById(mSaveButtonId /* R.id.save_button */);
+        Button saveButton = mView.findViewById(mSaveButtonId /* R.id.save_button */);
         saveButton.setOnClickListener(v -> {
             marker.setSnippet(descriptionView.getText().toString());
             markerEventHandler.onSave(marker);
