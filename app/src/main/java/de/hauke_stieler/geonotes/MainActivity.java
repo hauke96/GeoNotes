@@ -37,6 +37,7 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
+import java.util.function.BiPredicate;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private MapView map = null;
     private IMapController mapController;
     private MarkerWindow markerInfoWindow;
+    private Marker.OnMarkerClickListener markerClickListener;
 
     private MyLocationNewOverlay locationOverlay;
     private CompassOverlay compassOverlay;
@@ -68,9 +70,20 @@ public class MainActivity extends AppCompatActivity {
         wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "geonotes:wakelock");
         wakeLock.acquire();
 
+        createMap(context);
+
+        for (Note n : noteStore.getAllNotes()) {
+            createMarker(n.id, n.description, new GeoPoint(n.lat, n.lon), markerClickListener);
+        }
+    }
+
+    /**
+     * Creates the map, mapController, markerInfoWindow, markerClickListener and the overlays.
+     */
+    private void createMap(Context context) {
         Configuration.getInstance().setUserAgentValue(context.getPackageName());
 
-        map = (MapView) findViewById(R.id.map);
+        map = findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setMultiTouchControls(true);
 
@@ -117,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Add marker stuff
-        Marker.OnMarkerClickListener markerClickListener = (marker, mapView) -> {
+        markerClickListener = (marker, mapView) -> {
             if (!marker.isInfoWindowShown()) {
                 marker.showInfoWindow();
                 centerLocationWithOffset(marker.getPosition());
@@ -153,10 +166,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         map.getOverlays().add(new MapEventsOverlay(mapEventsReceiver));
-
-        for (Note n : noteStore.getAllNotes()) {
-            createMarker(n.id, n.description, new GeoPoint(n.lat, n.lon), markerClickListener);
-        }
     }
 
     private void centerLocationWithOffset(GeoPoint p) {
