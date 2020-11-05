@@ -1,15 +1,19 @@
 package de.hauke_stieler.geonotes;
 
 import android.content.Context;
+import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import org.osmdroid.api.IMapView;
@@ -66,10 +70,25 @@ public class MarkerWindow extends InfoWindow {
                 public void onFocusChange(View v, boolean hasFocus) {
                     InputMethodManager inputMethodManager = (InputMethodManager) mView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     if (hasFocus) {
-                        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
                     } else {
                         inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                     }
+                }
+            });
+
+            descriptionView.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    selectedMarker.setSnippet(s.toString());
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
                 }
             });
         }
@@ -119,7 +138,6 @@ public class MarkerWindow extends InfoWindow {
         EditText descriptionView = mView.findViewById(mDescriptionId /*R.id.description*/);
         if (descriptionView != null) {
             descriptionView.setText(snippetHtml);
-            descriptionView.requestFocus();
         }
 
         Button deleteButton = mView.findViewById(mDeleteButtonId /* R.id.delete_button */);
@@ -130,7 +148,6 @@ public class MarkerWindow extends InfoWindow {
 
         Button saveButton = mView.findViewById(mSaveButtonId /* R.id.save_button */);
         saveButton.setOnClickListener(v -> {
-            marker.setSnippet(descriptionView.getText().toString());
             markerEventHandler.onSave(marker);
             close();
         });
@@ -143,5 +160,10 @@ public class MarkerWindow extends InfoWindow {
 
     public Marker getSelectedMarker() {
         return selectedMarker;
+    }
+
+    public void focusEditField() {
+        EditText descriptionView = mView.findViewById(mDescriptionId /*R.id.description*/);
+        descriptionView.requestFocus();
     }
 }

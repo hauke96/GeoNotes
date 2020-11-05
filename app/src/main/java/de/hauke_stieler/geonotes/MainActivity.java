@@ -3,6 +3,7 @@ package de.hauke_stieler.geonotes;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.util.DisplayMetrics;
@@ -15,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
@@ -41,10 +43,15 @@ public class MainActivity extends AppCompatActivity {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
 
     private MapView map = null;
+    private IMapController mapController;
+    private MarkerWindow markerInfoWindow;
+
     private MyLocationNewOverlay locationOverlay;
     private CompassOverlay compassOverlay;
     private ScaleBarOverlay scaleBarOverlay;
+
     private PowerManager.WakeLock wakeLock;
+
     private NoteStore noteStore;
 
     @Override
@@ -73,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Initial location and zoom
-        IMapController mapController = map.getController();
+        mapController = map.getController();
         mapController.setZoom(17.0);
         GeoPoint startPoint = new GeoPoint(53.563, 9.9866);
         mapController.setCenter(startPoint);
@@ -96,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         map.getOverlays().add(this.scaleBarOverlay);
 
         // General marker info window
-        MarkerWindow markerInfoWindow = new MarkerWindow(R.layout.maker_window, map, new MarkerWindow.MarkerEventHandler() {
+        markerInfoWindow = new MarkerWindow(R.layout.maker_window, map, new MarkerWindow.MarkerEventHandler() {
             @Override
             public void onDelete(Marker marker) {
                 noteStore.removeNote(Long.parseLong(marker.getId()));
@@ -113,6 +120,8 @@ public class MainActivity extends AppCompatActivity {
         Marker.OnMarkerClickListener markerClickListener = (marker, mapView) -> {
             if (!marker.isInfoWindowShown()) {
                 marker.showInfoWindow();
+                centerLocationWithOffset(marker.getPosition());
+                markerInfoWindow.focusEditField();
             } else {
                 marker.closeInfoWindow();
             }
@@ -126,12 +135,14 @@ public class MainActivity extends AppCompatActivity {
                 if (markerInfoWindow.isOpen()) {
                     markerInfoWindow.getSelectedMarker().setPosition(p);
                 } else {
-
                     long id = noteStore.addNote("", p.getLatitude(), p.getLongitude());
 
-                    Marker marker = createMarker(id, "", p, markerInfoWindow, markerClickListener);
+                    Marker marker = createMarker(id, "", p, markerClickListener);
                     marker.showInfoWindow();
+                    markerInfoWindow.focusEditField();
                 }
+
+                centerLocationWithOffset(p);
 
                 return false;
             }
@@ -144,11 +155,19 @@ public class MainActivity extends AppCompatActivity {
         map.getOverlays().add(new MapEventsOverlay(mapEventsReceiver));
 
         for (Note n : noteStore.getAllNotes()) {
-            createMarker(n.id, n.description, new GeoPoint(n.lat, n.lon), markerInfoWindow, markerClickListener);
+            createMarker(n.id, n.description, new GeoPoint(n.lat, n.lon), markerClickListener);
         }
     }
 
-    private Marker createMarker(long id, String description, GeoPoint p, MarkerWindow markerInfoWindow, Marker.OnMarkerClickListener markerClickListener) {
+    private void centerLocationWithOffset(GeoPoint p) {
+        Point locationInPixels = new Point();
+        map.getProjection().toPixels(p, locationInPixels);
+        IGeoPoint newPoint = map.getProjection().fromPixels(locationInPixels.x, locationInPixels.y);
+
+        mapController.animateTo(newPoint);
+    }
+
+    private Marker createMarker(long id, String description, GeoPoint p, Marker.OnMarkerClickListener markerClickListener) {
         Marker marker = new Marker(map);
         marker.setPosition(p);
         marker.setId("" + id);
