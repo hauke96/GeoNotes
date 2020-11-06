@@ -222,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
         map.getProjection().toPixels(p, locationInPixels);
         IGeoPoint newPoint = map.getProjection().fromPixels(locationInPixels.x, locationInPixels.y);
 
-        mapController.animateTo(newPoint);
+        mapController.animateTo(newPoint, map.getZoomLevelDouble(), (long) Configuration.getInstance().getAnimationSpeedShort()/2);
     }
 
     private Marker createMarker(String description, GeoPoint p, Marker.OnMarkerClickListener markerClickListener) {
