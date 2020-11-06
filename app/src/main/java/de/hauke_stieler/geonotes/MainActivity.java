@@ -145,7 +145,8 @@ public class MainActivity extends AppCompatActivity {
         markerInfoWindow = new MarkerWindow(R.layout.maker_window, map, new MarkerWindow.MarkerEventHandler() {
             @Override
             public void onDelete(Marker marker) {
-                if (marker.getId() != null) { // Task came from database and should therefore be removed.
+                // Task came from database and should therefore be removed.
+                if (marker.getId() != null) {
                     noteStore.removeNote(Long.parseLong(marker.getId()));
                 }
                 map.getOverlays().remove(marker);
@@ -153,12 +154,13 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSave(Marker marker) {
-                // Check whether marker is new (add to database) or not (update in database)
-                if (marker.getId() == null) {
+                // Check whether marker already exists in the database (this is the case when the
+                // marker has an ID attached) and update the DB entry. Otherwise, we'll create a new DB entry.
+                if (marker.getId() != null) {
+                    noteStore.updateDescription(Long.parseLong(marker.getId()), marker.getSnippet());
+                } else {
                     long id = noteStore.addNote(marker.getSnippet(), marker.getPosition().getLatitude(), marker.getPosition().getLongitude());
                     marker.setId("" + id);
-                } else {
-                    noteStore.updateDescription(Long.parseLong(marker.getId()), marker.getSnippet());
                 }
 
                 setNormalIcon(marker);
@@ -170,14 +172,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Add marker stuff
+        // Add marker click listener. Will be called when the user clicks/taps on a marker.
         markerClickListener = (marker, mapView) -> {
+            // When we are in the state of moving an existing marker, we do not want to interact with other markers -> simply return
             if (markerToMove != null) {
                 return true;
             }
 
-            if (markerInfoWindow.isOpen()) {
+
+            // If a marker is currently selected -> deselect it
+            if (markerInfoWindow.getSelectedMarker() != null) {
                 setNormalIcon(markerInfoWindow.getSelectedMarker());
+                // We don't need to deselect the marker or close the window as we will directly assign a new marker below
             }
 
             centerLocationWithOffset(marker.getPosition());
@@ -190,23 +196,32 @@ public class MainActivity extends AppCompatActivity {
         MapEventsReceiver mapEventsReceiver = new MapEventsReceiver() {
             @Override
             public boolean singleTapConfirmedHelper(GeoPoint p) {
+                // When we have a marker to move, set its new position, store that and disable move-state
                 if (markerToMove != null) {
                     markerToMove.setPosition(p);
                     selectMarker(markerToMove);
-                    noteStore.updateLocation(Long.parseLong(markerToMove.getId()), p);
+
+                    // If the ID is set, the marker exists in the DB, therefore we store that new location
+                    String id = markerToMove.getId();
+                    if (id != null) {
+                        noteStore.updateLocation(Long.parseLong(id), p);
+                    }
+
                     markerToMove = null;
-                    centerLocationWithOffset(p);
-                    return true;
+                } else {
+                    // Marker move state is not active -> normally select or create marker
+                    if (markerInfoWindow.getSelectedMarker() != null) {
+                        // Deselect selected marker:
+                        setNormalIcon(markerInfoWindow.getSelectedMarker());
+                        markerInfoWindow.close();
+                    } else {
+                        // No marker currently selected -> create new marker at this location
+                        Marker marker = createMarker("", p, markerClickListener);
+                        selectMarker(marker);
+                    }
                 }
 
-                if (markerInfoWindow.isOpen()) {
-                    setNormalIcon(markerInfoWindow.getSelectedMarker());
-                    markerInfoWindow.close();
-                } else {
-                    Marker marker = createMarker("", p, markerClickListener);
-                    selectMarker(marker);
-                    centerLocationWithOffset(p);
-                }
+                centerLocationWithOffset(p);
 
                 return false;
             }
