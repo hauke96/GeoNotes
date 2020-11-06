@@ -1,3 +1,5 @@
+<img align="right" width="64px" src="https://raw.githubusercontent.com/hauke96/GeoNotes/main/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png">
+
 # GeoNotes
 A simple app to create and manage georeferences notes on a map. The goal is to create the notes very fast and without any unnecessary UI/UX overhead.
 
