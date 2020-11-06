@@ -2,6 +2,6 @@
     <style name="Theme.GeoNotes" parent="Theme.AppCompat.Light">
         <item name="colorPrimary">@color/green</item>
         <item name="colorPrimaryDark">@color/green_dark</item>
-        <item name="colorAccent">@color/lime</item>
+        <item name="colorAccent">@color/green</item>
     </style>
 </resources>
