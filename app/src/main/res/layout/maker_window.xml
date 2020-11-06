@@ -22,14 +22,16 @@
 
         <Button
             android:id="@+id/delete_button"
-            android:layout_width="60dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="X"/>
+            android:text="Delete"
+            android:drawableLeft="@drawable/ic_delete"/>
 
         <Button
             android:id="@+id/save_button"
-            android:layout_width="60dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="OK"/>
+            android:text="OK"
+            android:drawableLeft="@drawable/ic_save"/>
     </LinearLayout>
 </LinearLayout>
