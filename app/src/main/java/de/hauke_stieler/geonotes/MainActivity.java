@@ -159,13 +159,13 @@ public class MainActivity extends AppCompatActivity {
 
         // Add marker stuff
         markerClickListener = (marker, mapView) -> {
-            if (!marker.isInfoWindowShown()) {
-                centerLocationWithOffset(marker.getPosition());
-                selectMarker(marker);
-            } else {
-                marker.closeInfoWindow();
-                setNormalIcon(marker);
+            if (markerInfoWindow.isOpen()) {
+                setNormalIcon(markerInfoWindow.getSelectedMarker());
             }
+
+            centerLocationWithOffset(marker.getPosition());
+            selectMarker(marker);
+
             return true;
         };
 
@@ -174,13 +174,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean singleTapConfirmedHelper(GeoPoint p) {
                 if (markerInfoWindow.isOpen()) {
-                    markerInfoWindow.getSelectedMarker().setPosition(p);
+                    setNormalIcon(markerInfoWindow.getSelectedMarker());
+                    markerInfoWindow.close();
                 } else {
                     Marker marker = createMarker("", p, markerClickListener);
                     selectMarker(marker);
+                    centerLocationWithOffset(p);
                 }
-
-                centerLocationWithOffset(p);
 
                 return false;
             }
@@ -208,13 +208,11 @@ public class MainActivity extends AppCompatActivity {
     private void setSelectedIcon(Marker marker) {
         Drawable draw = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_note_selected, null);
         marker.setIcon(draw);
-        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
     }
 
     private void setNormalIcon(Marker marker) {
         Drawable draw = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_note, null);
         marker.setIcon(draw);
-        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
     }
 
     private void centerLocationWithOffset(GeoPoint p) {
@@ -222,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
         map.getProjection().toPixels(p, locationInPixels);
         IGeoPoint newPoint = map.getProjection().fromPixels(locationInPixels.x, locationInPixels.y);
 
-        mapController.animateTo(newPoint, map.getZoomLevelDouble(), (long) Configuration.getInstance().getAnimationSpeedShort()/2);
+        mapController.animateTo(newPoint, map.getZoomLevelDouble(), (long) Configuration.getInstance().getAnimationSpeedShort() / 2);
     }
 
     private Marker createMarker(String description, GeoPoint p, Marker.OnMarkerClickListener markerClickListener) {
