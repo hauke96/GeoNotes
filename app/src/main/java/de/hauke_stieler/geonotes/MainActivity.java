@@ -4,9 +4,12 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
+import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -80,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         createMap(context);
 
         for (Note n : noteStore.getAllNotes()) {
-            createMarker(n.id, n.description, new GeoPoint(n.lat, n.lon), markerClickListener);
+            createMarker(n.description, new GeoPoint(n.lat, n.lon), markerClickListener);
         }
     }
 
@@ -105,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         GeoPoint startPoint = new GeoPoint(53.563, 9.9866);
         mapController.setCenter(startPoint);
 
-        Drawable currentDraw = ResourcesCompat.getDrawable(getResources(), R.drawable.location, null);
+        Drawable currentDraw = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_location, null);
         Bitmap currentIcon = null;
         if (currentDraw != null) {
             currentIcon = ((BitmapDrawable) currentDraw).getBitmap();
@@ -140,7 +143,14 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSave(Marker marker) {
-                noteStore.updateDescription(Long.parseLong(marker.getId()), marker.getSnippet());
+                // Check whether marker is new or not
+                if (marker.getId() == null) {
+                    long id = noteStore.addNote(marker.getSnippet(), marker.getPosition().getLatitude(), marker.getPosition().getLongitude());
+                    marker.setId("" + id);
+                } else {
+                    noteStore.updateDescription(Long.parseLong(marker.getId()), marker.getSnippet());
+                }
+
                 setNormalIcon(marker);
             }
         });
@@ -164,9 +174,7 @@ public class MainActivity extends AppCompatActivity {
                 if (markerInfoWindow.isOpen()) {
                     markerInfoWindow.getSelectedMarker().setPosition(p);
                 } else {
-                    long id = noteStore.addNote("", p.getLatitude(), p.getLongitude());
-
-                    Marker marker = createMarker(id, "", p, markerClickListener);
+                    Marker marker = createMarker("", p, markerClickListener);
                     selectMarker(marker);
                 }
 
@@ -185,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void selectMarker(Marker marker) {
         Marker selectedMarker = markerInfoWindow.getSelectedMarker();
-        if(selectedMarker!=null){
+        if (selectedMarker != null) {
             // This icon will not be the selected marker after "showInfoWindow", therefore we set the normal icon here.
             setNormalIcon(selectedMarker);
         }
@@ -196,13 +204,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setSelectedIcon(Marker marker) {
-        Drawable draw = ResourcesCompat.getDrawable(getResources(), R.drawable.note_selected, null);
+        Drawable draw = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_note_selected, null);
         marker.setIcon(draw);
+        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
     }
 
     private void setNormalIcon(Marker marker) {
-        Drawable draw = ResourcesCompat.getDrawable(getResources(), R.drawable.note, null);
+        Drawable draw = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_note, null);
         marker.setIcon(draw);
+        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
     }
 
     private void centerLocationWithOffset(GeoPoint p) {
@@ -213,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
         mapController.animateTo(newPoint);
     }
 
-    private Marker createMarker(long id, String description, GeoPoint p, Marker.OnMarkerClickListener markerClickListener) {
+    private Marker createMarker(String description, GeoPoint p, Marker.OnMarkerClickListener markerClickListener) {
         Marker marker = new Marker(map);
         marker.setPosition(p);
         marker.setSnippet(description);
