@@ -21,6 +21,13 @@
         android:gravity="right">
 
         <Button
+            android:id="@+id/move_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Move"
+            android:drawableLeft="@drawable/ic_move"/>
+
+        <Button
             android:id="@+id/delete_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -66,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
 
     private NoteStore noteStore;
 
+    private Marker markerToMove;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -155,10 +157,19 @@ public class MainActivity extends AppCompatActivity {
 
                 setNormalIcon(marker);
             }
+
+            @Override
+            public void onMove(Marker marker) {
+                markerToMove = marker;
+            }
         });
 
         // Add marker stuff
         markerClickListener = (marker, mapView) -> {
+            if (markerToMove != null) {
+                return true;
+            }
+
             if (markerInfoWindow.isOpen()) {
                 setNormalIcon(markerInfoWindow.getSelectedMarker());
             }
@@ -173,6 +184,15 @@ public class MainActivity extends AppCompatActivity {
         MapEventsReceiver mapEventsReceiver = new MapEventsReceiver() {
             @Override
             public boolean singleTapConfirmedHelper(GeoPoint p) {
+                if (markerToMove != null) {
+                    markerToMove.setPosition(p);
+                    selectMarker(markerToMove);
+                    // TODO update location on store
+                    markerToMove = null;
+                    centerLocationWithOffset(p);
+                    return true;
+                }
+
                 if (markerInfoWindow.isOpen()) {
                     setNormalIcon(markerInfoWindow.getSelectedMarker());
                     markerInfoWindow.close();
