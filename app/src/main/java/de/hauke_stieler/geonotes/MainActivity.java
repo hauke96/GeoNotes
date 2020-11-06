@@ -137,7 +137,9 @@ public class MainActivity extends AppCompatActivity {
         markerInfoWindow = new MarkerWindow(R.layout.maker_window, map, new MarkerWindow.MarkerEventHandler() {
             @Override
             public void onDelete(Marker marker) {
-                noteStore.removeNote(Long.parseLong(marker.getId()));
+                if (marker.getId() != null) {
+                    noteStore.removeNote(Long.parseLong(marker.getId()));
+                }
                 map.getOverlays().remove(marker);
             }
 
