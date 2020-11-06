@@ -33,6 +33,7 @@ import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.CopyrightOverlay;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
@@ -116,6 +117,10 @@ public class MainActivity extends AppCompatActivity {
         if (currentDraw != null) {
             currentIcon = ((BitmapDrawable) currentDraw).getBitmap();
         }
+
+        CopyrightOverlay copyrightOverlay = new CopyrightOverlay(context);
+        copyrightOverlay.setCopyrightNotice(TileSourceFactory.MAPNIK.getCopyrightNotice());
+        map.getOverlays().add(copyrightOverlay);
 
         // Add location icon
         locationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(context), map);
