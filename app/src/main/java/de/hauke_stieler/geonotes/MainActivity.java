@@ -85,7 +85,8 @@ public class MainActivity extends AppCompatActivity {
         createMap(context);
 
         for (Note n : noteStore.getAllNotes()) {
-            createMarker(n.description, new GeoPoint(n.lat, n.lon), markerClickListener);
+            Marker marker = createMarker(n.description, new GeoPoint(n.lat, n.lon), markerClickListener);
+            marker.setId("" + n.id);
         }
     }
 
