@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
         markerInfoWindow = new MarkerWindow(R.layout.maker_window, map, new MarkerWindow.MarkerEventHandler() {
             @Override
             public void onDelete(Marker marker) {
-                if (marker.getId() != null) {
+                if (marker.getId() != null) { // Task came from database and should therefore be removed.
                     noteStore.removeNote(Long.parseLong(marker.getId()));
                 }
                 map.getOverlays().remove(marker);
@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSave(Marker marker) {
-                // Check whether marker is new or not
+                // Check whether marker is new (add to database) or not (update in database)
                 if (marker.getId() == null) {
                     long id = noteStore.addNote(marker.getSnippet(), marker.getPosition().getLatitude(), marker.getPosition().getLongitude());
                     marker.setId("" + id);
@@ -188,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
                 if (markerToMove != null) {
                     markerToMove.setPosition(p);
                     selectMarker(markerToMove);
-                    // TODO update location on store
+                    noteStore.updateLocation(Long.parseLong(markerToMove.getId()), p);
                     markerToMove = null;
                     centerLocationWithOffset(p);
                     return true;

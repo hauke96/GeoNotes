@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.Marker;
 
 import java.util.ArrayList;
@@ -65,6 +66,17 @@ public class NoteStore extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(NOTES_COL_ID, id);
         values.put(NOTES_COL_DESCRIPTION, newDescription);
+
+        db.update(NOTES_TABLE_NAME, values, NOTES_COL_ID + " = ?", new String[]{"" + id});
+    }
+
+    public void updateLocation(long id, GeoPoint location) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(NOTES_COL_ID, id);
+        values.put(NOTES_COL_LAT, location.getLatitude());
+        values.put(NOTES_COL_LON, location.getLongitude());
 
         db.update(NOTES_TABLE_NAME, values, NOTES_COL_ID + " = ?", new String[]{"" + id});
     }
