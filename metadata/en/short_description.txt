@@ -1,0 +1,1 @@
+A simple app to create georeferences notes.  
