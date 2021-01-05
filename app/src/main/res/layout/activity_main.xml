@@ -8,7 +8,7 @@
     <org.osmdroid.views.MapView
         android:id="@+id/map"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"></org.osmdroid.views.MapView>
+        android:layout_height="fill_parent" />
 
     <TextView
         android:id="@+id/copyright"
@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/white_transparent"
+        android:clickable="true"
         android:padding="8dp"
-        android:text="© OpenStreetMap contributors ODbL"
-        android:clickable="true"/>
+        android:text="© OpenStreetMap contributors ODbL" />
 </RelativeLayout>
