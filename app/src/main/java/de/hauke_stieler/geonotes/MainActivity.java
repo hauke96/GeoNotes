@@ -12,6 +12,7 @@ import android.os.PowerManager;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.DisplayMetrics;
+import android.view.Menu;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -83,6 +84,12 @@ public class MainActivity extends AppCompatActivity {
             Marker marker = createMarker(n.description, new GeoPoint(n.lat, n.lon), markerClickListener);
             marker.setId("" + n.id);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        return true;
     }
 
     /**

@@ -9,9 +9,9 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:targetApi="lollipop"
         android:background="@color/primary"
-        android:elevation="4dp" />
+        android:elevation="5dp"
+        tools:targetApi="lollipop" />
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
