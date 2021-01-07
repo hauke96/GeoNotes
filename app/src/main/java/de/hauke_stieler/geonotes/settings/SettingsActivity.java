@@ -45,9 +45,14 @@ public class SettingsActivity extends AppCompatActivity {
         editor.putBoolean(getString(R.string.pref_zoom_buttons), checked);
 
         String mapScaleString = ((EditText) findViewById(R.id.settings_scale_input)).getText().toString();
-        float mapScale = Float.parseFloat(mapScaleString);
-        if (mapScale <= 0) {
-            mapScale = 0.1f;
+        float mapScale = 1.0f;
+        try {
+            mapScale = Float.parseFloat(mapScaleString);
+            if (mapScale < 0.1f) {
+                mapScale = 0.1f;
+            }
+        } catch (NumberFormatException e) {
+            // Nothing to do, just don't crash because of wrong input
         }
         editor.putFloat(getString(R.string.pref_map_scaling), mapScale);
         editor.commit();
