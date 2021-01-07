@@ -7,6 +7,7 @@ import android.widget.Switch;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.preference.PreferenceManager;
 
 import de.hauke_stieler.geonotes.R;
 
@@ -27,7 +28,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void load() {
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         boolean prefZoomButtons = preferences.getBoolean(getString(R.string.pref_zoom_buttons), true);
         ((Switch) findViewById(R.id.settings_zoom_switch)).setChecked(prefZoomButtons);
@@ -37,7 +38,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void save() {
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
 
         boolean checked = ((Switch) findViewById(R.id.settings_zoom_switch)).isChecked();

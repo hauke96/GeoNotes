@@ -3,6 +3,7 @@ package de.hauke_stieler.geonotes;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Point;
@@ -23,6 +24,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.preference.PreferenceManager;
 
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
@@ -88,6 +90,19 @@ public class MainActivity extends AppCompatActivity {
         for (Note n : noteStore.getAllNotes()) {
             Marker marker = createMarker(n.description, new GeoPoint(n.lat, n.lon), markerClickListener);
             marker.setId("" + n.id);
+        }
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferences.registerOnSharedPreferenceChangeListener((sharedPreferences, key) -> preferencesChanges(sharedPreferences, key));
+    }
+
+    private void preferencesChanges(SharedPreferences pref, String key) {
+        if (getString(R.string.pref_zoom_buttons).equals(key)) {
+            boolean showZoomButtons = pref.getBoolean(key, true);
+            map.setMultiTouchControls(showZoomButtons);
+        } else if (getString(R.string.pref_map_scaling).equals(key)) {
+            float mapScale = pref.getFloat(key, 1.0f);
+            map.setTilesScaleFactor(mapScale);
         }
     }
 
