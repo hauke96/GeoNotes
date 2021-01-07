@@ -63,10 +63,21 @@ public class Map {
         GeoPoint startPoint = new GeoPoint(53.563, 9.9866);
         mapController.setCenter(startPoint);
 
+        createOverlays(context, map, (BitmapDrawable) locationIcon);
+        createMarkerWindow(map);
+
+        noteStore = new NoteStore(context);
+        for (Note n : noteStore.getAllNotes()) {
+            Marker marker = createMarker(n.description, new GeoPoint(n.lat, n.lon), markerClickListener);
+            marker.setId("" + n.id);
+        }
+    }
+
+    private void createOverlays(Context context, MapView map, BitmapDrawable locationIcon) {
         // Add location icon
         locationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(context), map);
         locationOverlay.enableMyLocation();
-        locationOverlay.setPersonIcon(((BitmapDrawable) locationIcon).getBitmap());
+        locationOverlay.setPersonIcon(locationIcon.getBitmap());
         locationOverlay.setPersonHotspot(32, 32);
         map.getOverlays().add(this.locationOverlay);
 
@@ -81,37 +92,6 @@ public class Map {
         scaleBarOverlay.setCentred(true);
         scaleBarOverlay.setScaleBarOffset(dm.widthPixels / 2, 20);
         map.getOverlays().add(this.scaleBarOverlay);
-
-        // General marker info window
-        markerInfoWindow = new MarkerWindow(R.layout.maker_window, map, new MarkerWindow.MarkerEventHandler() {
-            @Override
-            public void onDelete(Marker marker) {
-                // Task came from database and should therefore be removed.
-                if (marker.getId() != null) {
-                    noteStore.removeNote(Long.parseLong(marker.getId()));
-                }
-                map.getOverlays().remove(marker);
-            }
-
-            @Override
-            public void onSave(Marker marker) {
-                // Check whether marker already exists in the database (this is the case when the
-                // marker has an ID attached) and update the DB entry. Otherwise, we'll create a new DB entry.
-                if (marker.getId() != null) {
-                    noteStore.updateDescription(Long.parseLong(marker.getId()), marker.getSnippet());
-                } else {
-                    long id = noteStore.addNote(marker.getSnippet(), marker.getPosition().getLatitude(), marker.getPosition().getLongitude());
-                    marker.setId("" + id);
-                }
-
-                setNormalIcon(marker);
-            }
-
-            @Override
-            public void onMove(Marker marker) {
-                markerToMove = marker;
-            }
-        });
 
         // Add marker click listener. Will be called when the user clicks/taps on a marker.
         markerClickListener = (marker, mapView) -> {
@@ -173,12 +153,39 @@ public class Map {
             }
         };
         map.getOverlays().add(new MapEventsOverlay(mapEventsReceiver));
+    }
 
-        noteStore = new NoteStore(context);
-        for (Note n : noteStore.getAllNotes()) {
-            Marker marker = createMarker(n.description, new GeoPoint(n.lat, n.lon), markerClickListener);
-            marker.setId("" + n.id);
-        }
+    private void createMarkerWindow(MapView map) {
+        // General marker info window
+        markerInfoWindow = new MarkerWindow(R.layout.maker_window, map, new MarkerWindow.MarkerEventHandler() {
+            @Override
+            public void onDelete(Marker marker) {
+                // Task came from database and should therefore be removed.
+                if (marker.getId() != null) {
+                    noteStore.removeNote(Long.parseLong(marker.getId()));
+                }
+                map.getOverlays().remove(marker);
+            }
+
+            @Override
+            public void onSave(Marker marker) {
+                // Check whether marker already exists in the database (this is the case when the
+                // marker has an ID attached) and update the DB entry. Otherwise, we'll create a new DB entry.
+                if (marker.getId() != null) {
+                    noteStore.updateDescription(Long.parseLong(marker.getId()), marker.getSnippet());
+                } else {
+                    long id = noteStore.addNote(marker.getSnippet(), marker.getPosition().getLatitude(), marker.getPosition().getLongitude());
+                    marker.setId("" + id);
+                }
+
+                setNormalIcon(marker);
+            }
+
+            @Override
+            public void onMove(Marker marker) {
+                markerToMove = marker;
+            }
+        });
     }
 
     private void selectMarker(Marker marker) {
@@ -201,11 +208,11 @@ public class Map {
         marker.setIcon(selectedIcon);
     }
 
-    public void setZoomButtonVisibility(boolean visible){
+    public void setZoomButtonVisibility(boolean visible) {
         map.getZoomController().setVisibility(visible ? CustomZoomButtonsController.Visibility.ALWAYS : CustomZoomButtonsController.Visibility.NEVER);
     }
 
-    public void setMapScaleFactor(float factor){
+    public void setMapScaleFactor(float factor) {
         map.setTilesScaleFactor(factor);
     }
 

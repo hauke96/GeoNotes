@@ -48,15 +48,24 @@ public class MainActivity extends AppCompatActivity {
 
         final Context context = getApplicationContext();
 
-        // Keep device on
-        final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "geonotes:wakelock");
-        wakeLock.acquire();
-
         requestPermissionsIfNecessary(new String[]{
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.ACCESS_FINE_LOCATION
         });
+
+        createMap(context);
+
+        loadPreferences();
+
+        SharedPreferences pref = getSharedPreferences(getString(R.string.pref_file), MODE_PRIVATE);
+        pref.registerOnSharedPreferenceChangeListener((sharedPreferences, key) -> preferenceChanged(sharedPreferences, key));
+    }
+
+    private void createMap(Context context) {
+        // Keep device on
+        final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        PowerManager.WakeLock wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "geonotes:wakelock");
+        wakeLock.acquire();
 
         Drawable locationIcon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_location, null);
         Drawable selectedIcon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_note_selected, null);
@@ -64,11 +73,6 @@ public class MainActivity extends AppCompatActivity {
 
         MapView mapView = findViewById(R.id.map);
         map = new Map(context, mapView, wakeLock, locationIcon, normalIcon, selectedIcon);
-
-        loadPreferences();
-
-        SharedPreferences pref = getSharedPreferences(getString(R.string.pref_file), MODE_PRIVATE);
-        pref.registerOnSharedPreferenceChangeListener((sharedPreferences, key) -> preferenceChanged(sharedPreferences, key));
     }
 
     private void loadPreferences() {
