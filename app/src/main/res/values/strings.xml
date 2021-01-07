@@ -2,7 +2,8 @@
     <string name="app_name">GeoNotes</string>
     <string name="title_activity_settings">Settings</string>
 
-    <!-- Sync Preferences -->
+    <!-- Preferences -->
+    <string name="pref_file">geonotes_preferences</string>
     <string name="pref_zoom_buttons">PREF_ZOOM_BUTTONS</string>
     <string name="pref_map_scaling">PREF_MAP_SCALING</string>
 </resources>

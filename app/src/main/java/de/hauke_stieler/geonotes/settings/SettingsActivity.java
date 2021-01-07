@@ -7,11 +7,12 @@ import android.widget.Switch;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.preference.PreferenceManager;
 
 import de.hauke_stieler.geonotes.R;
 
 public class SettingsActivity extends AppCompatActivity {
+
+    SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,12 +25,12 @@ public class SettingsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        preferences = getSharedPreferences(getString(R.string.pref_file), MODE_PRIVATE);
+
         load();
     }
 
     private void load() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
         boolean prefZoomButtons = preferences.getBoolean(getString(R.string.pref_zoom_buttons), true);
         ((Switch) findViewById(R.id.settings_zoom_switch)).setChecked(prefZoomButtons);
 
@@ -38,13 +39,17 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void save() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
 
         boolean checked = ((Switch) findViewById(R.id.settings_zoom_switch)).isChecked();
         editor.putBoolean(getString(R.string.pref_zoom_buttons), checked);
-        String s = ((EditText) findViewById(R.id.settings_scale_input)).getText().toString();
-        editor.putFloat(getString(R.string.pref_map_scaling), Float.parseFloat(s));
+
+        String mapScaleString = ((EditText) findViewById(R.id.settings_scale_input)).getText().toString();
+        float mapScale = Float.parseFloat(mapScaleString);
+        if (mapScale <= 0) {
+            mapScale = 0.1f;
+        }
+        editor.putFloat(getString(R.string.pref_map_scaling), mapScale);
         editor.commit();
     }
 

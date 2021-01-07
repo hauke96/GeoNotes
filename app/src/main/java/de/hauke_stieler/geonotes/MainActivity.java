@@ -24,7 +24,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.preference.PreferenceManager;
 
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
@@ -32,6 +31,7 @@ import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
@@ -92,14 +92,22 @@ public class MainActivity extends AppCompatActivity {
             marker.setId("" + n.id);
         }
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        preferences.registerOnSharedPreferenceChangeListener((sharedPreferences, key) -> preferencesChanges(sharedPreferences, key));
+        SharedPreferences pref = getSharedPreferences(getString(R.string.pref_file), MODE_PRIVATE);
+        pref.registerOnSharedPreferenceChangeListener((sharedPreferences, key) -> preferenceChanged(sharedPreferences, key));
     }
 
-    private void preferencesChanges(SharedPreferences pref, String key) {
+    private void loadPreferences() {
+        SharedPreferences pref = getSharedPreferences(getString(R.string.pref_file), MODE_PRIVATE);
+
+        for (String key : pref.getAll().keySet()) {
+            preferenceChanged(pref, key);
+        }
+    }
+
+    private void preferenceChanged(SharedPreferences pref, String key) {
         if (getString(R.string.pref_zoom_buttons).equals(key)) {
             boolean showZoomButtons = pref.getBoolean(key, true);
-            map.setMultiTouchControls(showZoomButtons);
+            map.getZoomController().setVisibility(showZoomButtons ? CustomZoomButtonsController.Visibility.ALWAYS : CustomZoomButtonsController.Visibility.NEVER);
         } else if (getString(R.string.pref_map_scaling).equals(key)) {
             float mapScale = pref.getFloat(key, 1.0f);
             map.setTilesScaleFactor(mapScale);
@@ -134,6 +142,8 @@ public class MainActivity extends AppCompatActivity {
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setMultiTouchControls(true);
         map.setTilesScaledToDpi(true);
+
+        loadPreferences();
 
         requestPermissionsIfNecessary(new String[]{
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -311,6 +321,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+        loadPreferences();
         map.onResume();
     }
 
