@@ -5,8 +5,8 @@
     <color name="white_transparent">#aaffffff</color>
 
     <color name="primary">#4caf50</color>
-    <color name="primary_dark">#087f23</color>
-    <color name="primary_light">#80e27e</color>
+    <color name="primary_dark">#388e3c</color>
+    <color name="primary_light">#81c784</color>
 
     <color name="secondary">#cddc39</color>
     <color name="secondary_dark">#99aa00</color>
