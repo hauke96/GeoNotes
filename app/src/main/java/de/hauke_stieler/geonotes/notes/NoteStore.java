@@ -1,4 +1,4 @@
-package de.hauke_stieler.geonotes;
+package de.hauke_stieler.geonotes.notes;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.overlay.Marker;
 
 import java.util.ArrayList;
 import java.util.List;

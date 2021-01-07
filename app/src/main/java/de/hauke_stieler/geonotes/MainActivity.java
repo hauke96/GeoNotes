@@ -43,6 +43,9 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
 
+import de.hauke_stieler.geonotes.map.MarkerWindow;
+import de.hauke_stieler.geonotes.notes.Note;
+import de.hauke_stieler.geonotes.notes.NoteStore;
 import de.hauke_stieler.geonotes.settings.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity {
