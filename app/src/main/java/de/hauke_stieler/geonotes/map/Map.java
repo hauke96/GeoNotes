@@ -201,11 +201,11 @@ public class Map {
     }
 
     private void setSelectedIcon(Marker marker) {
-        marker.setIcon(normalIcon);
+        marker.setIcon(selectedIcon);
     }
 
     private void setNormalIcon(Marker marker) {
-        marker.setIcon(selectedIcon);
+        marker.setIcon(normalIcon);
     }
 
     public void setZoomButtonVisibility(boolean visible) {
