@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.text.Html;
@@ -50,7 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
         requestPermissionsIfNecessary(new String[]{
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.ACCESS_FINE_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
         });
 
         createMap(context);
@@ -59,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences pref = getSharedPreferences(getString(R.string.pref_file), MODE_PRIVATE);
         pref.registerOnSharedPreferenceChangeListener((sharedPreferences, key) -> preferenceChanged(sharedPreferences, key));
+
+        startLocationListener();
     }
 
     private void createMap(Context context) {
@@ -133,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         requestPermissionsIfNecessary(permissions);
+        startLocationListener();
     }
 
     private void requestPermissionsIfNecessary(String[] permissions) {
@@ -149,6 +156,18 @@ public class MainActivity extends AppCompatActivity {
                     this,
                     permissionsToRequest.toArray(new String[0]),
                     REQUEST_PERMISSIONS_REQUEST_CODE);
+        }
+    }
+
+    private void startLocationListener() {
+        LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 1, 1f, new LocationListener() {
+                @Override
+                public void onLocationChanged(@NonNull Location location) {
+                    // TODO
+                }
+            });
         }
     }
 }
