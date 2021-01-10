@@ -221,7 +221,7 @@ public class Map {
         map.getProjection().toPixels(p, locationInPixels);
         IGeoPoint newPoint = map.getProjection().fromPixels(locationInPixels.x, locationInPixels.y);
 
-        mapController.animateTo(newPoint, map.getZoomLevelDouble(), (long) Configuration.getInstance().getAnimationSpeedShort() / 2);
+        mapController.setCenter(newPoint);
     }
 
     private Marker createMarker(String description, GeoPoint p, Marker.OnMarkerClickListener markerClickListener) {
@@ -248,5 +248,23 @@ public class Map {
 
     public void onDestroy() {
         wakeLock.release();
+    }
+
+    public void setLatitude(float lat) {
+        double lon = map.getMapCenter().getLongitude();
+        centerLocationWithOffset(new GeoPoint(lat, lon));
+    }
+
+    public void setLongitude(float lon) {
+        double lat = map.getMapCenter().getLatitude();
+        centerLocationWithOffset(new GeoPoint(lat, lon));
+    }
+
+    public IGeoPoint getLocation() {
+        return map.getMapCenter();
+    }
+
+    public void setLocation(float lat, float lon) {
+        centerLocationWithOffset(new GeoPoint(lat, lon));
     }
 }

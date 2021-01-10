@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -24,6 +25,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
+import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.views.MapView;
 
 import java.util.ArrayList;
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
 
     private Map map;
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +62,10 @@ public class MainActivity extends AppCompatActivity {
 
         createMap(context);
 
-        loadPreferences();
+        preferences = getSharedPreferences(getString(R.string.pref_file), MODE_PRIVATE);
+        preferences.registerOnSharedPreferenceChangeListener((sharedPreferences, key) -> preferenceChanged(sharedPreferences, key));
 
-        SharedPreferences pref = getSharedPreferences(getString(R.string.pref_file), MODE_PRIVATE);
-        pref.registerOnSharedPreferenceChangeListener((sharedPreferences, key) -> preferenceChanged(sharedPreferences, key));
+        loadPreferences();
 
         startLocationListener();
     }
@@ -82,11 +85,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadPreferences() {
-        SharedPreferences pref = getSharedPreferences(getString(R.string.pref_file), MODE_PRIVATE);
-
-        for (String key : pref.getAll().keySet()) {
-            preferenceChanged(pref, key);
+        for (String key : preferences.getAll().keySet()) {
+            preferenceChanged(preferences, key);
         }
+
+        float lat = preferences.getFloat(getString(R.string.pref_last_location_lat), 53.563f);
+        float lon = preferences.getFloat(getString(R.string.pref_last_location_lon), 9.9866f);
+
+        map.setLocation(lat, lon);
+        Log.i("LOC LOAD", lat + " - " + lon);
     }
 
     private void preferenceChanged(SharedPreferences pref, String key) {
@@ -126,8 +133,16 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onPause() {
-        super.onPause();
         map.onPause();
+
+        IGeoPoint location = map.getLocation();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putFloat(getString(R.string.pref_last_location_lat), (float) location.getLatitude());
+        editor.putFloat(getString(R.string.pref_last_location_lon), (float) location.getLongitude());
+        editor.commit();
+        Log.i("LOC SAVE", location.toString());
+
+        super.onPause();
     }
 
     @Override
@@ -165,7 +180,10 @@ public class MainActivity extends AppCompatActivity {
             locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 1, 1f, new LocationListener() {
                 @Override
                 public void onLocationChanged(@NonNull Location location) {
-                    // TODO
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putFloat(getString(R.string.pref_last_location_lat), (float) location.getLatitude());
+                    editor.putFloat(getString(R.string.pref_last_location_lon), (float) location.getLongitude());
+                    editor.commit();
                 }
             });
         }
