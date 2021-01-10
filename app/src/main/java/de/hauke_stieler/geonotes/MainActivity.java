@@ -66,8 +66,6 @@ public class MainActivity extends AppCompatActivity {
         preferences.registerOnSharedPreferenceChangeListener((sharedPreferences, key) -> preferenceChanged(sharedPreferences, key));
 
         loadPreferences();
-
-        startLocationListener();
     }
 
     private void createMap(Context context) {
@@ -91,9 +89,9 @@ public class MainActivity extends AppCompatActivity {
 
         float lat = preferences.getFloat(getString(R.string.pref_last_location_lat), 53.563f);
         float lon = preferences.getFloat(getString(R.string.pref_last_location_lon), 9.9866f);
+        float zoom = preferences.getFloat(getString(R.string.pref_last_location_zoom), 14);
 
-        map.setLocation(lat, lon);
-        Log.i("LOC LOAD", lat + " - " + lon);
+        map.setLocation(lat, lon, zoom);
     }
 
     private void preferenceChanged(SharedPreferences pref, String key) {
@@ -136,9 +134,11 @@ public class MainActivity extends AppCompatActivity {
         map.onPause();
 
         IGeoPoint location = map.getLocation();
+        float zoom = map.getZoom();
         SharedPreferences.Editor editor = preferences.edit();
         editor.putFloat(getString(R.string.pref_last_location_lat), (float) location.getLatitude());
         editor.putFloat(getString(R.string.pref_last_location_lon), (float) location.getLongitude());
+        editor.putFloat(getString(R.string.pref_last_location_zoom), zoom);
         editor.commit();
         Log.i("LOC SAVE", location.toString());
 
@@ -154,7 +154,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         requestPermissionsIfNecessary(permissions);
-        startLocationListener();
     }
 
     private void requestPermissionsIfNecessary(String[] permissions) {
@@ -171,21 +170,6 @@ public class MainActivity extends AppCompatActivity {
                     this,
                     permissionsToRequest.toArray(new String[0]),
                     REQUEST_PERMISSIONS_REQUEST_CODE);
-        }
-    }
-
-    private void startLocationListener() {
-        LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 1, 1f, new LocationListener() {
-                @Override
-                public void onLocationChanged(@NonNull Location location) {
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putFloat(getString(R.string.pref_last_location_lat), (float) location.getLatitude());
-                    editor.putFloat(getString(R.string.pref_last_location_lon), (float) location.getLongitude());
-                    editor.commit();
-                }
-            });
         }
     }
 }

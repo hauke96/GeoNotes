@@ -217,11 +217,16 @@ public class Map {
     }
 
     private void centerLocationWithOffset(GeoPoint p) {
+        centerLocationWithOffset(p, map.getZoomLevelDouble());
+    }
+
+    private void centerLocationWithOffset(GeoPoint p, double zoom) {
         Point locationInPixels = new Point();
         map.getProjection().toPixels(p, locationInPixels);
         IGeoPoint newPoint = map.getProjection().fromPixels(locationInPixels.x, locationInPixels.y);
 
         mapController.setCenter(newPoint);
+        mapController.setZoom(zoom);
     }
 
     private Marker createMarker(String description, GeoPoint p, Marker.OnMarkerClickListener markerClickListener) {
@@ -264,7 +269,11 @@ public class Map {
         return map.getMapCenter();
     }
 
-    public void setLocation(float lat, float lon) {
-        centerLocationWithOffset(new GeoPoint(lat, lon));
+    public void setLocation(float lat, float lon, float zoom) {
+        centerLocationWithOffset(new GeoPoint(lat, lon), zoom);
+    }
+
+    public float getZoom() {
+        return (float) map.getZoomLevelDouble();
     }
 }
