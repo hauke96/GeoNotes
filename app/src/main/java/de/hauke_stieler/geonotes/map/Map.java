@@ -11,6 +11,9 @@ import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
+import org.osmdroid.events.MapListener;
+import org.osmdroid.events.ScrollEvent;
+import org.osmdroid.events.ZoomEvent;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
@@ -153,6 +156,10 @@ public class Map {
             }
         };
         map.getOverlays().add(new MapEventsOverlay(mapEventsReceiver));
+    }
+
+    public void addMapListener(MapListener listener){
+        map.addMapListener(listener);
     }
 
     private void createMarkerWindow(MapView map) {

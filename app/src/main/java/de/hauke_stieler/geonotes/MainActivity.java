@@ -26,6 +26,9 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
 import org.osmdroid.api.IGeoPoint;
+import org.osmdroid.events.MapListener;
+import org.osmdroid.events.ScrollEvent;
+import org.osmdroid.events.ZoomEvent;
 import org.osmdroid.views.MapView;
 
 import java.util.ArrayList;
@@ -80,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
 
         MapView mapView = findViewById(R.id.map);
         map = new Map(context, mapView, wakeLock, locationIcon, normalIcon, selectedIcon);
+
+        addMapListener();
     }
 
     private void loadPreferences() {
@@ -132,16 +137,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         map.onPause();
-
-        IGeoPoint location = map.getLocation();
-        float zoom = map.getZoom();
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putFloat(getString(R.string.pref_last_location_lat), (float) location.getLatitude());
-        editor.putFloat(getString(R.string.pref_last_location_lon), (float) location.getLongitude());
-        editor.putFloat(getString(R.string.pref_last_location_zoom), zoom);
-        editor.commit();
-        Log.i("LOC SAVE", location.toString());
-
         super.onPause();
     }
 
@@ -171,5 +166,34 @@ public class MainActivity extends AppCompatActivity {
                     permissionsToRequest.toArray(new String[0]),
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
+    }
+
+    private void addMapListener() {
+        map.addMapListener(new MapListener() {
+            @Override
+            public boolean onScroll(ScrollEvent event) {
+                storeLocation();
+                return true;
+            }
+
+            @Override
+            public boolean onZoom(ZoomEvent event) {
+                storeLocation();
+                return true;
+            }
+        });
+    }
+
+    /**
+     * Stores the current map location and zoom in the shared preferences.
+     */
+    private void storeLocation() {
+        IGeoPoint location = map.getLocation();
+        float zoom = map.getZoom();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putFloat(getString(R.string.pref_last_location_lat), (float) location.getLatitude());
+        editor.putFloat(getString(R.string.pref_last_location_lon), (float) location.getLongitude());
+        editor.putFloat(getString(R.string.pref_last_location_zoom), zoom);
+        editor.commit();
     }
 }
