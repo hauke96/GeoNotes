@@ -92,9 +92,9 @@ public class MainActivity extends AppCompatActivity {
             preferenceChanged(preferences, key);
         }
 
-        float lat = preferences.getFloat(getString(R.string.pref_last_location_lat), 53.563f);
-        float lon = preferences.getFloat(getString(R.string.pref_last_location_lon), 9.9866f);
-        float zoom = preferences.getFloat(getString(R.string.pref_last_location_zoom), 14);
+        float lat = preferences.getFloat(getString(R.string.pref_last_location_lat), 0f);
+        float lon = preferences.getFloat(getString(R.string.pref_last_location_lon), 0f);
+        float zoom = preferences.getFloat(getString(R.string.pref_last_location_zoom), 2);
 
         map.setLocation(lat, lon, zoom);
     }
