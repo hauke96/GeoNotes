@@ -2,21 +2,16 @@ plugins {
     id 'com.android.application'
 }
 
-ext.versionMajor = 1
-ext.versionMinor = 0
-ext.versionPatch = 3
-ext.minimumSdkVersion = 16
-
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId "de.hauke_stieler.geonotes"
-        minSdkVersion project.ext.minimumSdkVersion
+        minSdkVersion 16
         targetSdkVersion 30
-        versionCode generateVersionCode()
-        versionName generateVersionName()
+        versionCode 1000004
+        versionName "1.0.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -42,12 +37,4 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-}
-
-private Integer generateVersionCode() {
-    return ext.versionMajor * 1000000 + ext.versionMinor * 1000 + ext.versionPatch
-}
-
-private String generateVersionName() {
-    return "${ext.versionMajor}.${ext.versionMinor}.${ext.versionPatch}"
 }
