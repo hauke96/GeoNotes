@@ -122,6 +122,8 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
                 return true;
+            case R.id.toolbar_btn_gps_follow:
+                this.map.toggleLocationFollowMode();
             default:
                 return super.onOptionsItemSelected(item);
         }

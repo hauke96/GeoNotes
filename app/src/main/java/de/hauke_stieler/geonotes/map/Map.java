@@ -56,7 +56,7 @@ public class Map {
 
         Configuration.getInstance().setUserAgentValue(context.getPackageName());
 
-        map.setTileSource(TileSourceFactory.MAPNIK);
+        map.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
         map.setMultiTouchControls(true);
         map.setTilesScaledToDpi(true);
 
@@ -158,7 +158,7 @@ public class Map {
         map.getOverlays().add(new MapEventsOverlay(mapEventsReceiver));
     }
 
-    public void addMapListener(MapListener listener){
+    public void addMapListener(MapListener listener) {
         map.addMapListener(listener);
     }
 
@@ -282,5 +282,16 @@ public class Map {
 
     public float getZoom() {
         return (float) map.getZoomLevelDouble();
+    }
+
+    /**
+     * Turns the follow mode on or off. If it's turned on, the map will follow the current location.
+     */
+    public void toggleLocationFollowMode() {
+        if (this.locationOverlay.isFollowLocationEnabled()) {
+            this.locationOverlay.disableFollowLocation();
+        } else {
+            this.locationOverlay.enableFollowLocation();
+        }
     }
 }
