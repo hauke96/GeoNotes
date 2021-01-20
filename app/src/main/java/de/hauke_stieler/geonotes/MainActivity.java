@@ -1,14 +1,12 @@
 package de.hauke_stieler.geonotes;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.text.Html;
@@ -20,12 +18,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
 import org.osmdroid.api.IGeoPoint;
+import org.osmdroid.events.DelayedMapListener;
 import org.osmdroid.events.MapListener;
 import org.osmdroid.events.ScrollEvent;
 import org.osmdroid.events.ZoomEvent;
@@ -34,6 +34,7 @@ import org.osmdroid.views.MapView;
 import java.util.ArrayList;
 
 import de.hauke_stieler.geonotes.map.Map;
+import de.hauke_stieler.geonotes.map.TouchDownListener;
 import de.hauke_stieler.geonotes.settings.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -123,7 +124,15 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             case R.id.toolbar_btn_gps_follow:
-                this.map.toggleLocationFollowMode();
+                boolean followingLocationEnabled = !map.isFollowLocationEnabled();
+                this.map.setLocationFollowMode(followingLocationEnabled);
+
+                if(followingLocationEnabled){
+                    item.setIcon(R.drawable.ic_my_location);
+                }else{
+                    item.setIcon(R.drawable.ic_location_searching);
+                }
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -170,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addMapListener() {
-        map.addMapListener(new MapListener() {
+        DelayedMapListener delayedMapListener = new DelayedMapListener(new MapListener() {
             @Override
             public boolean onScroll(ScrollEvent event) {
                 storeLocation();
@@ -182,7 +191,17 @@ public class MainActivity extends AppCompatActivity {
                 storeLocation();
                 return true;
             }
-        });
+        }, 500);
+
+        @SuppressLint("RestrictedApi")
+        TouchDownListener touchDownListener = () -> {
+            ActionMenuItemView menuItem = (ActionMenuItemView) findViewById(R.id.toolbar_btn_gps_follow);
+            if (menuItem != null) {
+                menuItem.setIcon(getResources().getDrawable(R.drawable.ic_location_searching));
+            }
+        };
+
+        map.addMapListener(delayedMapListener, touchDownListener);
     }
 
     /**

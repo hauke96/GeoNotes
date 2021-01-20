@@ -1,11 +1,16 @@
 package de.hauke_stieler.geonotes.map;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.PowerManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MotionEvent;
+import android.view.View;
 
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
@@ -158,8 +163,15 @@ public class Map {
         map.getOverlays().add(new MapEventsOverlay(mapEventsReceiver));
     }
 
-    public void addMapListener(MapListener listener) {
+    @SuppressLint("ClickableViewAccessibility")
+    public void addMapListener(MapListener listener, TouchDownListener touchDownListener) {
         map.addMapListener(listener);
+        map.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                touchDownListener.onTouchDown();
+            }
+            return false;
+        });
     }
 
     private void createMarkerWindow(MapView map) {
@@ -287,11 +299,15 @@ public class Map {
     /**
      * Turns the follow mode on or off. If it's turned on, the map will follow the current location.
      */
-    public void toggleLocationFollowMode() {
-        if (this.locationOverlay.isFollowLocationEnabled()) {
-            this.locationOverlay.disableFollowLocation();
-        } else {
+    public void setLocationFollowMode(boolean followingLocationEnabled) {
+        if (followingLocationEnabled) {
             this.locationOverlay.enableFollowLocation();
+        } else {
+            this.locationOverlay.disableFollowLocation();
         }
+    }
+
+    public boolean isFollowLocationEnabled() {
+        return this.locationOverlay.isFollowLocationEnabled();
     }
 }
