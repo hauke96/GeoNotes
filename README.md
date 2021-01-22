@@ -7,6 +7,11 @@ A simple app to create and manage georeferences notes on a map. The goal is to c
 <img src="screenshots.png" alt="GeoNotes Screenshots" height="500"/>
 </p>
 
+## Get it
+
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="60">](https://f-droid.org/packages/de.hauke_stieler.geonotes/)
+[<img src="https://user-images.githubusercontent.com/663460/26973090-f8fdc986-4d14-11e7-995a-e7c5e79ed925.png" alt="Download APK from GitHub" height="60">](https://github.com/hauke96/geonotes/releases/latest)
+
 ## Features
 
 * Create/remove notes

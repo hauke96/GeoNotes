@@ -1,4 +1,4 @@
-package de.hauke_stieler.geonotes;
+package de.hauke_stieler.geonotes.notes;
 
 public class Note {
     public final long id;

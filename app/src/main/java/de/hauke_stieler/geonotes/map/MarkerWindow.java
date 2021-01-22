@@ -1,4 +1,4 @@
-package de.hauke_stieler.geonotes;
+package de.hauke_stieler.geonotes.map;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;

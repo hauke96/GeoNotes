@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/toolbar_btn_gps_follow"
+        android:icon="@drawable/ic_location_searching"
+        app:showAsAction="ifRoom"
+        android:title="Settings">
+    </item>
+    <item
+        android:id="@+id/toolbar_btn_settings"
+        android:icon="@drawable/ic_settings"
+        app:showAsAction="ifRoom"
+        android:title="Settings">
+    </item>
+</menu>

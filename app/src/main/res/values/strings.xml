@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">GeoNotes</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Preferences -->
+    <string name="pref_file">geonotes_preferences</string>
+    <string name="pref_zoom_buttons">PREF_ZOOM_BUTTONS</string>
+    <string name="pref_map_scaling">PREF_MAP_SCALING</string>
+    <string name="pref_last_location_lat">PREF_LAST_LOCATION_LAT</string>
+    <string name="pref_last_location_lon">PREF_LAST_LOCATION_LON</string>
+    <string name="pref_last_location_zoom">PREF_LAST_LOCATION_ZOOM</string>
 </resources>

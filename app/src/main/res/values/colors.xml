@@ -4,11 +4,11 @@
     <color name="white">#ffffff</color>
     <color name="white_transparent">#aaffffff</color>
 
-    <color name="green">#4caf50</color>
-    <color name="green_dark">#087f23</color>
-    <color name="green_light">#80e27e</color>
+    <color name="primary">#4caf50</color>
+    <color name="primary_dark">#388e3c</color>
+    <color name="primary_light">#81c784</color>
 
-    <color name="lime">#cddc39</color>
-    <color name="lime_dark">#99aa00</color>
-    <color name="lime_light">#ffff6e</color>
+    <color name="secondary">#cddc39</color>
+    <color name="secondary_dark">#99aa00</color>
+    <color name="secondary_light">#ffff6e</color>
 </resources>
