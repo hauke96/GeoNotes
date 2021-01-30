@@ -310,4 +310,8 @@ public class Map {
     public boolean isFollowLocationEnabled() {
         return this.locationOverlay.isFollowLocationEnabled();
     }
+
+    public void addRequestPhotoHandler(MarkerWindow.RequestPhotoEventHandler requestPhotoEventHandler) {
+        this.markerInfoWindow.addRequestPhotoHandler(requestPhotoEventHandler);
+    }
 }

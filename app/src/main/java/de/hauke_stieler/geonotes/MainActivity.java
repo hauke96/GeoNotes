@@ -2,6 +2,7 @@ package de.hauke_stieler.geonotes;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.provider.MediaStore;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -34,6 +36,7 @@ import org.osmdroid.views.MapView;
 import java.util.ArrayList;
 
 import de.hauke_stieler.geonotes.map.Map;
+import de.hauke_stieler.geonotes.map.MarkerWindow;
 import de.hauke_stieler.geonotes.map.TouchDownListener;
 import de.hauke_stieler.geonotes.settings.SettingsActivity;
 
@@ -43,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Map map;
     private SharedPreferences preferences;
+
+    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
         map = new Map(context, mapView, wakeLock, locationIcon, normalIcon, selectedIcon);
 
         addMapListener();
+        addCameraListener();
     }
 
     private void loadPreferences() {
@@ -202,6 +208,27 @@ public class MainActivity extends AppCompatActivity {
         };
 
         map.addMapListener(delayedMapListener, touchDownListener);
+    }
+
+    /**
+     * Adds a listener for the camera button. The camera action can only be performed from within an activity.
+     */
+    private void addCameraListener() {
+        // TODO check whether camera is available at all: hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
+        MarkerWindow.RequestPhotoEventHandler requestPhotoEventHandler = () -> {
+            // TODO check if app has permissions
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            try {
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            } catch (ActivityNotFoundException e) {
+                Log.e("TakingPhoto", "Opening camera to take photo failed", e);
+            }
+            // TODO store image
+            // TODO add image to phone gallery
+            // TODO notify marker window to update
+        };
+
+        map.addRequestPhotoHandler(requestPhotoEventHandler);
     }
 
     /**

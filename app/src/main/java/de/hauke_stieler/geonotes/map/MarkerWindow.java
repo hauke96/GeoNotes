@@ -1,10 +1,6 @@
 package de.hauke_stieler.geonotes.map;
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
@@ -12,30 +8,30 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
-
-import androidx.core.content.res.ResourcesCompat;
 
 import org.osmdroid.api.IMapView;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.infowindow.InfoWindow;
 
-import static androidx.core.app.ActivityCompat.startActivityForResult;
-
 public class MarkerWindow extends InfoWindow {
+    private RequestPhotoEventHandler requestPhotoHandler;
+
     public interface MarkerEventHandler {
         void onDelete(Marker marker);
 
         void onSave(Marker marker);
 
         void onMove(Marker marker);
+    }
+
+    public interface RequestPhotoEventHandler {
+        void onRequestPhoto();
     }
 
     private MarkerEventHandler markerEventHandler;
@@ -55,8 +51,6 @@ public class MarkerWindow extends InfoWindow {
             mCameraButtonId = UNDEFINED_RES_ID,
             mSubDescriptionId = UNDEFINED_RES_ID,
             mImageId = UNDEFINED_RES_ID;
-
-    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     public MarkerWindow(int layoutResId, MapView mapView, MarkerEventHandler markerEventHandler) {
         super(layoutResId, mapView);
@@ -174,16 +168,9 @@ public class MarkerWindow extends InfoWindow {
             close();
         });
 
-        Button cameraButton = mView.findViewById(mCameraButtonId /* R.id.save_button */);
+        ImageButton cameraButton = mView.findViewById(mCameraButtonId /* R.id.save_button */);
         cameraButton.setOnClickListener(v -> {
-            // TODO check whether camera is available at all: hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
-//            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//            try {
-//                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-//            } catch (ActivityNotFoundException e) {
-//                // display error state to the user
-//                Log.e("TakingPhoto", "Opening camera to take photo failed", e);
-//            }
+            requestPhotoHandler.onRequestPhoto();
         });
     }
 
@@ -199,5 +186,9 @@ public class MarkerWindow extends InfoWindow {
     public void focusEditField() {
         EditText descriptionView = mView.findViewById(mDescriptionId /*R.id.description*/);
         descriptionView.requestFocus();
+    }
+
+    void addRequestPhotoHandler(RequestPhotoEventHandler handler) {
+        requestPhotoHandler = handler;
     }
 }
