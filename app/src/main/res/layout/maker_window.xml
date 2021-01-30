@@ -20,7 +20,7 @@
         android:gravity="left">
 
         <ImageButton
-            android:id="@+id/take_photo_button"
+            android:id="@+id/camera_button"
             style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="64dp"
             android:layout_height="64dp"

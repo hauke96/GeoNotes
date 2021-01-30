@@ -1,7 +1,10 @@
 package de.hauke_stieler.geonotes.map;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
@@ -23,6 +26,8 @@ import org.osmdroid.api.IMapView;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.infowindow.InfoWindow;
+
+import static androidx.core.app.ActivityCompat.startActivityForResult;
 
 public class MarkerWindow extends InfoWindow {
     public interface MarkerEventHandler {
@@ -47,8 +52,11 @@ public class MarkerWindow extends InfoWindow {
             mDeleteButtonId = UNDEFINED_RES_ID,
             mSaveButtonId = UNDEFINED_RES_ID,
             mMoveButtonId = UNDEFINED_RES_ID,
+            mCameraButtonId = UNDEFINED_RES_ID,
             mSubDescriptionId = UNDEFINED_RES_ID,
             mImageId = UNDEFINED_RES_ID;
+
+    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     public MarkerWindow(int layoutResId, MapView mapView, MarkerEventHandler markerEventHandler) {
         super(layoutResId, mapView);
@@ -107,6 +115,7 @@ public class MarkerWindow extends InfoWindow {
         mDeleteButtonId = context.getResources().getIdentifier("id/delete_button", null, packageName);
         mSaveButtonId = context.getResources().getIdentifier("id/save_button", null, packageName);
         mMoveButtonId = context.getResources().getIdentifier("id/move_button", null, packageName);
+        mCameraButtonId = context.getResources().getIdentifier("id/camera_button", null, packageName);
         mSubDescriptionId = context.getResources().getIdentifier("id/bubble_subdescription", null, packageName);
         mImageId = context.getResources().getIdentifier("id/bubble_image", null, packageName);
         if (mTitleId == UNDEFINED_RES_ID || mDescriptionId == UNDEFINED_RES_ID
@@ -163,6 +172,18 @@ public class MarkerWindow extends InfoWindow {
         moveButton.setOnClickListener(v -> {
             markerEventHandler.onMove(marker);
             close();
+        });
+
+        Button cameraButton = mView.findViewById(mCameraButtonId /* R.id.save_button */);
+        cameraButton.setOnClickListener(v -> {
+            // TODO check whether camera is available at all: hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
+//            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//            try {
+//                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+//            } catch (ActivityNotFoundException e) {
+//                // display error state to the user
+//                Log.e("TakingPhoto", "Opening camera to take photo failed", e);
+//            }
         });
     }
 
