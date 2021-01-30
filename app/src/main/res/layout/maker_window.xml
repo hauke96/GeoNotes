@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:minWidth="250dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:minWidth="350dp"
     android:orientation="vertical"
     android:padding="5dp">
 
@@ -11,34 +11,55 @@
         android:id="@+id/bubble_description"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:inputType="text|textMultiLine"
-        android:gravity="top"/>
+        android:gravity="top"
+        android:inputType="text|textMultiLine" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="right">
+        android:gravity="left">
+
+        <ImageButton
+            android:id="@+id/take_photo_button"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/ic_add_a_photo"
+            android:tint="@color/primary"
+            android:padding="15dp"
+            android:scaleType="fitCenter" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/move_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Move"
-            android:drawableLeft="@drawable/ic_move"/>
+            android:drawableLeft="@drawable/ic_move"
+            android:text="Move" />
 
         <Button
             android:id="@+id/delete_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Delete"
-            android:drawableLeft="@drawable/ic_delete"/>
+            android:drawableLeft="@drawable/ic_delete"
+            android:text="Delete" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
 
         <Button
             android:id="@+id/save_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="OK"
-            android:drawableLeft="@drawable/ic_save"/>
+            android:drawableLeft="@drawable/ic_save"
+            android:text="OK" />
     </LinearLayout>
 </LinearLayout>
