@@ -230,10 +230,6 @@ public class Map {
             File storageDir = context.getExternalFilesDir("GeoNotes");
             File image = new File(storageDir, photoFileName);
             markerInfoWindow.addPhoto(image);
-            markerInfoWindow.addPhoto(image);
-            markerInfoWindow.addPhoto(image);
-            markerInfoWindow.addPhoto(image);
-            markerInfoWindow.addPhoto(image);
         }
     }
 
