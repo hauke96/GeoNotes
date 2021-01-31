@@ -29,12 +29,6 @@ public class NoteStore {
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Drop table
-        db.execSQL(String.format("DROP TABLE IF EXISTS %s", NOTES_TABLE_NAME));
-
-        // Recreate
-        onCreate(db);
-
         Log.i("NoteStore", String.format("onUpgrade: from version %d to version %d", oldVersion, newVersion));
     }
 
