@@ -78,8 +78,7 @@ public class Map {
         // TODO rename noteStore
         this.database = database;
         for (Note n : this.database.getAllNotes()) {
-            Marker marker = createMarker(n.description, new GeoPoint(n.lat, n.lon), markerClickListener);
-            marker.setId("" + n.id);
+            Marker marker = createMarker("" + n.id, n.description, new GeoPoint(n.lat, n.lon), markerClickListener);
         }
     }
 
@@ -147,8 +146,7 @@ public class Map {
                         markerInfoWindow.close();
                     } else {
                         // No marker currently selected -> create new marker at this location
-                        Marker marker = createMarker("", p, markerClickListener);
-                        selectMarker(marker);
+                        initAndSelectMarker(p);
                     }
                 }
 
@@ -181,32 +179,34 @@ public class Map {
         markerInfoWindow = new MarkerWindow(R.layout.maker_window, map, new MarkerWindow.MarkerEventHandler() {
             @Override
             public void onDelete(Marker marker) {
-                // Task came from database and should therefore be removed.
-                if (marker.getId() != null) {
-                    database.removeNote(Long.parseLong(marker.getId()));
-                }
+                // We always have an ID and can therefore delete the note
+                database.removeNote(Long.parseLong(marker.getId()));
                 map.getOverlays().remove(marker);
             }
 
             @Override
             public void onSave(Marker marker) {
-                // Check whether marker already exists in the database (this is the case when the
-                // marker has an ID attached) and update the DB entry. Otherwise, we'll create a new DB entry.
-                if (marker.getId() != null) {
-                    database.updateDescription(Long.parseLong(marker.getId()), marker.getSnippet());
-                } else {
-                    long id = database.addNote(marker.getSnippet(), marker.getPosition().getLatitude(), marker.getPosition().getLongitude());
-                    marker.setId("" + id);
-                }
-
+                // We always have an ID and can therefore update the note
+                database.updateDescription(Long.parseLong(marker.getId()), marker.getSnippet());
                 setNormalIcon(marker);
             }
 
             @Override
             public void onMove(Marker marker) {
                 markerToMove = marker;
+                // The new position is determined and stored in the click handler of the map
             }
         });
+    }
+
+    /**
+     * Creates a new note in the database, creates a corresponding marker (s. createMarker()) and also selects this new marker.
+     */
+    private void initAndSelectMarker(GeoPoint location) {
+        long id = database.addNote("", location.getLatitude(), location.getLongitude());
+
+        Marker newMarker = createMarker("" + id, "", location, markerClickListener);
+        selectMarker(newMarker);
     }
 
     private void selectMarker(Marker marker) {
@@ -250,8 +250,12 @@ public class Map {
         mapController.setZoom(zoom);
     }
 
-    private Marker createMarker(String description, GeoPoint p, Marker.OnMarkerClickListener markerClickListener) {
+    /**
+     * Just creates a new marker and adds it to the map overlay. No database operations or selection is performed.
+     */
+    private Marker createMarker(String id, String description, GeoPoint p, Marker.OnMarkerClickListener markerClickListener) {
         Marker marker = new Marker(map);
+        marker.setId(id);
         marker.setPosition(p);
         marker.setSnippet(description);
         marker.setInfoWindow(markerInfoWindow);
