@@ -31,6 +31,7 @@ import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import de.hauke_stieler.geonotes.Database.Database;
 import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.notes.Note;
 import de.hauke_stieler.geonotes.notes.NoteStore;
@@ -51,7 +52,7 @@ public class Map {
     private Drawable normalIcon;
     private Drawable selectedIcon;
 
-    private NoteStore noteStore;
+    private Database noteStore;
 
     public Map(Context context, MapView map, PowerManager.WakeLock wakeLock, Drawable locationIcon, Drawable normalIcon, Drawable selectedIcon) {
         this.wakeLock = wakeLock;
@@ -74,7 +75,7 @@ public class Map {
         createOverlays(context, map, (BitmapDrawable) locationIcon);
         createMarkerWindow(map);
 
-        noteStore = new NoteStore(context);
+        noteStore = new Database(context);
         for (Note n : noteStore.getAllNotes()) {
             Marker marker = createMarker(n.description, new GeoPoint(n.lat, n.lon), markerClickListener);
             marker.setId("" + n.id);

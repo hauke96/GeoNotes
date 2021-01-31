@@ -228,14 +228,7 @@ public class MainActivity extends AppCompatActivity {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             try {
                 // Create the File where the photo should go
-                File photoFile = null;
-                try {
-                    photoFile = createImageFile();
-                } catch (IOException e) {
-                    // TODO error handling
-                    Log.e("TakingPhoto", "Creating empty photo-file failed", e);
-                    return;
-                }
+                File photoFile = createImageFile();
 
                 Uri photoURI = FileProvider.getUriForFile(this,
                         "com.example.android.fileprovider",
@@ -261,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
     private File createImageFile() {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "geonotes_" + timeStamp;
-        
+
         File storageDir = getExternalFilesDir("GeoNotes");
         File image = new File(storageDir, imageFileName + ".jpg");
 
