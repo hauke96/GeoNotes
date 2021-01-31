@@ -16,11 +16,13 @@ import android.util.Log;
 import android.util.Size;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Space;
 import android.widget.TextView;
 
 import org.osmdroid.api.IMapView;
@@ -207,9 +209,11 @@ public class MarkerWindow extends InfoWindow {
 
     public void addPhoto(File photo) {
         int sizeInPixel = getMapView().getContext().getResources().getDimensionPixelSize(R.dimen.ImageButton);
+        int paddingInPixel = getMapView().getContext().getResources().getDimensionPixelSize(R.dimen.ImageButtonPadding);
 
         ImageButton imageButton = new ImageButton(getMapView().getContext());
         imageButton.setLayoutParams(new LinearLayout.LayoutParams(sizeInPixel, sizeInPixel));
+        imageButton.setPadding(paddingInPixel, paddingInPixel, paddingInPixel, paddingInPixel);
 
         // Get thumbnail that can be shown on image button
         Bitmap bmp = BitmapFactory.decodeFile(photo.getAbsolutePath());
@@ -217,6 +221,10 @@ public class MarkerWindow extends InfoWindow {
 
         LinearLayout photoLayout = getMapView().findViewById(R.id.note_image_pane);
         photoLayout.addView(imageButton);
+
+        Space space = new Space(getMapView().getContext());
+        space.setLayoutParams(new LinearLayout.LayoutParams(paddingInPixel, ViewGroup.LayoutParams.WRAP_CONTENT));
+        photoLayout.addView(space);
     }
 
     void addRequestPhotoHandler(RequestPhotoEventHandler handler) {
