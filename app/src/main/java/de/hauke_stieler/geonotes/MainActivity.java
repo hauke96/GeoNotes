@@ -258,15 +258,12 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Creates an empty file in the Environment.DIRECTORY_PICTURES directory.
      */
-    private File createImageFile() throws IOException {
+    private File createImageFile() {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "geonotes_" + timeStamp + "_";
+        String imageFileName = "geonotes_" + timeStamp;
+        
         File storageDir = getExternalFilesDir("GeoNotes");
-        File image = File.createTempFile(
-                imageFileName,
-                ".jpg",
-                storageDir
-        );
+        File image = new File(storageDir, imageFileName + ".jpg");
 
         return image;
     }
