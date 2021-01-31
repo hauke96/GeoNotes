@@ -266,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         // If photo-Intent was successful
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == -1) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             addPhotoToDatabase(lastPhotoNoteId, lastPhotoFile);
             addPhotoToGallery(lastPhotoFile);
         }

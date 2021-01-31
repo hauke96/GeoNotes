@@ -26,11 +26,15 @@ import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import java.io.File;
+import java.util.List;
+
 import de.hauke_stieler.geonotes.Database.Database;
 import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.notes.Note;
 
 public class Map {
+    private final Context context;
     private MapView map;
     private IMapController mapController;
     private MarkerWindow markerInfoWindow;
@@ -55,6 +59,7 @@ public class Map {
                Drawable locationIcon,
                Drawable normalIcon,
                Drawable selectedIcon) {
+        this.context = context;
         this.wakeLock = wakeLock;
         this.normalIcon = normalIcon;
         this.selectedIcon = selectedIcon;
@@ -108,7 +113,6 @@ public class Map {
             if (markerToMove != null) {
                 return true;
             }
-
 
             // If a marker is currently selected -> deselect it
             if (markerInfoWindow.getSelectedMarker() != null) {
@@ -220,6 +224,13 @@ public class Map {
         setSelectedIcon(marker);
         marker.showInfoWindow();
         markerInfoWindow.focusEditField();
+
+        List<String> photoFileNames = database.getPhotos(marker.getId());
+        for (String photoFileName :photoFileNames) {
+            File storageDir = context.getExternalFilesDir("GeoNotes");
+            File image = new File(storageDir, photoFileName);
+            markerInfoWindow.addPhoto(image);
+        }
     }
 
     private void setSelectedIcon(Marker marker) {

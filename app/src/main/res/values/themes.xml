@@ -8,4 +8,5 @@
         <item name="colorControlNormal">@color/white</item>
         <item name="android:textColorPrimary">@color/white</item>
     </style>
+    <dimen name="ImageButton">64dp</dimen>
 </resources>

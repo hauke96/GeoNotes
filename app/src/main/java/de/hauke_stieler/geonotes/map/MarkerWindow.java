@@ -1,17 +1,26 @@
 package de.hauke_stieler.geonotes.map;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Size;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.osmdroid.api.IMapView;
@@ -19,7 +28,13 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.infowindow.InfoWindow;
 
+import java.io.File;
+import java.util.List;
+
+import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.notes.Note;
+
+import static android.content.ContentResolver.EXTRA_SIZE;
 
 public class MarkerWindow extends InfoWindow {
     private RequestPhotoEventHandler requestPhotoHandler;
@@ -188,6 +203,20 @@ public class MarkerWindow extends InfoWindow {
     public void focusEditField() {
         EditText descriptionView = mView.findViewById(mDescriptionId /*R.id.description*/);
         descriptionView.requestFocus();
+    }
+
+    public void addPhoto(File photo) {
+        int sizeInPixel = getMapView().getContext().getResources().getDimensionPixelSize(R.dimen.ImageButton);
+
+        ImageButton imageButton = new ImageButton(getMapView().getContext());
+        imageButton.setLayoutParams(new LinearLayout.LayoutParams(sizeInPixel, sizeInPixel));
+
+        // Get thumbnail that can be shown on image button
+        Bitmap bmp = BitmapFactory.decodeFile(photo.getAbsolutePath());
+        imageButton.setImageBitmap(ThumbnailUtils.extractThumbnail(bmp, sizeInPixel, sizeInPixel));
+
+        LinearLayout photoLayout = getMapView().findViewById(R.id.note_image_pane);
+        photoLayout.addView(imageButton);
     }
 
     void addRequestPhotoHandler(RequestPhotoEventHandler handler) {

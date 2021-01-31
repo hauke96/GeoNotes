@@ -14,7 +14,7 @@ import de.hauke_stieler.geonotes.notes.NoteStore;
 import de.hauke_stieler.geonotes.photo.PhotoStore;
 
 public class Database extends SQLiteOpenHelper {
-    private static final int DB_VERSION = 3;
+    private static final int DB_VERSION = 4;
     private static final String DB_NAME = "geonotes";
 
     private final NoteStore noteStore;
@@ -61,5 +61,9 @@ public class Database extends SQLiteOpenHelper {
 
     public void addPhoto(Long noteId, File photoFile) {
         photoStore.addPhoto(getWritableDatabase(), noteId, photoFile);
+    }
+
+    public List<String> getPhotos(String noteId) {
+        return photoStore.getPhotos(getReadableDatabase(), noteId);
     }
 }

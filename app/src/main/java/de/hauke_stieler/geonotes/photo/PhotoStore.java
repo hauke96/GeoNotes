@@ -9,8 +9,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.hauke_stieler.geonotes.notes.Note;
-
 public class PhotoStore {
     private static final String PHOTOS_TABLE_NAME = "photos";
     private static final String PHOTOS_COL_ID = "id";
@@ -26,6 +24,10 @@ public class PhotoStore {
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if(newVersion == 4){
+            // Version 4 introduces this table
+            onCreate(db);
+        }
         Log.i("NoteStore", String.format("onUpgrade: from version %d to version %d", oldVersion, newVersion));
     }
 
@@ -37,8 +39,8 @@ public class PhotoStore {
         db.insert(PHOTOS_TABLE_NAME, null, values);
     }
 
-    public List<String> getPhotos(SQLiteDatabase db, Note note) {
-        Cursor cursor = db.query(PHOTOS_TABLE_NAME, new String[]{PHOTOS_COL_NOTE_ID, PHOTOS_COL_FILE_NAME}, PHOTOS_COL_NOTE_ID, new String[]{note.id + ""}, null, null, null);
+    public List<String> getPhotos(SQLiteDatabase db, String noteId) {
+        Cursor cursor = db.query(PHOTOS_TABLE_NAME, new String[]{PHOTOS_COL_NOTE_ID, PHOTOS_COL_FILE_NAME}, PHOTOS_COL_NOTE_ID + "=?", new String[]{noteId}, null, null, null);
 
         List<String> photos = new ArrayList<>();
         if (cursor.moveToFirst()) {
