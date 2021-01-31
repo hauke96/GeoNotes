@@ -196,6 +196,9 @@ public class MarkerWindow extends InfoWindow {
     @Override
     public void onClose() {
         this.selectedMarker = null;
+
+        LinearLayout photoLayout = getView().findViewById(R.id.note_image_pane);
+        photoLayout.removeAllViews();
     }
 
     public Marker getSelectedMarker() {
@@ -208,10 +211,10 @@ public class MarkerWindow extends InfoWindow {
     }
 
     public void addPhoto(File photo) {
-        int sizeInPixel = getMapView().getContext().getResources().getDimensionPixelSize(R.dimen.ImageButton);
-        int paddingInPixel = getMapView().getContext().getResources().getDimensionPixelSize(R.dimen.ImageButtonPadding);
+        int sizeInPixel = getView().getContext().getResources().getDimensionPixelSize(R.dimen.ImageButton);
+        int paddingInPixel = getView().getContext().getResources().getDimensionPixelSize(R.dimen.ImageButtonPadding);
 
-        ImageButton imageButton = new ImageButton(getMapView().getContext());
+        ImageButton imageButton = new ImageButton(getView().getContext());
         imageButton.setLayoutParams(new LinearLayout.LayoutParams(sizeInPixel, sizeInPixel));
         imageButton.setPadding(paddingInPixel, paddingInPixel, paddingInPixel, paddingInPixel);
 
@@ -219,10 +222,10 @@ public class MarkerWindow extends InfoWindow {
         Bitmap bmp = BitmapFactory.decodeFile(photo.getAbsolutePath());
         imageButton.setImageBitmap(ThumbnailUtils.extractThumbnail(bmp, sizeInPixel, sizeInPixel));
 
-        LinearLayout photoLayout = getMapView().findViewById(R.id.note_image_pane);
+        LinearLayout photoLayout = getView().findViewById(R.id.note_image_pane);
         photoLayout.addView(imageButton);
 
-        Space space = new Space(getMapView().getContext());
+        Space space = new Space(getView().getContext());
         space.setLayoutParams(new LinearLayout.LayoutParams(paddingInPixel, ViewGroup.LayoutParams.WRAP_CONTENT));
         photoLayout.addView(space);
     }
