@@ -139,7 +139,8 @@ public class Map {
 
                     markerToMove = null;
                 } else {
-                    // Marker move state is not active -> normally select or create marker
+                    // No marker to move here -> deselect or create marker
+                    // (selecting marker on the map is handles via the separate markerClickListener)
                     if (markerInfoWindow.getSelectedMarker() != null) {
                         // Deselect selected marker:
                         setNormalIcon(markerInfoWindow.getSelectedMarker());
