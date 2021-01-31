@@ -54,7 +54,13 @@ public class Map {
 
     private Database noteStore;
 
-    public Map(Context context, MapView map, PowerManager.WakeLock wakeLock, Drawable locationIcon, Drawable normalIcon, Drawable selectedIcon) {
+    public Map(Context context,
+               MapView map,
+               PowerManager.WakeLock wakeLock,
+               Database database,
+               Drawable locationIcon,
+               Drawable normalIcon,
+               Drawable selectedIcon) {
         this.wakeLock = wakeLock;
         this.normalIcon = normalIcon;
         this.selectedIcon = selectedIcon;
@@ -75,7 +81,8 @@ public class Map {
         createOverlays(context, map, (BitmapDrawable) locationIcon);
         createMarkerWindow(map);
 
-        noteStore = new Database(context);
+        // TODO rename noteStore
+        noteStore = database;
         for (Note n : noteStore.getAllNotes()) {
             Marker marker = createMarker(n.description, new GeoPoint(n.lat, n.lon), markerClickListener);
             marker.setId("" + n.id);

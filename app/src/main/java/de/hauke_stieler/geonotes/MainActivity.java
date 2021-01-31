@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.PowerManager;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -43,6 +44,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import de.hauke_stieler.geonotes.Database.Database;
 import de.hauke_stieler.geonotes.map.Map;
 import de.hauke_stieler.geonotes.map.MarkerWindow;
 import de.hauke_stieler.geonotes.map.TouchDownListener;
@@ -51,11 +53,11 @@ import de.hauke_stieler.geonotes.settings.SettingsActivity;
 public class MainActivity extends AppCompatActivity {
 
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
+    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private Map map;
     private SharedPreferences preferences;
-
-    static final int REQUEST_IMAGE_CAPTURE = 1;
+    private Database database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.ACCESS_COARSE_LOCATION
         });
 
+        database = new Database(context);
+
         createMap(context);
 
         preferences = getSharedPreferences(getString(R.string.pref_file), MODE_PRIVATE);
@@ -96,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         Drawable normalIcon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_note, null);
 
         MapView mapView = findViewById(R.id.map);
-        map = new Map(context, mapView, wakeLock, locationIcon, normalIcon, selectedIcon);
+        map = new Map(context, mapView, wakeLock, database, locationIcon, normalIcon, selectedIcon);
 
         addMapListener();
         addCameraListener();
