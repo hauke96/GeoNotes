@@ -29,9 +29,9 @@ public class PhotoStore {
         Log.i("NoteStore", String.format("onUpgrade: from version %d to version %d", oldVersion, newVersion));
     }
 
-    public void addPhoto(SQLiteDatabase db, Note note, File photoFile) {
+    public void addPhoto(SQLiteDatabase db, Long noteId, File photoFile) {
         ContentValues values = new ContentValues();
-        values.put(PHOTOS_COL_NOTE_ID, note.id);
+        values.put(PHOTOS_COL_NOTE_ID, noteId);
         values.put(PHOTOS_COL_FILE_NAME, photoFile.getName());
 
         db.insert(PHOTOS_TABLE_NAME, null, values);

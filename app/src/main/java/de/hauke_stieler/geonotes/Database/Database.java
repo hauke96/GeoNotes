@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import org.osmdroid.util.GeoPoint;
 
+import java.io.File;
 import java.util.List;
 
 import de.hauke_stieler.geonotes.notes.Note;
@@ -56,5 +57,9 @@ public class Database extends SQLiteOpenHelper {
 
     public List<Note> getAllNotes() {
         return noteStore.getAllNotes(getWritableDatabase());
+    }
+
+    public void addPhoto(Long noteId, File photoFile) {
+        photoStore.addPhoto(getWritableDatabase(), noteId, photoFile);
     }
 }

@@ -19,6 +19,8 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.infowindow.InfoWindow;
 
+import de.hauke_stieler.geonotes.notes.Note;
+
 public class MarkerWindow extends InfoWindow {
     private RequestPhotoEventHandler requestPhotoHandler;
 
@@ -31,7 +33,7 @@ public class MarkerWindow extends InfoWindow {
     }
 
     public interface RequestPhotoEventHandler {
-        void onRequestPhoto();
+        void onRequestPhoto(Long noteId);
     }
 
     private MarkerEventHandler markerEventHandler;
@@ -170,7 +172,7 @@ public class MarkerWindow extends InfoWindow {
 
         ImageButton cameraButton = mView.findViewById(mCameraButtonId /* R.id.save_button */);
         cameraButton.setOnClickListener(v -> {
-            requestPhotoHandler.onRequestPhoto();
+            requestPhotoHandler.onRequestPhoto(Long.parseLong(marker.getId()));
         });
     }
 

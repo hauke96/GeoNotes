@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.appcompat.widget.Toolbar;
@@ -48,6 +49,7 @@ import de.hauke_stieler.geonotes.Database.Database;
 import de.hauke_stieler.geonotes.map.Map;
 import de.hauke_stieler.geonotes.map.MarkerWindow;
 import de.hauke_stieler.geonotes.map.TouchDownListener;
+import de.hauke_stieler.geonotes.notes.Note;
 import de.hauke_stieler.geonotes.settings.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -58,6 +60,14 @@ public class MainActivity extends AppCompatActivity {
     private Map map;
     private SharedPreferences preferences;
     private Database database;
+
+    // These fields exist to remember the photo data when the photo Intent is started. This is
+    // because the Intent doesn't return anything and works asynchronously. In the result handler
+    // only "null" is passed but we want to store the photo for the note, that's why we store the
+    // data in these fields here. Ugly and horrorfying but that's how it works in the Android
+    // world ...
+    private File lastPhotoFile;
+    private Long lastPhotoNoteId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -227,20 +237,19 @@ public class MainActivity extends AppCompatActivity {
      */
     private void addCameraListener() {
         // TODO check whether camera is available at all: hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
-        MarkerWindow.RequestPhotoEventHandler requestPhotoEventHandler = () -> {
+        MarkerWindow.RequestPhotoEventHandler requestPhotoEventHandler = (Long noteId) -> {
             // TODO check if app has permissions
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             try {
                 // Create the File where the photo should go
-                File photoFile = createImageFile();
+                lastPhotoFile = createImageFile();
+                lastPhotoNoteId = noteId;
 
                 Uri photoURI = FileProvider.getUriForFile(this,
                         "com.example.android.fileprovider",
-                        photoFile);
+                        lastPhotoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-
-                addPhotoToGallery(photoFile);
             } catch (Exception e) {
                 Log.e("TakingPhoto", "Opening camera to take photo failed", e);
                 return;
@@ -250,6 +259,17 @@ public class MainActivity extends AppCompatActivity {
         };
 
         map.addRequestPhotoHandler(requestPhotoEventHandler);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // If photo-Intent was successful
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == -1) {
+            addPhotoToDatabase(lastPhotoNoteId, lastPhotoFile);
+            addPhotoToGallery(lastPhotoFile);
+        }
     }
 
     /**
@@ -263,6 +283,10 @@ public class MainActivity extends AppCompatActivity {
         File image = new File(storageDir, imageFileName + ".jpg");
 
         return image;
+    }
+
+    private void addPhotoToDatabase(Long noteId, File photoFile) {
+        database.addPhoto(noteId, photoFile);
     }
 
     private void addPhotoToGallery(File photoFile) {
