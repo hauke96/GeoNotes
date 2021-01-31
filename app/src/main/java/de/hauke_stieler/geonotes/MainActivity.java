@@ -3,12 +3,15 @@ package de.hauke_stieler.geonotes;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.PowerManager;
 import android.provider.MediaStore;
 import android.text.Html;
@@ -24,6 +27,7 @@ import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.core.content.res.ResourcesCompat;
 
 import org.osmdroid.api.IGeoPoint;
@@ -33,7 +37,11 @@ import org.osmdroid.events.ScrollEvent;
 import org.osmdroid.events.ZoomEvent;
 import org.osmdroid.views.MapView;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import de.hauke_stieler.geonotes.map.Map;
 import de.hauke_stieler.geonotes.map.MarkerWindow;
@@ -133,9 +141,9 @@ public class MainActivity extends AppCompatActivity {
                 boolean followingLocationEnabled = !map.isFollowLocationEnabled();
                 this.map.setLocationFollowMode(followingLocationEnabled);
 
-                if(followingLocationEnabled){
+                if (followingLocationEnabled) {
                     item.setIcon(R.drawable.ic_my_location);
-                }else{
+                } else {
                     item.setIcon(R.drawable.ic_location_searching);
                 }
                 return true;
@@ -219,16 +227,60 @@ public class MainActivity extends AppCompatActivity {
             // TODO check if app has permissions
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             try {
+                // Create the File where the photo should go
+                File photoFile = null;
+                try {
+                    photoFile = createImageFile();
+                } catch (IOException e) {
+                    // TODO error handling
+                    Log.e("TakingPhoto", "Creating empty photo-file failed", e);
+                    return;
+                }
+
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.example.android.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-            } catch (ActivityNotFoundException e) {
+
+                addPhotoToGallery(photoFile);
+            } catch (Exception e) {
                 Log.e("TakingPhoto", "Opening camera to take photo failed", e);
+                return;
             }
-            // TODO store image
-            // TODO add image to phone gallery
+
             // TODO notify marker window to update
         };
 
         map.addRequestPhotoHandler(requestPhotoEventHandler);
+    }
+
+    /**
+     * Creates an empty file in the Environment.DIRECTORY_PICTURES directory.
+     */
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "geonotes_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir("GeoNotes");
+        File image = File.createTempFile(
+                imageFileName,
+                ".jpg",
+                storageDir
+        );
+
+        return image;
+    }
+
+    private void addPhotoToGallery(File photoFile) {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, photoFile.getName());
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, photoFile.getName());
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg");
+        values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis());
+        values.put(MediaStore.Images.Media.DATE_TAKEN, photoFile.lastModified());
+        values.put(MediaStore.Images.Media.DATA, photoFile.toString());
+
+        getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
     }
 
     /**
