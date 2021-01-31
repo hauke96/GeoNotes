@@ -7,18 +7,13 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.PowerManager;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MotionEvent;
-import android.view.View;
 
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.events.MapListener;
-import org.osmdroid.events.ScrollEvent;
-import org.osmdroid.events.ZoomEvent;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
@@ -34,7 +29,6 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import de.hauke_stieler.geonotes.Database.Database;
 import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.notes.Note;
-import de.hauke_stieler.geonotes.notes.NoteStore;
 
 public class Map {
     private MapView map;
@@ -52,7 +46,7 @@ public class Map {
     private Drawable normalIcon;
     private Drawable selectedIcon;
 
-    private Database noteStore;
+    private Database database;
 
     public Map(Context context,
                MapView map,
@@ -82,8 +76,8 @@ public class Map {
         createMarkerWindow(map);
 
         // TODO rename noteStore
-        noteStore = database;
-        for (Note n : noteStore.getAllNotes()) {
+        this.database = database;
+        for (Note n : this.database.getAllNotes()) {
             Marker marker = createMarker(n.description, new GeoPoint(n.lat, n.lon), markerClickListener);
             marker.setId("" + n.id);
         }
@@ -141,7 +135,7 @@ public class Map {
                     // If the ID is set, the marker exists in the DB, therefore we store that new location
                     String id = markerToMove.getId();
                     if (id != null) {
-                        noteStore.updateLocation(Long.parseLong(id), p);
+                        database.updateLocation(Long.parseLong(id), p);
                     }
 
                     markerToMove = null;
@@ -189,7 +183,7 @@ public class Map {
             public void onDelete(Marker marker) {
                 // Task came from database and should therefore be removed.
                 if (marker.getId() != null) {
-                    noteStore.removeNote(Long.parseLong(marker.getId()));
+                    database.removeNote(Long.parseLong(marker.getId()));
                 }
                 map.getOverlays().remove(marker);
             }
@@ -199,9 +193,9 @@ public class Map {
                 // Check whether marker already exists in the database (this is the case when the
                 // marker has an ID attached) and update the DB entry. Otherwise, we'll create a new DB entry.
                 if (marker.getId() != null) {
-                    noteStore.updateDescription(Long.parseLong(marker.getId()), marker.getSnippet());
+                    database.updateDescription(Long.parseLong(marker.getId()), marker.getSnippet());
                 } else {
-                    long id = noteStore.addNote(marker.getSnippet(), marker.getPosition().getLatitude(), marker.getPosition().getLongitude());
+                    long id = database.addNote(marker.getSnippet(), marker.getPosition().getLatitude(), marker.getPosition().getLongitude());
                     marker.setId("" + id);
                 }
 
