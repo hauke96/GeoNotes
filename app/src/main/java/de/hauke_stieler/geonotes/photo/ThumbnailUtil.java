@@ -28,6 +28,10 @@ public class ThumbnailUtil {
         return BitmapFactory.decodeFile(thumbnailPath);
     }
 
+    public static void deleteThumbnail(File photoFile) {
+        getThumbnailFile(photoFile).delete();
+    }
+
     /**
      * Converts the file to a big photo into the file to a thumbnail. That file does not necessarily exist.
      */

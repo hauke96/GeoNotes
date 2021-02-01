@@ -7,11 +7,13 @@ import android.database.sqlite.SQLiteOpenHelper;
 import org.osmdroid.util.GeoPoint;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import de.hauke_stieler.geonotes.notes.Note;
 import de.hauke_stieler.geonotes.notes.NoteStore;
 import de.hauke_stieler.geonotes.photo.PhotoStore;
+import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
 
 public class Database extends SQLiteOpenHelper {
     private static final int DB_VERSION = 4;
@@ -53,7 +55,6 @@ public class Database extends SQLiteOpenHelper {
 
     public void removeNote(long id) {
         noteStore.removeNote(getWritableDatabase(), id);
-        // TODO delete photos as well
     }
 
     public List<Note> getAllNotes() {
@@ -66,5 +67,19 @@ public class Database extends SQLiteOpenHelper {
 
     public List<String> getPhotos(String noteId) {
         return photoStore.getPhotos(getReadableDatabase(), noteId);
+    }
+
+    public void removePhotos(long noteId, File storageDir) {
+        List<String> photos = getPhotos("" + noteId);
+
+        photoStore.removePhotos(getWritableDatabase(), noteId);
+
+        for(String photo:photos){
+            File photoFile = new File(storageDir, photo);
+            File thumbnailFile = ThumbnailUtil.getThumbnailFile(photoFile);
+
+            photoFile.delete();
+            thumbnailFile.delete();
+        }
     }
 }

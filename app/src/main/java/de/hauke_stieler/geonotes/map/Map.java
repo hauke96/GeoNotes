@@ -32,6 +32,7 @@ import java.util.List;
 import de.hauke_stieler.geonotes.Database.Database;
 import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.notes.Note;
+import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
 
 public class Map {
     private final Context context;
@@ -186,6 +187,7 @@ public class Map {
             public void onDelete(Marker marker) {
                 // We always have an ID and can therefore delete the note
                 database.removeNote(Long.parseLong(marker.getId()));
+                database.removePhotos(Long.parseLong(marker.getId()), context.getExternalFilesDir("GeoNotes"));
                 map.getOverlays().remove(marker);
             }
 

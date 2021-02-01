@@ -24,7 +24,7 @@ public class PhotoStore {
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if(newVersion == 4){
+        if (newVersion == 4) {
             // Version 4 introduces this table
             onCreate(db);
         }
@@ -50,5 +50,9 @@ public class PhotoStore {
         }
 
         return photos;
+    }
+
+    public void removePhotos(SQLiteDatabase db, long noteId) {
+        db.delete(PHOTOS_TABLE_NAME, PHOTOS_COL_NOTE_ID + " = ?", new String[]{"" + noteId});
     }
 }
