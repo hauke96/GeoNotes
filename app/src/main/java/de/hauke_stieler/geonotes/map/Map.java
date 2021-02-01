@@ -238,6 +238,12 @@ public class Map {
         markerInfoWindow.resetImageList();
         Marker marker = markerInfoWindow.getSelectedMarker();
 
+        // It could happen that the user rotates the device (e.g. while taking a photo) and this
+        // causes the whole activity to be reset. Therefore we might not have a marker here.
+        if (marker == null) {
+            return;
+        }
+
         List<String> photoFileNames = database.getPhotos(marker.getId());
         for (String photoFileName : photoFileNames) {
             File storageDir = context.getExternalFilesDir("GeoNotes");

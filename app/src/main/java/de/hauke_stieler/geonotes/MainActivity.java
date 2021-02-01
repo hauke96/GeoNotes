@@ -75,8 +75,8 @@ public class MainActivity extends AppCompatActivity {
     // only "null" is passed but we want to store the photo for the note, that's why we store the
     // data in these fields here. Ugly and horrorfying but that's how it works in the Android
     // world ...
-    private File lastPhotoFile;
-    private Long lastPhotoNoteId;
+    private static File lastPhotoFile;
+    private static Long lastPhotoNoteId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
