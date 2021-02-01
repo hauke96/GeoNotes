@@ -247,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
                 lastPhotoNoteId = noteId;
 
                 Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.example.android.fileprovider",
+                        getApplicationContext().getPackageName() + ".provider",
                         lastPhotoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);

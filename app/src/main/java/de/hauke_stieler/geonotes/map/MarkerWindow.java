@@ -2,6 +2,7 @@ package de.hauke_stieler.geonotes.map;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -24,6 +25,8 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Space;
 import android.widget.TextView;
+
+import androidx.core.content.FileProvider;
 
 import org.osmdroid.api.IMapView;
 import org.osmdroid.views.MapView;
@@ -217,6 +220,15 @@ public class MarkerWindow extends InfoWindow {
         ImageButton imageButton = new ImageButton(getView().getContext());
         imageButton.setLayoutParams(new LinearLayout.LayoutParams(sizeInPixel, sizeInPixel));
         imageButton.setPadding(paddingInPixel, paddingInPixel, paddingInPixel, paddingInPixel);
+        imageButton.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setDataAndType(FileProvider.getUriForFile(getView().getContext(),
+                    getView().getContext().getPackageName() + ".provider",
+                    photo), "image/jpg");
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            getView().getContext().startActivity(intent);
+        });
 
         // Get thumbnail that can be shown on image button
         Bitmap bmp = BitmapFactory.decodeFile(photo.getAbsolutePath());
