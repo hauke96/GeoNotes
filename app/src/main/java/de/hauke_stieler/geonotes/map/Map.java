@@ -81,7 +81,6 @@ public class Map {
         createOverlays(context, map, (BitmapDrawable) locationIcon);
         createMarkerWindow(map);
 
-        // TODO rename noteStore
         this.database = database;
         for (Note n : this.database.getAllNotes()) {
             Marker marker = createMarker("" + n.id, n.description, new GeoPoint(n.lat, n.lon), markerClickListener);
