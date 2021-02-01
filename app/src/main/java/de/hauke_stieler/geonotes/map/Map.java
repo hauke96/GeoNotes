@@ -58,6 +58,7 @@ public class Map {
                PowerManager.WakeLock wakeLock,
                Database database,
                Drawable locationIcon,
+               Drawable arrowIcon,
                Drawable normalIcon,
                Drawable selectedIcon) {
         this.context = context;
@@ -78,7 +79,7 @@ public class Map {
         GeoPoint startPoint = new GeoPoint(53.563, 9.9866);
         mapController.setCenter(startPoint);
 
-        createOverlays(context, map, (BitmapDrawable) locationIcon);
+        createOverlays(context, map, (BitmapDrawable) locationIcon, (BitmapDrawable) arrowIcon);
         createMarkerWindow(map);
 
         this.database = database;
@@ -87,11 +88,11 @@ public class Map {
         }
     }
 
-    private void createOverlays(Context context, MapView map, BitmapDrawable locationIcon) {
+    private void createOverlays(Context context, MapView map, BitmapDrawable locationIcon, BitmapDrawable arrowIcon) {
         // Add location icon
         locationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(context), map);
         locationOverlay.enableMyLocation();
-        locationOverlay.setPersonIcon(locationIcon.getBitmap());
+        locationOverlay.setDirectionArrow(locationIcon.getBitmap(), arrowIcon.getBitmap());
         locationOverlay.setPersonHotspot(32, 32);
         map.getOverlays().add(this.locationOverlay);
 

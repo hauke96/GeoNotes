@@ -18,6 +18,7 @@ import android.os.Environment;
 import android.os.PowerManager;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
+import android.telephony.BarringInfo;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -115,11 +116,12 @@ public class MainActivity extends AppCompatActivity {
         wakeLock.acquire();
 
         Drawable locationIcon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_location, null);
+        Drawable arrowIcon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_arrow, null);
         Drawable selectedIcon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_note_selected, null);
         Drawable normalIcon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_note, null);
 
         MapView mapView = findViewById(R.id.map);
-        map = new Map(context, mapView, wakeLock, database, locationIcon, normalIcon, selectedIcon);
+        map = new Map(context, mapView, wakeLock, database, locationIcon, arrowIcon, normalIcon, selectedIcon);
 
         addMapListener();
         addCameraListener();
