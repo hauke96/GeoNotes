@@ -53,6 +53,7 @@ public class Database extends SQLiteOpenHelper {
 
     public void removeNote(long id) {
         noteStore.removeNote(getWritableDatabase(), id);
+        // TODO delete photos as well
     }
 
     public List<Note> getAllNotes() {

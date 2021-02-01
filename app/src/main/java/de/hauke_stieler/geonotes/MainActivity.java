@@ -255,8 +255,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("TakingPhoto", "Opening camera to take photo failed", e);
                 return;
             }
-
-            // TODO notify marker window to update
         };
 
         map.addRequestPhotoHandler(requestPhotoEventHandler);
@@ -270,6 +268,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             addPhotoToDatabase(lastPhotoNoteId, lastPhotoFile);
             addPhotoToGallery(lastPhotoFile);
+            // TODO notify marker window to update
         }
     }
 
