@@ -62,8 +62,21 @@
                 android:id="@+id/settings_scale_input"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
-                android:inputType="number"
-                android:digits="0123456789."/>
+                android:digits="0123456789."
+                android:inputType="number" />
         </LinearLayout>
+
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/settings_version_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/grey" />
     </LinearLayout>
 </LinearLayout>

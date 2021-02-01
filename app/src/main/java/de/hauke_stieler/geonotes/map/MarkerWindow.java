@@ -1,36 +1,60 @@
 package de.hauke_stieler.geonotes.map;
 
+import android.content.ContentResolver;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Size;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListAdapter;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.Space;
 import android.widget.TextView;
 
-import androidx.core.content.res.ResourcesCompat;
+import androidx.core.content.FileProvider;
 
 import org.osmdroid.api.IMapView;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.infowindow.InfoWindow;
 
+import java.io.File;
+import java.util.List;
+
+import de.hauke_stieler.geonotes.R;
+import de.hauke_stieler.geonotes.notes.Note;
+import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
+
+import static android.content.ContentResolver.EXTRA_SIZE;
+
 public class MarkerWindow extends InfoWindow {
+    private RequestPhotoEventHandler requestPhotoHandler;
+
     public interface MarkerEventHandler {
         void onDelete(Marker marker);
 
         void onSave(Marker marker);
 
         void onMove(Marker marker);
+    }
+
+    public interface RequestPhotoEventHandler {
+        void onRequestPhoto(Long noteId);
     }
 
     private MarkerEventHandler markerEventHandler;
@@ -47,6 +71,7 @@ public class MarkerWindow extends InfoWindow {
             mDeleteButtonId = UNDEFINED_RES_ID,
             mSaveButtonId = UNDEFINED_RES_ID,
             mMoveButtonId = UNDEFINED_RES_ID,
+            mCameraButtonId = UNDEFINED_RES_ID,
             mSubDescriptionId = UNDEFINED_RES_ID,
             mImageId = UNDEFINED_RES_ID;
 
@@ -107,6 +132,7 @@ public class MarkerWindow extends InfoWindow {
         mDeleteButtonId = context.getResources().getIdentifier("id/delete_button", null, packageName);
         mSaveButtonId = context.getResources().getIdentifier("id/save_button", null, packageName);
         mMoveButtonId = context.getResources().getIdentifier("id/move_button", null, packageName);
+        mCameraButtonId = context.getResources().getIdentifier("id/camera_button", null, packageName);
         mSubDescriptionId = context.getResources().getIdentifier("id/bubble_subdescription", null, packageName);
         mImageId = context.getResources().getIdentifier("id/bubble_image", null, packageName);
         if (mTitleId == UNDEFINED_RES_ID || mDescriptionId == UNDEFINED_RES_ID
@@ -164,11 +190,23 @@ public class MarkerWindow extends InfoWindow {
             markerEventHandler.onMove(marker);
             close();
         });
+
+        ImageButton cameraButton = mView.findViewById(mCameraButtonId /* R.id.save_button */);
+        cameraButton.setOnClickListener(v -> {
+            requestPhotoHandler.onRequestPhoto(Long.parseLong(marker.getId()));
+        });
     }
 
     @Override
     public void onClose() {
         this.selectedMarker = null;
+
+        resetImageList();
+    }
+
+    public void resetImageList() {
+        LinearLayout photoLayout = getView().findViewById(R.id.note_image_pane);
+        photoLayout.removeAllViews();
     }
 
     public Marker getSelectedMarker() {
@@ -178,5 +216,37 @@ public class MarkerWindow extends InfoWindow {
     public void focusEditField() {
         EditText descriptionView = mView.findViewById(mDescriptionId /*R.id.description*/);
         descriptionView.requestFocus();
+    }
+
+    public void addPhoto(File photo) {
+        int sizeInPixel = getView().getContext().getResources().getDimensionPixelSize(R.dimen.ImageButton);
+        int paddingInPixel = getView().getContext().getResources().getDimensionPixelSize(R.dimen.ImageButtonPadding);
+
+        ImageButton imageButton = new ImageButton(getView().getContext());
+        imageButton.setLayoutParams(new LinearLayout.LayoutParams(sizeInPixel, sizeInPixel));
+        imageButton.setPadding(paddingInPixel, paddingInPixel, paddingInPixel, paddingInPixel);
+        imageButton.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setDataAndType(FileProvider.getUriForFile(getView().getContext(),
+                    getView().getContext().getPackageName() + ".provider",
+                    photo), "image/jpg");
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            getView().getContext().startActivity(intent);
+        });
+
+        // Get thumbnail that can be shown on image button
+        imageButton.setImageBitmap(ThumbnailUtil.loadThumbnail(photo));
+
+        LinearLayout photoLayout = getView().findViewById(R.id.note_image_pane);
+        photoLayout.addView(imageButton);
+
+        Space space = new Space(getView().getContext());
+        space.setLayoutParams(new LinearLayout.LayoutParams(paddingInPixel, ViewGroup.LayoutParams.WRAP_CONTENT));
+        photoLayout.addView(space);
+    }
+
+    void addRequestPhotoHandler(RequestPhotoEventHandler handler) {
+        requestPhotoHandler = handler;
     }
 }

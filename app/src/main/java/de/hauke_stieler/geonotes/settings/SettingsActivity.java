@@ -2,12 +2,15 @@ package de.hauke_stieler.geonotes.settings;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import de.hauke_stieler.geonotes.BuildConfig;
 import de.hauke_stieler.geonotes.R;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -28,6 +31,9 @@ public class SettingsActivity extends AppCompatActivity {
         preferences = getSharedPreferences(getString(R.string.pref_file), MODE_PRIVATE);
 
         load();
+
+        TextView versionLabel = (TextView)findViewById(R.id.settings_version_label);
+        versionLabel.setText("Version: " + BuildConfig.VERSION_NAME);
     }
 
     private void load() {
