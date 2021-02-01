@@ -276,6 +276,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             addPhotoToDatabase(lastPhotoNoteId, lastPhotoFile);
             addPhotoToGallery(lastPhotoFile);
+            map.addImagesToMarkerWindow();
             // TODO notify marker window to update
         }
     }

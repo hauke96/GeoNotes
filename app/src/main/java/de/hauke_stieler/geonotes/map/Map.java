@@ -215,6 +215,7 @@ public class Map {
     }
 
     private void selectMarker(Marker marker) {
+        // Reset icon of previous selection
         Marker selectedMarker = markerInfoWindow.getSelectedMarker();
         if (selectedMarker != null) {
             // This icon will not be the selected marker after "showInfoWindow", therefore we set the normal icon here.
@@ -225,8 +226,18 @@ public class Map {
         marker.showInfoWindow();
         markerInfoWindow.focusEditField();
 
+        addImagesToMarkerWindow();
+    }
+
+    /**
+     * Loads images of current marker (which contains the note-ID) from database and show them.
+     */
+    public void addImagesToMarkerWindow() {
+        markerInfoWindow.resetImageList();
+        Marker marker = markerInfoWindow.getSelectedMarker();
+
         List<String> photoFileNames = database.getPhotos(marker.getId());
-        for (String photoFileName :photoFileNames) {
+        for (String photoFileName : photoFileNames) {
             File storageDir = context.getExternalFilesDir("GeoNotes");
             File image = new File(storageDir, photoFileName);
             markerInfoWindow.addPhoto(image);

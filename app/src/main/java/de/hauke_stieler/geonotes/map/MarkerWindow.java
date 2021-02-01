@@ -201,6 +201,10 @@ public class MarkerWindow extends InfoWindow {
     public void onClose() {
         this.selectedMarker = null;
 
+        resetImageList();
+    }
+
+    public void resetImageList() {
         LinearLayout photoLayout = getView().findViewById(R.id.note_image_pane);
         photoLayout.removeAllViews();
     }
