@@ -22,7 +22,7 @@ Runs on Android 4.1 and newer.
 
 ### Not in the scope of this app
 
-* Add notes on osm.org (use other apps like [StreetComplete]8https://github.com/streetcomplete/StreetComplete) for that)
+* Add notes on osm.org (use other apps like [StreetComplete](https://github.com/streetcomplete/StreetComplete) for that)
 
 ## Manual
 
