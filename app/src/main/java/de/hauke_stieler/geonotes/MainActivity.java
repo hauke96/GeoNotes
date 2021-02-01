@@ -8,7 +8,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -21,6 +24,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,8 +44,11 @@ import org.osmdroid.events.ZoomEvent;
 import org.osmdroid.views.MapView;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -50,6 +57,7 @@ import de.hauke_stieler.geonotes.map.Map;
 import de.hauke_stieler.geonotes.map.MarkerWindow;
 import de.hauke_stieler.geonotes.map.TouchDownListener;
 import de.hauke_stieler.geonotes.notes.Note;
+import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
 import de.hauke_stieler.geonotes.settings.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -287,6 +295,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void addPhotoToDatabase(Long noteId, File photoFile) {
         database.addPhoto(noteId, photoFile);
+
+        int sizeInPixel = getResources().getDimensionPixelSize(R.dimen.ImageButton);
+
+        try {
+            ThumbnailUtil.writeThumbnail(sizeInPixel, photoFile);
+        } catch (IOException e) {
+            Toast.makeText(getApplicationContext(), "Creating thumbnail failed", Toast.LENGTH_SHORT);
+        }
     }
 
     private void addPhotoToGallery(File photoFile) {

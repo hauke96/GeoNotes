@@ -38,6 +38,7 @@ import java.util.List;
 
 import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.notes.Note;
+import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
 
 import static android.content.ContentResolver.EXTRA_SIZE;
 
@@ -231,8 +232,7 @@ public class MarkerWindow extends InfoWindow {
         });
 
         // Get thumbnail that can be shown on image button
-        Bitmap bmp = BitmapFactory.decodeFile(photo.getAbsolutePath());
-        imageButton.setImageBitmap(ThumbnailUtils.extractThumbnail(bmp, sizeInPixel, sizeInPixel));
+        imageButton.setImageBitmap(ThumbnailUtil.loadThumbnail(photo));
 
         LinearLayout photoLayout = getView().findViewById(R.id.note_image_pane);
         photoLayout.addView(imageButton);
