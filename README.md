@@ -16,11 +16,13 @@ Runs on Android 4.1 and newer.
 
 ## Features
 
-* Create/remove notes
+* Create, move and delete notes
 * Attach photos to note
-* Move notes
-* Store/load notes
-* Show current location
+* Show and follow current location
+
+### Not in the scope of this app
+
+* Add notes on osm.org (use other apps like [StreetComplete]8https://github.com/streetcomplete/StreetComplete) for that)
 
 ## Manual
 
