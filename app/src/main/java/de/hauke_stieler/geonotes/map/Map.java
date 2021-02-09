@@ -15,6 +15,7 @@ import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.events.MapListener;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
@@ -44,6 +45,7 @@ public class Map {
     private Marker markerToMove;
 
     private MyLocationNewOverlay locationOverlay;
+    private GpsMyLocationProvider gpsLocationProvider;
     private CompassOverlay compassOverlay;
     private ScaleBarOverlay scaleBarOverlay;
 
@@ -90,7 +92,8 @@ public class Map {
 
     private void createOverlays(Context context, MapView map, BitmapDrawable locationIcon, BitmapDrawable arrowIcon) {
         // Add location icon
-        locationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(context), map);
+        gpsLocationProvider = new GpsMyLocationProvider(context);
+        locationOverlay = new MyLocationNewOverlay(gpsLocationProvider, map);
         locationOverlay.enableMyLocation();
         locationOverlay.setDirectionArrow(locationIcon.getBitmap(), arrowIcon.getBitmap());
         locationOverlay.setPersonHotspot(32, 32);
@@ -212,8 +215,32 @@ public class Map {
     private void initAndSelectMarker(GeoPoint location) {
         long id = database.addNote("", location.getLatitude(), location.getLongitude());
 
+        location = snapToGpsLocation(location);
+
         Marker newMarker = createMarker("" + id, "", location, markerClickListener);
         selectMarker(newMarker);
+    }
+
+    /**
+     * Tries to snap the location to the last known GPS of the distance on the screen is below 50dp.
+     *
+     * @return If distance <50dp then GPS location is returned, if not, the input is returned.
+     */
+    private GeoPoint snapToGpsLocation(GeoPoint location) {
+        GeoPoint gpsLocation = new GeoPoint(gpsLocationProvider.getLastKnownLocation());
+
+        Point markerLocationOnScreen = map.getProjection().toPixels(location, null);
+        Point gpsLocationOnScreen = map.getProjection().toPixels(gpsLocation, null);
+
+        int diffY = gpsLocationOnScreen.y - markerLocationOnScreen.y;
+        int diffX = gpsLocationOnScreen.x - markerLocationOnScreen.x;
+        double distanceOnScreen = Math.sqrt(diffY * diffY + diffX * diffX);
+
+        if (distanceOnScreen < 50) {
+            location = gpsLocation;
+        }
+
+        return location;
     }
 
     private void selectMarker(Marker marker) {
