@@ -104,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
         createMap(context);
 
         preferences = getSharedPreferences(getString(R.string.pref_file), MODE_PRIVATE);
-        preferences.registerOnSharedPreferenceChangeListener((sharedPreferences, key) -> preferenceChanged(sharedPreferences, key));
 
         loadPreferences();
     }
@@ -146,6 +145,9 @@ public class MainActivity extends AppCompatActivity {
         } else if (getString(R.string.pref_map_scaling).equals(key)) {
             float mapScale = pref.getFloat(key, 1.0f);
             map.setMapScaleFactor(mapScale);
+        } else if (getString(R.string.pref_snap_note_gps).equals(key)) {
+            boolean snapNoteToGps = pref.getBoolean(key, false);
+            map.setSnapNoteToGps(snapNoteToGps);
         }
     }
 
@@ -180,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+        loadPreferences();
         map.onResume();
     }
 
