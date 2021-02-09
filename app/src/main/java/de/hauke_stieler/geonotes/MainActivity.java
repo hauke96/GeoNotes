@@ -145,6 +145,9 @@ public class MainActivity extends AppCompatActivity {
         } else if (getString(R.string.pref_map_scaling).equals(key)) {
             float mapScale = pref.getFloat(key, 1.0f);
             map.setMapScaleFactor(mapScale);
+        } else if (getString(R.string.pref_snap_note_gps).equals(key)) {
+            boolean snapNoteToGps = pref.getBoolean(key, false);
+            map.setSnapNoteToGps(snapNoteToGps);
         }
     }
 

@@ -42,13 +42,16 @@ public class SettingsActivity extends AppCompatActivity {
 
         float prefMapScaling = preferences.getFloat(getString(R.string.pref_map_scaling), 1.0f);
         ((EditText) findViewById(R.id.settings_scale_input)).setText("" + prefMapScaling);
+
+        boolean prefSnapNoteGps = preferences.getBoolean(getString(R.string.pref_snap_note_gps), false);
+        ((Switch) findViewById(R.id.settings_snap_note_gps)).setChecked(prefSnapNoteGps);
     }
 
     private void save() {
         SharedPreferences.Editor editor = preferences.edit();
 
-        boolean checked = ((Switch) findViewById(R.id.settings_zoom_switch)).isChecked();
-        editor.putBoolean(getString(R.string.pref_zoom_buttons), checked);
+        boolean zoomSwitchChecked = ((Switch) findViewById(R.id.settings_zoom_switch)).isChecked();
+        editor.putBoolean(getString(R.string.pref_zoom_buttons), zoomSwitchChecked);
 
         String mapScaleString = ((EditText) findViewById(R.id.settings_scale_input)).getText().toString();
         float mapScale = 1.0f;
@@ -61,6 +64,10 @@ public class SettingsActivity extends AppCompatActivity {
             // Nothing to do, just don't crash because of wrong input
         }
         editor.putFloat(getString(R.string.pref_map_scaling), mapScale);
+
+        boolean gpsSnapSwitchChecked = ((Switch) findViewById(R.id.settings_snap_note_gps)).isChecked();
+        editor.putBoolean(getString(R.string.pref_snap_note_gps), gpsSnapSwitchChecked);
+
         editor.commit();
     }
 

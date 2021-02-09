@@ -55,6 +55,8 @@ public class Map {
 
     private Database database;
 
+    private boolean snapNoteToGps;
+
     public Map(Context context,
                MapView map,
                PowerManager.WakeLock wakeLock,
@@ -215,7 +217,9 @@ public class Map {
     private void initAndSelectMarker(GeoPoint location) {
         long id = database.addNote("", location.getLatitude(), location.getLongitude());
 
-        location = snapToGpsLocation(location);
+        if (snapNoteToGps) {
+            location = snapToGpsLocation(location);
+        }
 
         Marker newMarker = createMarker("" + id, "", location, markerClickListener);
         selectMarker(newMarker);
@@ -377,5 +381,9 @@ public class Map {
 
     public void addRequestPhotoHandler(MarkerWindow.RequestPhotoEventHandler requestPhotoEventHandler) {
         this.markerInfoWindow.addRequestPhotoHandler(requestPhotoEventHandler);
+    }
+
+    public void setSnapNoteToGps(boolean snapNoteToGps) {
+        this.snapNoteToGps = snapNoteToGps;
     }
 }
