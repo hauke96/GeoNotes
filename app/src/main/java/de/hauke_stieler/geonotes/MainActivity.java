@@ -104,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
         createMap(context);
 
         preferences = getSharedPreferences(getString(R.string.pref_file), MODE_PRIVATE);
-        preferences.registerOnSharedPreferenceChangeListener((sharedPreferences, key) -> preferenceChanged(sharedPreferences, key));
 
         loadPreferences();
     }
@@ -180,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+        loadPreferences();
         map.onResume();
     }
 
