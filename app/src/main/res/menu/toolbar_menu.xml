@@ -5,7 +5,7 @@
         android:id="@+id/toolbar_btn_gps_follow"
         android:icon="@drawable/ic_location_searching"
         app:showAsAction="ifRoom"
-        android:title="Settings">
+        android:title="GPS follow mode">
     </item>
     <item
         android:id="@+id/toolbar_btn_settings"
