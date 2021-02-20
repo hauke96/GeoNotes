@@ -64,6 +64,7 @@ import de.hauke_stieler.geonotes.settings.SettingsActivity;
 public class MainActivity extends AppCompatActivity {
 
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
+    private final int REQUEST_CAMERA_PERMISSIONS_REQUEST_CODE = 2;
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private Map map;
@@ -200,17 +201,10 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        requestPermissionsIfNecessary(permissions);
-    }
-
     private void requestPermissionsIfNecessary(String[] permissions) {
         ArrayList<String> permissionsToRequest = new ArrayList<>();
         for (String permission : permissions) {
-            if (ContextCompat.checkSelfPermission(this, permission)
-                    != PackageManager.PERMISSION_GRANTED) {
-                // Permission is not granted
+            if (!hasPermission(permission)) { // Permission is not granted
                 permissionsToRequest.add(permission);
             }
         }
@@ -252,27 +246,37 @@ public class MainActivity extends AppCompatActivity {
      * Adds a listener for the camera button. The camera action can only be performed from within an activity.
      */
     private void addCameraListener() {
-        // TODO check whether camera is available at all: hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
         MarkerWindow.RequestPhotoEventHandler requestPhotoEventHandler = (Long noteId) -> {
-            // TODO check if app has permissions
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            try {
-                // Create the File where the photo should go
-                lastPhotoFile = createImageFile();
-                lastPhotoNoteId = noteId;
+            if (!hasPermission(Manifest.permission.CAMERA) || !hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                // We don't have camera and/or storage permissions -> ask for them
+                ActivityCompat.requestPermissions(
+                        this,
+                        new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        REQUEST_CAMERA_PERMISSIONS_REQUEST_CODE);
+            } else {
+                // We do have all permissions -> take photo
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                try {
+                    // Create the File where the photo should go
+                    lastPhotoFile = createImageFile();
+                    lastPhotoNoteId = noteId;
 
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        getApplicationContext().getPackageName() + ".provider",
-                        lastPhotoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-            } catch (Exception e) {
-                Log.e("TakingPhoto", "Opening camera to take photo failed", e);
-                return;
+                    Uri photoURI = FileProvider.getUriForFile(this,
+                            getApplicationContext().getPackageName() + ".provider",
+                            lastPhotoFile);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                } catch (Exception e) {
+                    Log.e("TakingPhoto", "Opening camera to take photo failed", e);
+                }
             }
         };
 
         map.addRequestPhotoHandler(requestPhotoEventHandler);
+    }
+
+    private boolean hasPermission(String permission) {
+        return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED;
     }
 
     @Override
