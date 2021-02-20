@@ -38,6 +38,7 @@ import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
 public class Map {
     private final Context context;
     private MapView map;
+    private Drawable selectedWithPhotoIcon;
     private IMapController mapController;
     private MarkerWindow markerInfoWindow;
     private Marker.OnMarkerClickListener markerClickListener;
@@ -51,6 +52,7 @@ public class Map {
 
     private PowerManager.WakeLock wakeLock;
     private Drawable normalIcon;
+    private Drawable normalWithPhotoIcon;
     private Drawable selectedIcon;
 
     private Database database;
@@ -64,12 +66,17 @@ public class Map {
                Drawable locationIcon,
                Drawable arrowIcon,
                Drawable normalIcon,
-               Drawable selectedIcon) {
+               Drawable normalWithPhotoIcon,
+               Drawable selectedIcon,
+               Drawable selectedWithPhotoIcon) {
         this.context = context;
-        this.wakeLock = wakeLock;
-        this.normalIcon = normalIcon;
-        this.selectedIcon = selectedIcon;
         this.map = map;
+        this.wakeLock = wakeLock;
+        this.database = database;
+        this.normalIcon = normalIcon;
+        this.normalWithPhotoIcon = normalWithPhotoIcon;
+        this.selectedIcon = selectedIcon;
+        this.selectedWithPhotoIcon = selectedWithPhotoIcon;
 
         Configuration.getInstance().setUserAgentValue(context.getPackageName());
 
@@ -86,7 +93,6 @@ public class Map {
         createOverlays(context, map, (BitmapDrawable) locationIcon, (BitmapDrawable) arrowIcon);
         createMarkerWindow(map);
 
-        this.database = database;
         for (Note n : this.database.getAllNotes()) {
             Marker marker = createMarker("" + n.id, n.description, new GeoPoint(n.lat, n.lon), markerClickListener);
         }
@@ -284,11 +290,19 @@ public class Map {
     }
 
     private void setSelectedIcon(Marker marker) {
-        marker.setIcon(selectedIcon);
+        if(database.hasPhotos(marker.getId())){
+            marker.setIcon(selectedWithPhotoIcon);
+        }else {
+            marker.setIcon(selectedIcon);
+        }
     }
 
     private void setNormalIcon(Marker marker) {
-        marker.setIcon(normalIcon);
+        if(database.hasPhotos(marker.getId())){
+            marker.setIcon(normalWithPhotoIcon);
+        }else {
+            marker.setIcon(normalIcon);
+        }
     }
 
     public void setZoomButtonVisibility(boolean visible) {

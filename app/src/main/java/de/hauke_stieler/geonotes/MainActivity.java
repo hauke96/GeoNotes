@@ -116,11 +116,13 @@ public class MainActivity extends AppCompatActivity {
 
         Drawable locationIcon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_location, null);
         Drawable arrowIcon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_arrow, null);
-        Drawable selectedIcon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_note_selected, null);
         Drawable normalIcon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_note, null);
+        Drawable normalWithPhotoIcon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_note_photo, null);
+        Drawable selectedIcon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_note_selected, null);
+        Drawable selectedWithPhotoIcon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_note_photo_selected, null);
 
         MapView mapView = findViewById(R.id.map);
-        map = new Map(context, mapView, wakeLock, database, locationIcon, arrowIcon, normalIcon, selectedIcon);
+        map = new Map(context, mapView, wakeLock, database, locationIcon, arrowIcon, normalIcon, normalWithPhotoIcon, selectedIcon, selectedWithPhotoIcon);
 
         addMapListener();
         addCameraListener();
