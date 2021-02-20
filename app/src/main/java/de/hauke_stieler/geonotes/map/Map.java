@@ -287,6 +287,8 @@ public class Map {
             File image = new File(storageDir, photoFileName);
             markerInfoWindow.addPhoto(image);
         }
+
+        setSelectedIcon(marker);
     }
 
     private void setSelectedIcon(Marker marker) {
