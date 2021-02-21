@@ -38,7 +38,9 @@ import org.osmdroid.events.ZoomEvent;
 import org.osmdroid.views.MapView;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -164,9 +166,26 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return true;
             case R.id.toolbar_btn_export:
-                // TODO open export component
-//                startActivity(new Intent(this, SettingsActivity.class));
-                Log.i("GEOJSON", GeoJson.toGeoJson(database.getAllNotes()));
+                String geoJson = GeoJson.toGeoJson(database.getAllNotes());
+
+                try {
+                    File storageDir = getExternalFilesDir("GeoNotes");
+                    File exportFile = new File(storageDir, "geonotes-export.geojson");
+                    OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(exportFile));
+                    outputStreamWriter.write(geoJson);
+                    outputStreamWriter.close();
+
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_STREAM, getFileUri(exportFile));
+                    sendIntent.setType("application/json");
+
+                    Intent shareIntent = Intent.createChooser(sendIntent, null);
+                    startActivity(shareIntent);
+                } catch (IOException e) {
+                    Log.e("Export", "File write failed: " + e.toString());
+                }
+
                 return true;
             case R.id.toolbar_btn_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
@@ -255,9 +274,7 @@ public class MainActivity extends AppCompatActivity {
                     lastPhotoFile = createImageFile();
                     lastPhotoNoteId = noteId;
 
-                    Uri photoURI = FileProvider.getUriForFile(this,
-                            getApplicationContext().getPackageName() + ".provider",
-                            lastPhotoFile);
+                    Uri photoURI = getFileUri(MainActivity.lastPhotoFile);
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                     startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
                 } catch (Exception e) {
@@ -267,6 +284,12 @@ public class MainActivity extends AppCompatActivity {
         };
 
         map.addRequestPhotoHandler(requestPhotoEventHandler);
+    }
+
+    private Uri getFileUri(File lastPhotoFile) {
+        return FileProvider.getUriForFile(this,
+                getApplicationContext().getPackageName() + ".provider",
+                lastPhotoFile);
     }
 
     private boolean hasPermission(String permission) {
