@@ -163,10 +163,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.toolbar_btn_settings:
-                Intent intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
-                return true;
             case R.id.toolbar_btn_gps_follow:
                 boolean followingLocationEnabled = !map.isFollowLocationEnabled();
                 this.map.setLocationFollowMode(followingLocationEnabled);
@@ -176,6 +172,13 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     item.setIcon(R.drawable.ic_location_searching);
                 }
+                return true;
+            case R.id.toolbar_btn_export:
+                // TODO open export component
+//                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+            case R.id.toolbar_btn_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

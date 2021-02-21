@@ -8,6 +8,12 @@
         android:title="GPS follow mode">
     </item>
     <item
+        android:id="@+id/toolbar_btn_export"
+        android:icon="@drawable/ic_export"
+        app:showAsAction="ifRoom"
+        android:title="Export">
+    </item>
+    <item
         android:id="@+id/toolbar_btn_settings"
         android:icon="@drawable/ic_settings"
         app:showAsAction="ifRoom"

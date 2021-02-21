@@ -6,7 +6,6 @@
     </style>
     <style name="ToolbarTheme">
         <item name="colorControlNormal">@color/white</item>
-        <item name="android:textColorPrimary">@color/white</item>
     </style>
     <dimen name="ImageButton">64dp</dimen>
     <dimen name="ImageButtonPadding">10dp</dimen>
