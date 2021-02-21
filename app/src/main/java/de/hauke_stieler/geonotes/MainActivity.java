@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import de.hauke_stieler.geonotes.database.Database;
+import de.hauke_stieler.geonotes.export.GeoJson;
 import de.hauke_stieler.geonotes.map.Map;
 import de.hauke_stieler.geonotes.map.MarkerWindow;
 import de.hauke_stieler.geonotes.map.TouchDownListener;
@@ -165,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.toolbar_btn_export:
                 // TODO open export component
 //                startActivity(new Intent(this, SettingsActivity.class));
+                Log.i("GEOJSON", GeoJson.toGeoJson(database.getAllNotes()));
                 return true;
             case R.id.toolbar_btn_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
