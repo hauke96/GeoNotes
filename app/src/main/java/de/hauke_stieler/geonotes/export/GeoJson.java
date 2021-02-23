@@ -6,9 +6,24 @@ import java.util.Locale;
 import de.hauke_stieler.geonotes.notes.Note;
 
 public class GeoJson {
-    private static final String GEOJSON_HEAD = "{\"type\": \"FeatureCollection\",\"features\": [";
-    private static final String GEOJSON_FEATURE = "{\"type\": \"Feature\", \"properties\": { \"geonotes:id\": \"%d\", \"geonotes:note\": \"%s\" }, \"geometry\": { \"type\": \"Point\", \"coordinates\": [ %f, %f ] } }";
-    private static final String GEOJSON_FOOT = "] }";
+    private static final String GEOJSON_HEAD = "{\n" +
+            "\t\"type\": \"FeatureCollection\",\n" +
+            "\t\"features\": [";
+    private static final String GEOJSON_FEATURE = "\n\t\t{\n" +
+            "\t\t\t\"type\": \"Feature\",\n" +
+            "\t\t\t\"properties\": {\n" +
+            "\t\t\t\t\"geonotes:id\": \"%d\",\n" +
+            "\t\t\t\t\"geonotes:note\": \"%s\"\n" +
+            "\t\t\t},\n" +
+            "\t\t\t\"geometry\": {\n" +
+            "\t\t\t\t\"type\": \"Point\",\n" +
+            "\t\t\t\t\"coordinates\": [\n" +
+            "\t\t\t\t\t%f,\n" +
+            "\t\t\t\t\t%f\n" +
+            "\t\t\t\t]\n" +
+            "\t\t\t}\n" +
+            "\t\t}";
+    private static final String GEOJSON_FOOT = "]\n}";
 
     public static String toGeoJson(List<Note> notes) {
         StringBuilder result = new StringBuilder();
@@ -20,7 +35,9 @@ public class GeoJson {
 
             boolean isLastElement = i == notes.size() - 1;
             if (!isLastElement) {
-                result.append(", ");
+                result.append(",");
+            }else{
+                result.append("\n\t");
             }
         }
 
