@@ -45,7 +45,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import de.hauke_stieler.geonotes.common.FileHelper;
 import de.hauke_stieler.geonotes.database.Database;
+import de.hauke_stieler.geonotes.export.Exporter;
 import de.hauke_stieler.geonotes.export.GeoJson;
 import de.hauke_stieler.geonotes.map.Map;
 import de.hauke_stieler.geonotes.map.MarkerWindow;
@@ -62,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private Map map;
     private SharedPreferences preferences;
     private Database database;
+    private Exporter exporter;
 
     // These fields exist to remember the photo data when the photo Intent is started. This is
     // because the Intent doesn't return anything and works asynchronously. In the result handler
@@ -99,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
         preferences = getSharedPreferences(getString(R.string.pref_file), MODE_PRIVATE);
 
         loadPreferences();
+
+        exporter = new Exporter(database, this);
     }
 
     private void createMap(Context context) {
@@ -166,26 +171,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return true;
             case R.id.toolbar_btn_export:
-                String geoJson = GeoJson.toGeoJson(database.getAllNotes());
-
-                try {
-                    File storageDir = getExternalFilesDir("GeoNotes");
-                    File exportFile = new File(storageDir, "geonotes-export.geojson");
-                    OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(exportFile));
-                    outputStreamWriter.write(geoJson);
-                    outputStreamWriter.close();
-
-                    Intent sendIntent = new Intent();
-                    sendIntent.setAction(Intent.ACTION_SEND);
-                    sendIntent.putExtra(Intent.EXTRA_STREAM, getFileUri(exportFile));
-                    sendIntent.setType("application/json");
-
-                    Intent shareIntent = Intent.createChooser(sendIntent, null);
-                    startActivity(shareIntent);
-                } catch (IOException e) {
-                    Log.e("Export", "File write failed: " + e.toString());
-                }
-
+                exporter.export();
                 return true;
             case R.id.toolbar_btn_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
@@ -274,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
                     lastPhotoFile = createImageFile();
                     lastPhotoNoteId = noteId;
 
-                    Uri photoURI = getFileUri(MainActivity.lastPhotoFile);
+                    Uri photoURI = FileHelper.getFileUri(this, MainActivity.lastPhotoFile);
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                     startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
                 } catch (Exception e) {
@@ -284,12 +270,6 @@ public class MainActivity extends AppCompatActivity {
         };
 
         map.addRequestPhotoHandler(requestPhotoEventHandler);
-    }
-
-    private Uri getFileUri(File lastPhotoFile) {
-        return FileProvider.getUriForFile(this,
-                getApplicationContext().getPackageName() + ".provider",
-                lastPhotoFile);
     }
 
     private boolean hasPermission(String permission) {
