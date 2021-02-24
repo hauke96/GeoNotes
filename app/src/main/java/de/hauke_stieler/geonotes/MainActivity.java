@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -95,7 +96,8 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.CAMERA
         });
 
-        database = new Database(context);
+        Injector.registerContext(context);
+        database = Injector.get(Database.class);
 
         createMap(context);
 
@@ -103,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
         loadPreferences();
 
-        exporter = new Exporter(database, this);
+        exporter = Injector.get(Exporter.class);
     }
 
     private void createMap(Context context) {

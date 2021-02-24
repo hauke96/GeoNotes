@@ -14,7 +14,7 @@ import de.hauke_stieler.geonotes.database.Database;
 
 public class Exporter {
     private final Database database;
-    private Context context;
+    private final Context context;
 
     public Exporter(Database database, Context context){
         this.database = database;
