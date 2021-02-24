@@ -9,6 +9,8 @@ import android.os.PowerManager;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 
+import androidx.core.content.res.ResourcesCompat;
+
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -35,46 +37,43 @@ import de.hauke_stieler.geonotes.notes.Note;
 
 public class Map {
     private final Context context;
-    private MapView map;
-    private Drawable selectedWithPhotoIcon;
-    private IMapController mapController;
-    private MarkerWindow markerInfoWindow;
-    private Marker.OnMarkerClickListener markerClickListener;
+    private final PowerManager.WakeLock wakeLock;
+    private final Database database;
 
-    private Marker markerToMove;
-
+    private final MapView map;
+    private final IMapController mapController;
     private MyLocationNewOverlay locationOverlay;
     private GpsMyLocationProvider gpsLocationProvider;
-    private CompassOverlay compassOverlay;
-    private ScaleBarOverlay scaleBarOverlay;
 
-    private PowerManager.WakeLock wakeLock;
-    private Drawable normalIcon;
-    private Drawable normalWithPhotoIcon;
-    private Drawable selectedIcon;
+    private MarkerWindow markerInfoWindow;
+    private Marker.OnMarkerClickListener markerClickListener;
+    private Marker markerToMove;
 
-    private Database database;
+    private final Drawable normalIcon;
+    private final Drawable normalWithPhotoIcon;
+    private final Drawable selectedIcon;
+    private final Drawable selectedWithPhotoIcon;
 
     private boolean snapNoteToGps;
 
     public Map(Context context,
                MapView map,
-               PowerManager.WakeLock wakeLock,
-               Database database,
-               Drawable locationIcon,
-               Drawable arrowIcon,
-               Drawable normalIcon,
-               Drawable normalWithPhotoIcon,
-               Drawable selectedIcon,
-               Drawable selectedWithPhotoIcon) {
+               Database database) {
         this.context = context;
         this.map = map;
-        this.wakeLock = wakeLock;
         this.database = database;
-        this.normalIcon = normalIcon;
-        this.normalWithPhotoIcon = normalWithPhotoIcon;
-        this.selectedIcon = selectedIcon;
-        this.selectedWithPhotoIcon = selectedWithPhotoIcon;
+
+        // Keep device on
+        final PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "geonotes:wakelock");
+        wakeLock.acquire();
+
+        Drawable locationIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_location, null);
+        Drawable arrowIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_arrow, null);
+        normalIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_note, null);
+        normalWithPhotoIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_note_photo, null);
+        selectedIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_note_selected, null);
+        selectedWithPhotoIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_note_photo_selected, null);
 
         Configuration.getInstance().setUserAgentValue(context.getPackageName());
 
@@ -106,16 +105,16 @@ public class Map {
         map.getOverlays().add(this.locationOverlay);
 
         // Add compass
-        compassOverlay = new CompassOverlay(context, new InternalCompassOrientationProvider(context), map);
+        CompassOverlay compassOverlay = new CompassOverlay(context, new InternalCompassOrientationProvider(context), map);
         compassOverlay.enableCompass();
-        map.getOverlays().add(this.compassOverlay);
+        map.getOverlays().add(compassOverlay);
 
         // Add scale bar
         final DisplayMetrics dm = context.getResources().getDisplayMetrics();
-        scaleBarOverlay = new ScaleBarOverlay(map);
+        ScaleBarOverlay scaleBarOverlay = new ScaleBarOverlay(map);
         scaleBarOverlay.setCentred(true);
         scaleBarOverlay.setScaleBarOffset(dm.widthPixels / 2, 20);
-        map.getOverlays().add(this.scaleBarOverlay);
+        map.getOverlays().add(scaleBarOverlay);
 
         // Add marker click listener. Will be called when the user clicks/taps on a marker.
         markerClickListener = (marker, mapView) -> {

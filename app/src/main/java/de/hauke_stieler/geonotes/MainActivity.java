@@ -109,20 +109,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createMap(Context context) {
-        // Keep device on
-        final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "geonotes:wakelock");
-        wakeLock.acquire();
-
-        Drawable locationIcon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_location, null);
-        Drawable arrowIcon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_arrow, null);
-        Drawable normalIcon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_note, null);
-        Drawable normalWithPhotoIcon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_note_photo, null);
-        Drawable selectedIcon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_note_selected, null);
-        Drawable selectedWithPhotoIcon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_note_photo_selected, null);
-
         MapView mapView = findViewById(R.id.map);
-        map = new Map(context, mapView, wakeLock, database, locationIcon, arrowIcon, normalIcon, normalWithPhotoIcon, selectedIcon, selectedWithPhotoIcon);
+        map = new Map(context, mapView, database);
 
         addMapListener();
         addCameraListener();
