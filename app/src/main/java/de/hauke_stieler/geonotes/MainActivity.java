@@ -78,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Injector.registerActivity(this);
+
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -96,27 +98,22 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.CAMERA
         });
 
-        Injector.registerContext(context);
         database = Injector.get(Database.class);
-
-        createMap(context);
-
-        preferences = getSharedPreferences(getString(R.string.pref_file), MODE_PRIVATE);
-
-        loadPreferences();
-
+        preferences = Injector.get(SharedPreferences.class);
         exporter = Injector.get(Exporter.class);
+
+        createMap();
+        loadPreferences();
     }
 
-    private void createMap(Context context) {
-        MapView mapView = findViewById(R.id.map);
-        map = new Map(context, mapView, database);
+    private void createMap() {
+        map = Injector.get(Map.class);
 
         addMapListener();
         addCameraListener();
     }
 
-    private void loadPreferences() {
+    void loadPreferences() {
         for (String key : preferences.getAll().keySet()) {
             preferenceChanged(preferences, key);
         }

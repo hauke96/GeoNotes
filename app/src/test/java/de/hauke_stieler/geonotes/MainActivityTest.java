@@ -1,5 +1,6 @@
 package de.hauke_stieler.geonotes;
 
+import android.content.SharedPreferences;
 import android.view.MenuItem;
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.export.Exporter;
+import de.hauke_stieler.geonotes.map.Map;
 import de.hauke_stieler.geonotes.notes.Note;
 
 public class MainActivityTest extends GeoNotesTest {
@@ -23,11 +25,15 @@ public class MainActivityTest extends GeoNotesTest {
 
     private Database databaseMock;
     private Exporter exporterMock;
+    private SharedPreferences sharedPreferencesMock;
+    private Map mapMock;
 
     @Before
     public void setup() {
         databaseMock = get(Database.class);
         exporterMock = get(Exporter.class);
+        sharedPreferencesMock = get(SharedPreferences.class);
+        mapMock = get(Map.class);
     }
 
     @Test
@@ -43,6 +49,20 @@ public class MainActivityTest extends GeoNotesTest {
 
         // Assert
         Mockito.verify(exporterMock).export();
+    }
+
+    @Test
+    public void testloadPreferences_setsLocation() {
+        // Arrange
+        Mockito.when(sharedPreferencesMock.getFloat("PREF_LAST_LOCATION_LAT", 0f)).thenReturn(1.23f);
+        Mockito.when(sharedPreferencesMock.getFloat("PREF_LAST_LOCATION_LON", 0f)).thenReturn(4.56f);
+        Mockito.when(sharedPreferencesMock.getFloat("PREF_LAST_LOCATION_ZOOM", 2)).thenReturn(7f);
+
+        // Act
+        rule.getScenario().onActivity(activity -> activity.loadPreferences());
+
+        // Assert
+        Mockito.verify(mapMock).setLocation(1.23f, 4.56f, 7f);
     }
 
     private MenuItem getMenuItem(int id) {

@@ -1,12 +1,21 @@
 package de.hauke_stieler.geonotes;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ComponentActivity;
+
+import org.osmdroid.views.MapView;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.export.Exporter;
+
+import static android.content.Context.MODE_PRIVATE;
 
 interface ClassBuilder<T> {
     T build();
@@ -21,14 +30,18 @@ public class Injector {
     protected static Map<Class, Object> classes = new HashMap<>();
     private static Map<Class, ClassBuilder> classBuilders = new HashMap<>();
     private static Context context;
+    private static Activity activity;
 
     static {
         classBuilders.put(Database.class, () -> buildDatabase());
         classBuilders.put(Exporter.class, () -> buildExporter());
+        classBuilders.put(SharedPreferences.class, () -> buildSharedPreferences());
+        classBuilders.put(de.hauke_stieler.geonotes.map.Map.class, () -> buildMap());
     }
 
-    public static void registerContext(Context newContext) {
-        context = newContext;
+    public static void registerActivity(Activity newActivity) {
+        activity = newActivity;
+        context = activity.getApplicationContext();
     }
 
     public static <T> T get(Class<T> clazz) {
@@ -48,5 +61,14 @@ public class Injector {
 
     private static Exporter buildExporter() {
         return new Exporter(get(Database.class), context);
+    }
+
+    private static SharedPreferences buildSharedPreferences() {
+        return context.getSharedPreferences(context.getString(R.string.pref_file), MODE_PRIVATE);
+    }
+
+    private static de.hauke_stieler.geonotes.map.Map buildMap() {
+        MapView mapView = activity.findViewById(R.id.map);
+        return new de.hauke_stieler.geonotes.map.Map(context, mapView, get(Database.class));
     }
 }
