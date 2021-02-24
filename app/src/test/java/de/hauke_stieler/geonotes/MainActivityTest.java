@@ -1,14 +1,21 @@
 package de.hauke_stieler.geonotes;
 
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.view.MenuItem;
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.osmdroid.events.DelayedMapListener;
+import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,12 +23,19 @@ import java.util.List;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.export.Exporter;
 import de.hauke_stieler.geonotes.map.Map;
+import de.hauke_stieler.geonotes.map.MarkerWindow;
+import de.hauke_stieler.geonotes.map.TouchDownListener;
 import de.hauke_stieler.geonotes.notes.Note;
 
-public class MainActivityTest extends GeoNotesTest {
+@RunWith(AndroidJUnit4.class)
+@Config(maxSdk = Build.VERSION_CODES.P, minSdk = Build.VERSION_CODES.P) // Value of Build.VERSION_CODES.P is 28
+public class MainActivityTest {
+
+    public ActivityScenarioRule<MainActivity> activityRule;
+    public GeoNotesTestRule testRule;
 
     @Rule
-    public ActivityScenarioRule<MainActivity> rule = new ActivityScenarioRule(MainActivity.class);
+    public TestRule chain = RuleChain.outerRule(testRule = new GeoNotesTestRule()).around(activityRule = new ActivityScenarioRule(MainActivity.class));
 
     private Database databaseMock;
     private Exporter exporterMock;
@@ -30,14 +44,14 @@ public class MainActivityTest extends GeoNotesTest {
 
     @Before
     public void setup() {
-        databaseMock = get(Database.class);
-        exporterMock = get(Exporter.class);
-        sharedPreferencesMock = get(SharedPreferences.class);
-        mapMock = get(Map.class);
+        databaseMock = testRule.get(Database.class);
+        exporterMock = testRule.get(Exporter.class);
+        sharedPreferencesMock = testRule.get(SharedPreferences.class);
+        mapMock = testRule.get(Map.class);
     }
 
     @Test
-    public void testOptionItemSelected_Export_CallsExporter() {
+    public void testOptionItemSelected_export_callsExporter() {
         // Arrange
         List<Note> notes = new ArrayList<>();
         notes.add(new Note(1, "foo", 1.23f, 4.56f));
@@ -45,7 +59,7 @@ public class MainActivityTest extends GeoNotesTest {
         Mockito.when(databaseMock.getAllNotes()).thenReturn(notes);
 
         // Act
-        rule.getScenario().onActivity(activity -> activity.onOptionsItemSelected(getMenuItem(R.id.toolbar_btn_export)));
+        activityRule.getScenario().onActivity(activity -> activity.onOptionsItemSelected(getMenuItem(R.id.toolbar_btn_export)));
 
         // Assert
         Mockito.verify(exporterMock).export();
@@ -59,10 +73,27 @@ public class MainActivityTest extends GeoNotesTest {
         Mockito.when(sharedPreferencesMock.getFloat("PREF_LAST_LOCATION_ZOOM", 2)).thenReturn(7f);
 
         // Act
-        rule.getScenario().onActivity(activity -> activity.loadPreferences());
+        activityRule.getScenario().onActivity(activity -> activity.loadPreferences());
 
         // Assert
         Mockito.verify(mapMock).setLocation(1.23f, 4.56f, 7f);
+    }
+
+    @Test
+    public void testloadPreferences_setsMapListener() {
+        // Act
+
+        // Assert
+        Mockito.verify(mapMock).addMapListener(Mockito.any(DelayedMapListener.class), Mockito.any(TouchDownListener.class));
+    }
+
+    @Test
+    public void testloadPreferences_setsPhotoListener() {
+        // Act
+//        rule.getScenario().onActivity(activity -> activity.loadPreferences());
+
+        // Assert
+        Mockito.verify(mapMock).addRequestPhotoHandler(Mockito.any(MarkerWindow.RequestPhotoEventHandler.class));
     }
 
     private MenuItem getMenuItem(int id) {
