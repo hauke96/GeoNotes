@@ -37,6 +37,7 @@ public class Exporter {
             sendIntent.setType("application/json");
 
             Intent shareIntent = Intent.createChooser(sendIntent, null);
+            shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // needed because we're outside of an activity
             context.startActivity(shareIntent);
         } catch (IOException e) {
             Log.e("Export", "File write failed: " + e.toString());
