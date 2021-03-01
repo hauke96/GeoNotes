@@ -33,7 +33,7 @@ public class NoteStore {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < 5) {
             // Version 5: Column "created_at" added
-            db.execSQL(String.format("ALTER TABLE %s ADD COLUMN %s VARCHAR NOT NULL", NOTES_TABLE_NAME, NOTES_COL_CREATED_AT));
+            db.execSQL(String.format("ALTER TABLE %s ADD COLUMN %s VARCHAR NOT NULL DEFAULT '%s'", NOTES_TABLE_NAME, NOTES_COL_CREATED_AT, Note.getDateTimeString(GregorianCalendar.getInstance())));
         }
 
         Log.i("NoteStore", String.format("onUpgrade: from version %d to version %d", oldVersion, newVersion));

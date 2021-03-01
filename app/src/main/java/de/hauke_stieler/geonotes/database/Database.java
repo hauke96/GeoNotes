@@ -15,7 +15,7 @@ import de.hauke_stieler.geonotes.photo.PhotoStore;
 import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
 
 public class Database extends SQLiteOpenHelper {
-    private static final int DB_VERSION = 4;
+    private static final int DB_VERSION = 5;
     private static final String DB_NAME = "geonotes";
 
     private final NoteStore noteStore;
