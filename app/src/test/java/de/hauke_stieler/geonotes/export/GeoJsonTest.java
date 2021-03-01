@@ -30,7 +30,7 @@ public class GeoJsonTest {
     public void testSingleNote() {
         // Arrange
         List<Note> notes = new ArrayList<>();
-        notes.add(new Note(1, "foo", 1.23f, 4.56f));
+        notes.add(new Note(1, "foo", 1.23f, 4.56f, "2021-03-01 12:34:56")); // TODO creation-date in result
 
         String expectedResult="{\n" +
                 "\t\"type\": \"FeatureCollection\",\n" +
@@ -63,8 +63,8 @@ public class GeoJsonTest {
     public void testMultipleNotes() {
         // Arrange
         List<Note> notes = new ArrayList<>();
-        notes.add(new Note(1, "foo", 1.23f, 4.56f));
-        notes.add(new Note(2, "bar", 2.34f, 5.67f));
+        notes.add(new Note(1, "foo", 1.23f, 4.56f, "2021-03-01 12:34:56")); // TODO creation-date in result
+        notes.add(new Note(2, "bar", 2.34f, 5.67f, "2010-12-21 01:23:45")); // TODO creation-date in result
 
         String expectedResult="{\n" +
                 "\t\"type\": \"FeatureCollection\",\n" +

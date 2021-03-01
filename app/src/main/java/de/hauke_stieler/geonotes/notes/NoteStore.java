@@ -30,7 +30,7 @@ public class NoteStore {
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if(oldVersion < 5) {
+        if (oldVersion < 5) {
             // Version 5: Column "created_at" added
             db.execSQL(String.format("ALTER TABLE %s ADD COLUMN %s VARCHAR NOT NULL", NOTES_TABLE_NAME, NOTES_COL_CREATED_AT));
         }
@@ -43,6 +43,7 @@ public class NoteStore {
         values.put(NOTES_COL_LAT, lat);
         values.put(NOTES_COL_LON, lon);
         values.put(NOTES_COL_DESCRIPTION, description);
+        // TODO creation-date
 
         return db.insert(NOTES_TABLE_NAME, null, values);
     }
@@ -69,7 +70,7 @@ public class NoteStore {
     }
 
     public List<Note> getAllNotes(SQLiteDatabase db) {
-        Cursor cursor = db.query(NOTES_TABLE_NAME, new String[]{NOTES_COL_ID, NOTES_COL_DESCRIPTION, NOTES_COL_LAT, NOTES_COL_LON}, null, null, null, null, null);
+        Cursor cursor = db.query(NOTES_TABLE_NAME, new String[]{NOTES_COL_ID, NOTES_COL_DESCRIPTION, NOTES_COL_LAT, NOTES_COL_LON, NOTES_COL_CREATED_AT}, null, null, null, null, null);
 
         List<Note> notes = new ArrayList<>();
         if (cursor.moveToFirst()) {
@@ -82,12 +83,12 @@ public class NoteStore {
     }
 
     public Note getNote(SQLiteDatabase db, String noteId) {
-        Cursor cursor = db.query(NOTES_TABLE_NAME, new String[]{NOTES_COL_ID, NOTES_COL_DESCRIPTION, NOTES_COL_LAT, NOTES_COL_LON}, NOTES_COL_ID + "=?", new String[]{noteId}, null, null, null);
+        Cursor cursor = db.query(NOTES_TABLE_NAME, new String[]{NOTES_COL_ID, NOTES_COL_DESCRIPTION, NOTES_COL_LAT, NOTES_COL_LON, NOTES_COL_CREATED_AT}, NOTES_COL_ID + "=?", new String[]{noteId}, null, null, null);
         cursor.moveToFirst();
         return getNoteFromCursor(cursor);
     }
 
     private Note getNoteFromCursor(Cursor cursor) {
-        return new Note(cursor.getLong(0), cursor.getString(1), cursor.getDouble(2), cursor.getDouble(3));
+        return new Note(cursor.getLong(0), cursor.getString(1), cursor.getDouble(2), cursor.getDouble(3), cursor.getString(4));
     }
 }

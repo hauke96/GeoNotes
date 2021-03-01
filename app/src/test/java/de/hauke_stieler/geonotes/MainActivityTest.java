@@ -54,8 +54,8 @@ public class MainActivityTest {
     public void testOptionItemSelected_export_callsExporter() {
         // Arrange
         List<Note> notes = new ArrayList<>();
-        notes.add(new Note(1, "foo", 1.23f, 4.56f));
-        notes.add(new Note(2, "bar", 2.34f, 5.67f));
+        notes.add(new Note(1, "foo", 1.23f, 4.56f, "2021-03-01 12:34:56"));
+        notes.add(new Note(2, "bar", 2.34f, 5.67f, "2021-03-02 11:11:11"));
         Mockito.when(databaseMock.getAllNotes()).thenReturn(notes);
 
         // Act

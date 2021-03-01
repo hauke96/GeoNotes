@@ -13,13 +13,14 @@ public class Note {
     private final String description;
     private final double lat;
     private final double lon;
-    private final String creationDateTime = "2021-03-01 12:34:56";
+    private final String creationDateTime;
 
-    public Note(long id, String description, double lat, double lon) {
+    public Note(long id, String description, double lat, double lon, String creationDateTime) {
         this.id = id;
         this.description = description;
         this.lat = lat;
         this.lon = lon;
+        this.creationDateTime = creationDateTime;
     }
 
     public long getId() {
