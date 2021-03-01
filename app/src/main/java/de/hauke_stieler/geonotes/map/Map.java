@@ -91,7 +91,7 @@ public class Map {
         createMarkerWindow(map);
 
         for (Note n : this.database.getAllNotes()) {
-            Marker marker = createMarker("" + n.id, n.description, new GeoPoint(n.lat, n.lon), markerClickListener);
+            Marker marker = createMarker("" + n.getId(), n.getDescription(), new GeoPoint(n.getLat(), n.getLon()), markerClickListener);
         }
     }
 

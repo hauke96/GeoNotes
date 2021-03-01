@@ -31,7 +31,7 @@ public class GeoJson {
 
         for (int i = 0; i < notes.size(); i++) {
             Note note = notes.get(i);
-            result.append(String.format(Locale.US, GEOJSON_FEATURE, note.id, note.description, note.lon, note.lat));
+            result.append(String.format(Locale.US, GEOJSON_FEATURE, note.getId(), note.getDescription(), note.getLon(), note.getLat()));
 
             boolean isLastElement = i == notes.size() - 1;
             if (!isLastElement) {

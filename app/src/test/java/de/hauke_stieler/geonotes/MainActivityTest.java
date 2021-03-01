@@ -81,18 +81,13 @@ public class MainActivityTest {
 
     @Test
     public void testloadPreferences_setsMapListener() {
-        // Act
-
-        // Assert
+        // Act & Assert
         Mockito.verify(mapMock).addMapListener(Mockito.any(DelayedMapListener.class), Mockito.any(TouchDownListener.class));
     }
 
     @Test
     public void testloadPreferences_setsPhotoListener() {
-        // Act
-//        rule.getScenario().onActivity(activity -> activity.loadPreferences());
-
-        // Assert
+        // Act & Assert
         Mockito.verify(mapMock).addRequestPhotoHandler(Mockito.any(MarkerWindow.RequestPhotoEventHandler.class));
     }
 
