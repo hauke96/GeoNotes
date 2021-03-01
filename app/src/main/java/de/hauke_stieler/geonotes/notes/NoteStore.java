@@ -8,6 +8,7 @@ import android.util.Log;
 import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 
@@ -43,7 +44,7 @@ public class NoteStore {
         values.put(NOTES_COL_LAT, lat);
         values.put(NOTES_COL_LON, lon);
         values.put(NOTES_COL_DESCRIPTION, description);
-        // TODO creation-date
+        values.put(NOTES_COL_CREATED_AT, Note.getDateTimeString(GregorianCalendar.getInstance()));
 
         return db.insert(NOTES_TABLE_NAME, null, values);
     }
