@@ -13,7 +13,7 @@ public class Note {
     private final String description;
     private final double lat;
     private final double lon;
-    private final String utcCreationDateTime = "2021-03-01 12:34:56";
+    private final String creationDateTime = "2021-03-01 12:34:56";
 
     public Note(long id, String description, double lat, double lon) {
         this.id = id;
@@ -39,7 +39,7 @@ public class Note {
     }
 
     public Calendar getCreationDateTime() throws ParseException {
-        long time = new SimpleDateFormat(DATE_TIME_FORMAT, Locale.getDefault()).parse(utcCreationDateTime).getTime();
+        long time = new SimpleDateFormat(DATE_TIME_FORMAT, Locale.getDefault()).parse(creationDateTime).getTime();
 
         GregorianCalendar calendar = new GregorianCalendar(Locale.getDefault());
         calendar.setTimeInMillis(time);

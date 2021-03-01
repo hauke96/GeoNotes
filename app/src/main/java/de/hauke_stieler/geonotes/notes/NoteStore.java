@@ -1,7 +1,6 @@
 package de.hauke_stieler.geonotes.notes;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -18,17 +17,24 @@ public class NoteStore {
     private static final String NOTES_COL_LAT = "lat";
     private static final String NOTES_COL_LON = "lon";
     private static final String NOTES_COL_DESCRIPTION = "description";
+    private static final String NOTES_COL_CREATED_AT = "created_at";
 
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s(%s INTEGER PRIMARY KEY, %s DOUBLE NOT NULL, %s DOUBLE NOT NULL, %s VARCHAR NOT NULL);",
+        db.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s(%s INTEGER PRIMARY KEY, %s DOUBLE NOT NULL, %s DOUBLE NOT NULL, %s VARCHAR NOT NULL, %s VARCHAR NOT NULL);",
                 NOTES_TABLE_NAME,
                 NOTES_COL_ID,
                 NOTES_COL_LAT,
                 NOTES_COL_LON,
-                NOTES_COL_DESCRIPTION));
+                NOTES_COL_DESCRIPTION,
+                NOTES_COL_CREATED_AT));
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if(oldVersion < 5) {
+            // Version 5: Column "created_at" added
+            db.execSQL(String.format("ALTER TABLE %s ADD COLUMN %s VARCHAR NOT NULL", NOTES_TABLE_NAME, NOTES_COL_CREATED_AT));
+        }
+
         Log.i("NoteStore", String.format("onUpgrade: from version %d to version %d", oldVersion, newVersion));
     }
 
