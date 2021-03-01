@@ -13,6 +13,7 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextWatcher;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.util.Size;
 import android.view.MotionEvent;
@@ -34,9 +35,12 @@ import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.infowindow.InfoWindow;
 
 import java.io.File;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import de.hauke_stieler.geonotes.R;
+import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.notes.Note;
 import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
 
@@ -57,6 +61,7 @@ public class MarkerWindow extends InfoWindow {
         void onRequestPhoto(Long noteId);
     }
 
+    private Database database;
     private MarkerEventHandler markerEventHandler;
 
     private Marker selectedMarker;
@@ -66,7 +71,8 @@ public class MarkerWindow extends InfoWindow {
      */
     public static final int UNDEFINED_RES_ID = 0;
 
-    static int mTitleId = UNDEFINED_RES_ID,
+    static int mCreationDateLabelId = UNDEFINED_RES_ID,
+            mTitleId = UNDEFINED_RES_ID,
             mDescriptionId = UNDEFINED_RES_ID,
             mDeleteButtonId = UNDEFINED_RES_ID,
             mSaveButtonId = UNDEFINED_RES_ID,
@@ -75,9 +81,10 @@ public class MarkerWindow extends InfoWindow {
             mSubDescriptionId = UNDEFINED_RES_ID,
             mImageId = UNDEFINED_RES_ID;
 
-    public MarkerWindow(int layoutResId, MapView mapView, MarkerEventHandler markerEventHandler) {
+    public MarkerWindow(int layoutResId, MapView mapView, Database database, MarkerEventHandler markerEventHandler) {
         super(layoutResId, mapView);
 
+        this.database = database;
         this.markerEventHandler = markerEventHandler;
 
         if (mTitleId == UNDEFINED_RES_ID)
@@ -127,6 +134,7 @@ public class MarkerWindow extends InfoWindow {
 
     private static void setResIds(Context context) {
         String packageName = context.getPackageName(); //get application package name
+        mCreationDateLabelId = context.getResources().getIdentifier("id/creation_date_label", null, packageName);
         mTitleId = context.getResources().getIdentifier("id/bubble_title", null, packageName);
         mDescriptionId = context.getResources().getIdentifier("id/bubble_description", null, packageName);
         mDeleteButtonId = context.getResources().getIdentifier("id/delete_button", null, packageName);
@@ -154,12 +162,25 @@ public class MarkerWindow extends InfoWindow {
 
         Marker marker = (Marker) item;
         selectedMarker = marker;
+        Note note = database.getNote(marker.getId());
 
         // Title
         TextView titleView = mView.findViewById(mTitleId /*R.id.title*/);
         String title = marker.getTitle();
         if (title != null && titleView != null) {
             titleView.setText(title);
+        }
+
+        // Creation date
+        try {
+            TextView creationDateLabel = mView.findViewById(R.id.creation_date_label);
+            if (creationDateLabel != null) {
+                Date time = note.getCreationDateTime().getTime();
+                String creationDateString = DateFormat.getDateFormat(getView().getContext()).format(time) + " " + DateFormat.getTimeFormat(getView().getContext()).format(time);
+                creationDateLabel.setText(creationDateString);
+            }
+        } catch (ParseException e) {
+            //TODO
         }
 
         // Description / Snippet

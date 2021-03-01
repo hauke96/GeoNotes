@@ -68,10 +68,20 @@ public class NoteStore {
         List<Note> notes = new ArrayList<>();
         if (cursor.moveToFirst()) {
             do {
-                notes.add(new Note(cursor.getLong(0), cursor.getString(1), cursor.getDouble(2), cursor.getDouble(3)));
+                notes.add(getNoteFromCursor(cursor));
             } while (cursor.moveToNext());
         }
 
         return notes;
+    }
+
+    public Note getNote(SQLiteDatabase db, String noteId) {
+        Cursor cursor = db.query(NOTES_TABLE_NAME, new String[]{NOTES_COL_ID, NOTES_COL_DESCRIPTION, NOTES_COL_LAT, NOTES_COL_LON}, NOTES_COL_ID + "=?", new String[]{noteId}, null, null, null);
+        cursor.moveToFirst();
+        return getNoteFromCursor(cursor);
+    }
+
+    private Note getNoteFromCursor(Cursor cursor) {
+        return new Note(cursor.getLong(0), cursor.getString(1), cursor.getDouble(2), cursor.getDouble(3));
     }
 }

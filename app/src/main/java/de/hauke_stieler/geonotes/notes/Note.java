@@ -1,10 +1,19 @@
 package de.hauke_stieler.geonotes.notes;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+
 public class Note {
+    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
     private final long id;
     private final String description;
     private final double lat;
     private final double lon;
+    private final String utcCreationDateTime = "2021-03-01 12:34:56";
 
     public Note(long id, String description, double lat, double lon) {
         this.id = id;
@@ -27,5 +36,14 @@ public class Note {
 
     public double getLon() {
         return lon;
+    }
+
+    public Calendar getCreationDateTime() throws ParseException {
+        long time = new SimpleDateFormat(DATE_TIME_FORMAT, Locale.getDefault()).parse(utcCreationDateTime).getTime();
+
+        GregorianCalendar calendar = new GregorianCalendar(Locale.getDefault());
+        calendar.setTimeInMillis(time);
+
+        return calendar;
     }
 }

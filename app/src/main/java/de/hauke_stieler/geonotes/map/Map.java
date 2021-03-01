@@ -190,7 +190,7 @@ public class Map {
 
     private void createMarkerWindow(MapView map) {
         // General marker info window
-        markerInfoWindow = new MarkerWindow(R.layout.maker_window, map, new MarkerWindow.MarkerEventHandler() {
+        markerInfoWindow = new MarkerWindow(R.layout.maker_window, map, database, new MarkerWindow.MarkerEventHandler() {
             @Override
             public void onDelete(Marker marker) {
                 // We always have an ID and can therefore delete the note
