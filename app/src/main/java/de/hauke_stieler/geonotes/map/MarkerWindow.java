@@ -26,6 +26,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Space;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
 
@@ -179,8 +180,8 @@ public class MarkerWindow extends InfoWindow {
                 String creationDateString = DateFormat.getDateFormat(getView().getContext()).format(time) + " " + DateFormat.getTimeFormat(getView().getContext()).format(time);
                 creationDateLabel.setText(creationDateString);
             }
-        } catch (ParseException e) {
-            //TODO
+        } catch (Exception e) {
+            Log.e("MarkerWindow", String.format("Could not create creation date label for note %d with date string '%s'", note.getId(), note.getCreationDateTimeString()));
         }
 
         // Description / Snippet
