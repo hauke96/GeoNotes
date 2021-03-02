@@ -40,6 +40,10 @@ public class Note {
         return lon;
     }
 
+    public String getCreationDateTimeString() {
+        return creationDateTime;
+    }
+
     public Calendar getCreationDateTime() throws ParseException {
         long time = SIMPLE_DATE_FORMAT.parse(creationDateTime).getTime();
 

@@ -30,7 +30,7 @@ public class GeoJsonTest {
     public void testSingleNote() {
         // Arrange
         List<Note> notes = new ArrayList<>();
-        notes.add(new Note(1, "foo", 1.23f, 4.56f, "2021-03-01 12:34:56")); // TODO creation-date in result
+        notes.add(new Note(1, "foo", 1.23f, 4.56f, "2021-03-01 12:34:56"));
 
         String expectedResult="{\n" +
                 "\t\"type\": \"FeatureCollection\",\n" +
@@ -39,7 +39,8 @@ public class GeoJsonTest {
                 "\t\t\t\"type\": \"Feature\",\n" +
                 "\t\t\t\"properties\": {\n" +
                 "\t\t\t\t\"geonotes:id\": \"1\",\n" +
-                "\t\t\t\t\"geonotes:note\": \"foo\"\n" +
+                "\t\t\t\t\"geonotes:note\": \"foo\",\n" +
+                "\t\t\t\t\"geonotes:created_at\": \"2021-03-01 12:34:56\"\n" +
                 "\t\t\t},\n" +
                 "\t\t\t\"geometry\": {\n" +
                 "\t\t\t\t\"type\": \"Point\",\n" +
@@ -63,8 +64,8 @@ public class GeoJsonTest {
     public void testMultipleNotes() {
         // Arrange
         List<Note> notes = new ArrayList<>();
-        notes.add(new Note(1, "foo", 1.23f, 4.56f, "2021-03-01 12:34:56")); // TODO creation-date in result
-        notes.add(new Note(2, "bar", 2.34f, 5.67f, "2010-12-21 01:23:45")); // TODO creation-date in result
+        notes.add(new Note(1, "foo", 1.23f, 4.56f, "2021-03-01 12:34:56"));
+        notes.add(new Note(2, "\"bar\" with quotes", 2.34f, 5.67f, "2010-12-21 01:23:45"));
 
         String expectedResult="{\n" +
                 "\t\"type\": \"FeatureCollection\",\n" +
@@ -73,7 +74,8 @@ public class GeoJsonTest {
                 "\t\t\t\"type\": \"Feature\",\n" +
                 "\t\t\t\"properties\": {\n" +
                 "\t\t\t\t\"geonotes:id\": \"1\",\n" +
-                "\t\t\t\t\"geonotes:note\": \"foo\"\n" +
+                "\t\t\t\t\"geonotes:note\": \"foo\",\n" +
+                "\t\t\t\t\"geonotes:created_at\": \"2021-03-01 12:34:56\"\n" +
                 "\t\t\t},\n" +
                 "\t\t\t\"geometry\": {\n" +
                 "\t\t\t\t\"type\": \"Point\",\n" +
@@ -87,7 +89,8 @@ public class GeoJsonTest {
                 "\t\t\t\"type\": \"Feature\",\n" +
                 "\t\t\t\"properties\": {\n" +
                 "\t\t\t\t\"geonotes:id\": \"2\",\n" +
-                "\t\t\t\t\"geonotes:note\": \"bar\"\n" +
+                "\t\t\t\t\"geonotes:note\": \"'bar' with quotes\",\n" +
+                "\t\t\t\t\"geonotes:created_at\": \"2010-12-21 01:23:45\"\n" +
                 "\t\t\t},\n" +
                 "\t\t\t\"geometry\": {\n" +
                 "\t\t\t\t\"type\": \"Point\",\n" +

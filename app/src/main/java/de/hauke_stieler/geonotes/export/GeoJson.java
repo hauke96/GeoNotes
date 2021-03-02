@@ -13,7 +13,8 @@ public class GeoJson {
             "\t\t\t\"type\": \"Feature\",\n" +
             "\t\t\t\"properties\": {\n" +
             "\t\t\t\t\"geonotes:id\": \"%d\",\n" +
-            "\t\t\t\t\"geonotes:note\": \"%s\"\n" +
+            "\t\t\t\t\"geonotes:note\": \"%s\",\n" +
+            "\t\t\t\t\"geonotes:created_at\": \"%s\"\n" +
             "\t\t\t},\n" +
             "\t\t\t\"geometry\": {\n" +
             "\t\t\t\t\"type\": \"Point\",\n" +
@@ -31,12 +32,19 @@ public class GeoJson {
 
         for (int i = 0; i < notes.size(); i++) {
             Note note = notes.get(i);
-            result.append(String.format(Locale.US, GEOJSON_FEATURE, note.getId(), note.getDescription(), note.getLon(), note.getLat()));
+            String featureString = String.format(Locale.US,
+                    GEOJSON_FEATURE,
+                    note.getId(),
+                    note.getDescription().replace("\"", "'"),
+                    note.getCreationDateTimeString(),
+                    note.getLon(),
+                    note.getLat());
+            result.append(featureString);
 
             boolean isLastElement = i == notes.size() - 1;
             if (!isLastElement) {
                 result.append(",");
-            }else{
+            } else {
                 result.append("\n\t");
             }
         }
