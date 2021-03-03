@@ -14,16 +14,17 @@ A simple app to create and manage georeferenced notes (text and photos) on a map
 
 Runs on Android 4.1 and newer.
 
+## Need help?
+
+See the [OSM Wiki page](https://wiki.openstreetmap.org/wiki/GeoNotes) for detailed descriptions about all the features.
+
 ## Features
 
 * Create, move and delete notes
 * Attach photos to note
+* Export all notes in GeoJson format
 * Show and follow current location
 
 ### Not in the scope of this app
 
 * Add notes on osm.org (use other apps like [StreetComplete](https://github.com/streetcomplete/StreetComplete) for that)
-
-## Manual
-
-See the [OSM Wiki page](https://wiki.openstreetmap.org/wiki/GeoNotes) for manual and descriptions about all the features.

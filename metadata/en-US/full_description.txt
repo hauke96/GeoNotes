@@ -6,4 +6,5 @@ Currently the basic features are:
 <li>Create, move and delete notes on a map</li>
 <li>Attach photos to a note</li>
 <li>Export all notes in GeoJson format</li>
+<li>Show and follow current location</li>
 </ul>
