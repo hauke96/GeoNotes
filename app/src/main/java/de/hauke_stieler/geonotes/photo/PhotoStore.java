@@ -24,10 +24,6 @@ public class PhotoStore {
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (newVersion == 4) {
-            // Version 4 introduces this table
-            onCreate(db);
-        }
         Log.i("NoteStore", String.format("onUpgrade: from version %d to version %d", oldVersion, newVersion));
     }
 

@@ -9,13 +9,14 @@ import android.os.PowerManager;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 
+import androidx.core.content.res.ResourcesCompat;
+
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.events.MapListener;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
@@ -30,46 +31,49 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import java.io.File;
 import java.util.List;
 
-import de.hauke_stieler.geonotes.Database.Database;
+import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.notes.Note;
-import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
 
 public class Map {
     private final Context context;
-    private MapView map;
-    private IMapController mapController;
-    private MarkerWindow markerInfoWindow;
-    private Marker.OnMarkerClickListener markerClickListener;
+    private final PowerManager.WakeLock wakeLock;
+    private final Database database;
 
-    private Marker markerToMove;
-
+    private final MapView map;
+    private final IMapController mapController;
     private MyLocationNewOverlay locationOverlay;
     private GpsMyLocationProvider gpsLocationProvider;
-    private CompassOverlay compassOverlay;
-    private ScaleBarOverlay scaleBarOverlay;
 
-    private PowerManager.WakeLock wakeLock;
-    private Drawable normalIcon;
-    private Drawable selectedIcon;
+    private MarkerWindow markerInfoWindow;
+    private Marker.OnMarkerClickListener markerClickListener;
+    private Marker markerToMove;
 
-    private Database database;
+    private final Drawable normalIcon;
+    private final Drawable normalWithPhotoIcon;
+    private final Drawable selectedIcon;
+    private final Drawable selectedWithPhotoIcon;
 
     private boolean snapNoteToGps;
 
     public Map(Context context,
                MapView map,
-               PowerManager.WakeLock wakeLock,
-               Database database,
-               Drawable locationIcon,
-               Drawable arrowIcon,
-               Drawable normalIcon,
-               Drawable selectedIcon) {
+               Database database) {
         this.context = context;
-        this.wakeLock = wakeLock;
-        this.normalIcon = normalIcon;
-        this.selectedIcon = selectedIcon;
         this.map = map;
+        this.database = database;
+
+        // Keep device on
+        final PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "geonotes:wakelock");
+        wakeLock.acquire();
+
+        Drawable locationIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_location, null);
+        Drawable arrowIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_arrow, null);
+        normalIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_note, null);
+        normalWithPhotoIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_note_photo, null);
+        selectedIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_note_selected, null);
+        selectedWithPhotoIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_note_photo_selected, null);
 
         Configuration.getInstance().setUserAgentValue(context.getPackageName());
 
@@ -86,9 +90,8 @@ public class Map {
         createOverlays(context, map, (BitmapDrawable) locationIcon, (BitmapDrawable) arrowIcon);
         createMarkerWindow(map);
 
-        this.database = database;
         for (Note n : this.database.getAllNotes()) {
-            Marker marker = createMarker("" + n.id, n.description, new GeoPoint(n.lat, n.lon), markerClickListener);
+            Marker marker = createMarker("" + n.getId(), n.getDescription(), new GeoPoint(n.getLat(), n.getLon()), markerClickListener);
         }
     }
 
@@ -102,16 +105,16 @@ public class Map {
         map.getOverlays().add(this.locationOverlay);
 
         // Add compass
-        compassOverlay = new CompassOverlay(context, new InternalCompassOrientationProvider(context), map);
+        CompassOverlay compassOverlay = new CompassOverlay(context, new InternalCompassOrientationProvider(context), map);
         compassOverlay.enableCompass();
-        map.getOverlays().add(this.compassOverlay);
+        map.getOverlays().add(compassOverlay);
 
         // Add scale bar
         final DisplayMetrics dm = context.getResources().getDisplayMetrics();
-        scaleBarOverlay = new ScaleBarOverlay(map);
+        ScaleBarOverlay scaleBarOverlay = new ScaleBarOverlay(map);
         scaleBarOverlay.setCentred(true);
         scaleBarOverlay.setScaleBarOffset(dm.widthPixels / 2, 20);
-        map.getOverlays().add(this.scaleBarOverlay);
+        map.getOverlays().add(scaleBarOverlay);
 
         // Add marker click listener. Will be called when the user clicks/taps on a marker.
         markerClickListener = (marker, mapView) -> {
@@ -187,7 +190,7 @@ public class Map {
 
     private void createMarkerWindow(MapView map) {
         // General marker info window
-        markerInfoWindow = new MarkerWindow(R.layout.maker_window, map, new MarkerWindow.MarkerEventHandler() {
+        markerInfoWindow = new MarkerWindow(R.layout.marker_window, map, database, new MarkerWindow.MarkerEventHandler() {
             @Override
             public void onDelete(Marker marker) {
                 // We always have an ID and can therefore delete the note
@@ -281,14 +284,24 @@ public class Map {
             File image = new File(storageDir, photoFileName);
             markerInfoWindow.addPhoto(image);
         }
+
+        setSelectedIcon(marker);
     }
 
     private void setSelectedIcon(Marker marker) {
-        marker.setIcon(selectedIcon);
+        if (database.hasPhotos(marker.getId())) {
+            marker.setIcon(selectedWithPhotoIcon);
+        } else {
+            marker.setIcon(selectedIcon);
+        }
     }
 
     private void setNormalIcon(Marker marker) {
-        marker.setIcon(normalIcon);
+        if (database.hasPhotos(marker.getId())) {
+            marker.setIcon(normalWithPhotoIcon);
+        } else {
+            marker.setIcon(normalIcon);
+        }
     }
 
     public void setZoomButtonVisibility(boolean visible) {
@@ -332,6 +345,9 @@ public class Map {
 
     public void onResume() {
         map.onResume();
+        if (!wakeLock.isHeld()) {
+            wakeLock.acquire();
+        }
     }
 
     public void onPause() {
@@ -339,7 +355,9 @@ public class Map {
     }
 
     public void onDestroy() {
-        wakeLock.release();
+        if (wakeLock.isHeld()) {
+            wakeLock.release();
+        }
     }
 
     public void setLatitude(float lat) {

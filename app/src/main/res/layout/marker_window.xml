@@ -15,6 +15,13 @@
         android:gravity="top"
         android:inputType="text|textMultiLine" />
 
+    <TextView
+        android:id="@+id/creation_date_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:textSize="5pt" />
+
     <Space
         android:layout_width="match_parent"
         android:layout_height="10dp"

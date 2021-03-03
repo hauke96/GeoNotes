@@ -2,23 +2,14 @@ package de.hauke_stieler.geonotes;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.PowerManager;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
-import android.telephony.BarringInfo;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -34,41 +25,39 @@ import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-import androidx.core.content.res.ResourcesCompat;
 
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.events.DelayedMapListener;
 import org.osmdroid.events.MapListener;
 import org.osmdroid.events.ScrollEvent;
 import org.osmdroid.events.ZoomEvent;
-import org.osmdroid.views.MapView;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 
-import de.hauke_stieler.geonotes.Database.Database;
+import de.hauke_stieler.geonotes.common.FileHelper;
+import de.hauke_stieler.geonotes.database.Database;
+import de.hauke_stieler.geonotes.export.Exporter;
 import de.hauke_stieler.geonotes.map.Map;
 import de.hauke_stieler.geonotes.map.MarkerWindow;
 import de.hauke_stieler.geonotes.map.TouchDownListener;
-import de.hauke_stieler.geonotes.notes.Note;
 import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
 import de.hauke_stieler.geonotes.settings.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity {
 
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
+    private final int REQUEST_CAMERA_PERMISSIONS_REQUEST_CODE = 2;
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private Map map;
     private SharedPreferences preferences;
     private Database database;
+    private Exporter exporter;
+    private Toolbar toolbar;
 
     // These fields exist to remember the photo data when the photo Intent is started. This is
     // because the Intent doesn't return anything and works asynchronously. In the result handler
@@ -81,9 +70,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Injector.registerActivity(this);
+
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // Set HTML text of copyright label
@@ -95,38 +86,25 @@ public class MainActivity extends AppCompatActivity {
         requestPermissionsIfNecessary(new String[]{
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.CAMERA
         });
 
-        database = new Database(context);
+        database = Injector.get(Database.class);
+        preferences = Injector.get(SharedPreferences.class);
+        exporter = Injector.get(Exporter.class);
 
-        createMap(context);
-
-        preferences = getSharedPreferences(getString(R.string.pref_file), MODE_PRIVATE);
-
+        createMap();
         loadPreferences();
     }
 
-    private void createMap(Context context) {
-        // Keep device on
-        final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "geonotes:wakelock");
-        wakeLock.acquire();
-
-        Drawable locationIcon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_location, null);
-        Drawable arrowIcon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_arrow, null);
-        Drawable selectedIcon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_note_selected, null);
-        Drawable normalIcon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_note, null);
-
-        MapView mapView = findViewById(R.id.map);
-        map = new Map(context, mapView, wakeLock, database, locationIcon, arrowIcon, normalIcon, selectedIcon);
+    private void createMap() {
+        map = Injector.get(Map.class);
 
         addMapListener();
         addCameraListener();
     }
 
-    private void loadPreferences() {
+    void loadPreferences() {
         for (String key : preferences.getAll().keySet()) {
             preferenceChanged(preferences, key);
         }
@@ -160,10 +138,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.toolbar_btn_settings:
-                Intent intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
-                return true;
             case R.id.toolbar_btn_gps_follow:
                 boolean followingLocationEnabled = !map.isFollowLocationEnabled();
                 this.map.setLocationFollowMode(followingLocationEnabled);
@@ -173,6 +147,12 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     item.setIcon(R.drawable.ic_location_searching);
                 }
+                return true;
+            case R.id.toolbar_btn_export:
+                exporter.export();
+                return true;
+            case R.id.toolbar_btn_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -198,17 +178,10 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        requestPermissionsIfNecessary(permissions);
-    }
-
     private void requestPermissionsIfNecessary(String[] permissions) {
         ArrayList<String> permissionsToRequest = new ArrayList<>();
         for (String permission : permissions) {
-            if (ContextCompat.checkSelfPermission(this, permission)
-                    != PackageManager.PERMISSION_GRANTED) {
-                // Permission is not granted
+            if (!hasPermission(permission)) { // Permission is not granted
                 permissionsToRequest.add(permission);
             }
         }
@@ -217,6 +190,23 @@ public class MainActivity extends AppCompatActivity {
                     this,
                     permissionsToRequest.toArray(new String[0]),
                     REQUEST_PERMISSIONS_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        for (int i = 0; i < permissions.length; i++) {
+            String permission = permissions[i];
+            boolean granted = grantResults[i] == PackageManager.PERMISSION_GRANTED;
+
+            switch (permission) {
+                case Manifest.permission.ACCESS_FINE_LOCATION:
+                    if (!granted) {
+                        toolbar.getMenu().findItem(R.id.toolbar_btn_gps_follow).setVisible(false);
+                    }
+            }
         }
     }
 
@@ -250,27 +240,35 @@ public class MainActivity extends AppCompatActivity {
      * Adds a listener for the camera button. The camera action can only be performed from within an activity.
      */
     private void addCameraListener() {
-        // TODO check whether camera is available at all: hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
         MarkerWindow.RequestPhotoEventHandler requestPhotoEventHandler = (Long noteId) -> {
-            // TODO check if app has permissions
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            try {
-                // Create the File where the photo should go
-                lastPhotoFile = createImageFile();
-                lastPhotoNoteId = noteId;
+            if (!hasPermission(Manifest.permission.CAMERA) || !hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                // We don't have camera and/or storage permissions -> ask for them
+                ActivityCompat.requestPermissions(
+                        this,
+                        new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        REQUEST_CAMERA_PERMISSIONS_REQUEST_CODE);
+            } else {
+                // We do have all permissions -> take photo
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                try {
+                    // Create the File where the photo should go
+                    lastPhotoFile = createImageFile();
+                    lastPhotoNoteId = noteId;
 
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        getApplicationContext().getPackageName() + ".provider",
-                        lastPhotoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-            } catch (Exception e) {
-                Log.e("TakingPhoto", "Opening camera to take photo failed", e);
-                return;
+                    Uri photoURI = FileHelper.getFileUri(this, MainActivity.lastPhotoFile);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                } catch (Exception e) {
+                    Log.e("TakingPhoto", "Opening camera to take photo failed", e);
+                }
             }
         };
 
         map.addRequestPhotoHandler(requestPhotoEventHandler);
+    }
+
+    private boolean hasPermission(String permission) {
+        return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED;
     }
 
     @Override
