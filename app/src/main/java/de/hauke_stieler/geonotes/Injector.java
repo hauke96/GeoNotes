@@ -42,6 +42,9 @@ public class Injector {
     public static void registerActivity(Activity newActivity) {
         activity = newActivity;
         context = activity.getApplicationContext();
+
+        // Example: The user rotates the device -> MainActivity will be recreated -> Dependencies may also need to be recreated (e.g. the map).
+        classes = new HashMap<>();
     }
 
     public static <T> T get(Class<T> clazz) {

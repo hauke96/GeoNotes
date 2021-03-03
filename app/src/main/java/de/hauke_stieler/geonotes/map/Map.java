@@ -289,17 +289,17 @@ public class Map {
     }
 
     private void setSelectedIcon(Marker marker) {
-        if(database.hasPhotos(marker.getId())){
+        if (database.hasPhotos(marker.getId())) {
             marker.setIcon(selectedWithPhotoIcon);
-        }else {
+        } else {
             marker.setIcon(selectedIcon);
         }
     }
 
     private void setNormalIcon(Marker marker) {
-        if(database.hasPhotos(marker.getId())){
+        if (database.hasPhotos(marker.getId())) {
             marker.setIcon(normalWithPhotoIcon);
-        }else {
+        } else {
             marker.setIcon(normalIcon);
         }
     }
@@ -345,6 +345,9 @@ public class Map {
 
     public void onResume() {
         map.onResume();
+        if (!wakeLock.isHeld()) {
+            wakeLock.acquire();
+        }
     }
 
     public void onPause() {
@@ -352,7 +355,9 @@ public class Map {
     }
 
     public void onDestroy() {
-        wakeLock.release();
+        if (wakeLock.isHeld()) {
+            wakeLock.release();
+        }
     }
 
     public void setLatitude(float lat) {

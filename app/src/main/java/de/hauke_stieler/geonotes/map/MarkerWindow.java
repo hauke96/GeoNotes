@@ -227,6 +227,11 @@ public class MarkerWindow extends InfoWindow {
     }
 
     public void resetImageList() {
+        // When the user rotates the device, this may be called before creating the UI.
+        if(getView() == null){
+            return;
+        }
+
         LinearLayout photoLayout = getView().findViewById(R.id.note_image_pane);
         photoLayout.removeAllViews();
     }
