@@ -230,10 +230,15 @@ public class Map {
 
     /**
      * Tries to snap the location to the last known GPS of the distance on the screen is below 50dp.
+     * If no GPS location available or if the distance to the current GPS location is lower than 50dp, then the GPS location is returned, otherwise the input is returned.
      *
-     * @return If distance <50dp then GPS location is returned, if not, the input is returned.
+     * @return The new location, snapped if possible.
      */
     private GeoPoint snapToGpsLocation(GeoPoint location) {
+        if (gpsLocationProvider.getLastKnownLocation() == null) {
+            return location;
+        }
+
         GeoPoint gpsLocation = new GeoPoint(gpsLocationProvider.getLastKnownLocation());
 
         Point markerLocationOnScreen = map.getProjection().toPixels(location, null);

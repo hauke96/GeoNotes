@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.osmdroid.api.IMapView;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
@@ -189,6 +190,8 @@ public class MarkerWindow extends InfoWindow {
         if (snippet == null) {
             snippet = "";
         }
+        snippet = StringEscapeUtils.escapeHtml4(snippet).replace("\n", "<br>");
+
         Spanned snippetHtml = Html.fromHtml(snippet);
         EditText descriptionView = mView.findViewById(mDescriptionId /*R.id.description*/);
         if (descriptionView != null) {
