@@ -1,0 +1,6 @@
+1.1.0:
+
+* Add GPS follow-mode
+* Add settings view
+* Save last location and zoom to that location on startup
+* Minor performance enhancements

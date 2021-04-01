@@ -1,0 +1,5 @@
+1.2.0:
+
+* Add photos to a note
+* Icon for the GPS-arrow
+* Change README and link to OSM-wiki

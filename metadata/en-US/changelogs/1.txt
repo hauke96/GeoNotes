@@ -1,0 +1,8 @@
+1.0.0:
+
+* Create notes
+* Select notes to
+  * Edit text
+  * Delete note
+  * Move note
+* FDroid-Store preparations

@@ -1,0 +1,3 @@
+1.0.4:
+
+* Fix build.gradle so that the F-Droid update checker will recognize the versions again
