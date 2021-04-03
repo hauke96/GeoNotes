@@ -3,6 +3,8 @@ package de.hauke_stieler.geonotes.note_list;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ListView;
@@ -15,6 +17,8 @@ import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.notes.Note;
 
 public class NoteListActivity extends AppCompatActivity {
+    public static final String EXTRA_CLICKED_NOTE = "clicked_note";
+
     private SharedPreferences preferences;
     private Database database;
 
@@ -38,9 +42,15 @@ public class NoteListActivity extends AppCompatActivity {
     private void load() {
         List<Note> notes = database.getAllNotes();
 
-        NoteListAdapter adapter = new NoteListAdapter(this, notes);
+        NoteListAdapter adapter = new NoteListAdapter(this, notes, id -> {
+            // Close this activity and send back clicked note id
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra(EXTRA_CLICKED_NOTE, id);
+            setResult(Activity.RESULT_OK, resultIntent);
+            finish();
+        });
 
-        ListView listView = (ListView) findViewById(R.id.note_list_view);
+        ListView listView = findViewById(R.id.note_list_view);
         listView.setAdapter(adapter);
     }
 
