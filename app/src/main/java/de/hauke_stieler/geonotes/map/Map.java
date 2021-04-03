@@ -129,7 +129,6 @@ public class Map {
                 // We don't need to deselect the marker or close the window as we will directly assign a new marker below
             }
 
-            centerLocationWithOffset(marker.getPosition());
             selectMarker(marker);
 
             return true;
@@ -163,8 +162,6 @@ public class Map {
                         initAndSelectMarker(p);
                     }
                 }
-
-                centerLocationWithOffset(p);
 
                 return false;
             }
@@ -268,6 +265,8 @@ public class Map {
         markerInfoWindow.focusEditField();
 
         addImagesToMarkerWindow();
+
+        zoomToLocation(marker.getPosition());
     }
 
     /**
@@ -317,11 +316,11 @@ public class Map {
         map.setTilesScaleFactor(factor);
     }
 
-    private void centerLocationWithOffset(GeoPoint p) {
-        centerLocationWithOffset(p, map.getZoomLevelDouble());
+    private void zoomToLocation(GeoPoint p) {
+        zoomToLocation(p, map.getZoomLevelDouble());
     }
 
-    private void centerLocationWithOffset(GeoPoint p, double zoom) {
+    private void zoomToLocation(GeoPoint p, double zoom) {
         Point locationInPixels = new Point();
         map.getProjection().toPixels(p, locationInPixels);
         IGeoPoint newPoint = map.getProjection().fromPixels(locationInPixels.x, locationInPixels.y);
@@ -367,12 +366,12 @@ public class Map {
 
     public void setLatitude(float lat) {
         double lon = map.getMapCenter().getLongitude();
-        centerLocationWithOffset(new GeoPoint(lat, lon));
+        zoomToLocation(new GeoPoint(lat, lon));
     }
 
     public void setLongitude(float lon) {
         double lat = map.getMapCenter().getLatitude();
-        centerLocationWithOffset(new GeoPoint(lat, lon));
+        zoomToLocation(new GeoPoint(lat, lon));
     }
 
     public IGeoPoint getLocation() {
@@ -380,7 +379,7 @@ public class Map {
     }
 
     public void setLocation(float lat, float lon, float zoom) {
-        centerLocationWithOffset(new GeoPoint(lat, lon), zoom);
+        zoomToLocation(new GeoPoint(lat, lon), zoom);
     }
 
     public float getZoom() {
