@@ -6,11 +6,11 @@
 
     <TextView
         android:id="@+id/note_list_row_text_view"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
-        android:text="This is a very very long text that might overflow some other UI controls." />
+        android:text="This is a text" />
 
     <ImageButton
         android:id="@+id/delete_button"
