@@ -22,6 +22,7 @@ import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
@@ -29,7 +30,9 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.R;
@@ -91,7 +94,7 @@ public class Map {
         createMarkerWindow(map);
 
         for (Note n : this.database.getAllNotes()) {
-            Marker marker = createMarker("" + n.getId(), n.getDescription(), new GeoPoint(n.getLat(), n.getLon()), markerClickListener);
+            createMarker("" + n.getId(), n.getDescription(), new GeoPoint(n.getLat(), n.getLon()), markerClickListener);
         }
     }
 
@@ -121,12 +124,6 @@ public class Map {
             // When we are in the state of moving an existing marker, we do not want to interact with other markers -> simply return
             if (markerToMove != null) {
                 return true;
-            }
-
-            // If a marker is currently selected -> deselect it
-            if (markerInfoWindow.getSelectedMarker() != null) {
-                setNormalIcon(markerInfoWindow.getSelectedMarker());
-                // We don't need to deselect the marker or close the window as we will directly assign a new marker below
             }
 
             selectMarker(marker);
@@ -252,6 +249,15 @@ public class Map {
         return location;
     }
 
+    public void selectNote(long noteId) {
+        String noteIdString = "" + noteId;
+        for (Overlay marker : map.getOverlays()) {
+            if (marker instanceof Marker && ((Marker) marker).getId().equals(noteIdString)) {
+                this.selectMarker((Marker) marker);
+            }
+        }
+    }
+
     private void selectMarker(Marker marker) {
         // Reset icon of previous selection
         Marker selectedMarker = markerInfoWindow.getSelectedMarker();
@@ -267,6 +273,10 @@ public class Map {
         addImagesToMarkerWindow();
 
         zoomToLocation(marker.getPosition(), map.getZoomLevelDouble());
+    }
+
+    private Marker getSelectedMarker() {
+        return markerInfoWindow.getSelectedMarker();
     }
 
     /**
@@ -347,6 +357,13 @@ public class Map {
         map.onResume();
         if (!wakeLock.isHeld()) {
             wakeLock.acquire();
+        }
+
+        // Before resuming (e.g. when switching back from the list of notes to the main activity),
+        // the map doesn't zoom to markers. Therefore we here zoom to the currently selected marker.
+        Marker selectedMarker = getSelectedMarker();
+        if (selectedMarker != null) {
+            zoomToLocation(selectedMarker.getPosition(), map.getZoomLevelDouble());
         }
     }
 
