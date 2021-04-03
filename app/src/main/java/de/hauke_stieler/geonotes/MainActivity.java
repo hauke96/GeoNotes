@@ -44,6 +44,7 @@ import de.hauke_stieler.geonotes.export.Exporter;
 import de.hauke_stieler.geonotes.map.Map;
 import de.hauke_stieler.geonotes.map.MarkerWindow;
 import de.hauke_stieler.geonotes.map.TouchDownListener;
+import de.hauke_stieler.geonotes.note_list.NoteListActivity;
 import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
 import de.hauke_stieler.geonotes.settings.SettingsActivity;
 
@@ -153,6 +154,9 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.toolbar_btn_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+            case R.id.toolbar_btn_note_list:
+                startActivity(new Intent(this, NoteListActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
