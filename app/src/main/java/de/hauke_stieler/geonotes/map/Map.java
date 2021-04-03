@@ -266,7 +266,7 @@ public class Map {
 
         addImagesToMarkerWindow();
 
-        zoomToLocation(marker.getPosition());
+        zoomToLocation(marker.getPosition(), map.getZoomLevelDouble());
     }
 
     /**
@@ -316,10 +316,6 @@ public class Map {
         map.setTilesScaleFactor(factor);
     }
 
-    private void zoomToLocation(GeoPoint p) {
-        zoomToLocation(p, map.getZoomLevelDouble());
-    }
-
     private void zoomToLocation(GeoPoint p, double zoom) {
         Point locationInPixels = new Point();
         map.getProjection().toPixels(p, locationInPixels);
@@ -362,16 +358,6 @@ public class Map {
         if (wakeLock.isHeld()) {
             wakeLock.release();
         }
-    }
-
-    public void setLatitude(float lat) {
-        double lon = map.getMapCenter().getLongitude();
-        zoomToLocation(new GeoPoint(lat, lon));
-    }
-
-    public void setLongitude(float lon) {
-        double lat = map.getMapCenter().getLatitude();
-        zoomToLocation(new GeoPoint(lat, lon));
     }
 
     public IGeoPoint getLocation() {
