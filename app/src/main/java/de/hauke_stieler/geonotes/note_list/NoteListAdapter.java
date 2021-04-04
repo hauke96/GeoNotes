@@ -1,10 +1,12 @@
 package de.hauke_stieler.geonotes.note_list;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -14,15 +16,17 @@ import de.hauke_stieler.geonotes.notes.Note;
 
 public class NoteListAdapter extends BaseAdapter {
     public interface NoteListClickListener {
-        public void onClick(long id);
+        void onClick(long id);
     }
 
-    private final List<Note> data;
-    private final LayoutInflater inflater;
+    private final List<Note> notes;
+    private final List<Note> notesWithPhoto;
     private final NoteListClickListener clickListener;
+    private final LayoutInflater inflater;
 
-    public NoteListAdapter(Context context, List<Note> data, NoteListClickListener clickListener) {
-        this.data = data;
+    public NoteListAdapter(Context context, List<Note> notes, List<Note> notesWithPhoto, NoteListClickListener clickListener) {
+        this.notes = notes;
+        this.notesWithPhoto = notesWithPhoto;
         this.clickListener = clickListener;
 
         this.inflater = (LayoutInflater) context
@@ -31,17 +35,17 @@ public class NoteListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return data.size();
+        return notes.size();
     }
 
     @Override
     public Note getItem(int index) {
-        return data.get(index);
+        return notes.get(index);
     }
 
     @Override
     public long getItemId(int index) {
-        return data.get(index).getId();
+        return notes.get(index).getId();
     }
 
     @Override
@@ -51,11 +55,25 @@ public class NoteListAdapter extends BaseAdapter {
             view = inflater.inflate(R.layout.note_list_row, null);
         }
 
-        Note item = getItem(index);
+        Note note = getItem(index);
+        boolean noteHasPhotos = notesWithPhoto.contains(note);
+
+        ImageView icon = view.findViewById(R.id.note_list_row_icon);
+        if (noteHasPhotos) {
+            icon.setImageResource(R.mipmap.ic_note_photo);
+        } else {
+            icon.setImageResource(R.mipmap.ic_note);
+        }
 
         TextView text = view.findViewById(R.id.note_list_row_text_view);
-        text.setText(item.getDescription());
-        text.setOnClickListener(v -> this.clickListener.onClick(item.getId()));
+        text.setOnClickListener(v -> this.clickListener.onClick(note.getId()));
+        if(noteHasPhotos && note.getDescription().trim().isEmpty()) {
+            text.setText("(only photo)");
+            text.setTypeface(null, Typeface.ITALIC);
+            text.setTextColor(text.getResources().getColor(R.color.grey));
+        }else{
+            text.setText(note.getDescription());
+        }
 
         return view;
     }

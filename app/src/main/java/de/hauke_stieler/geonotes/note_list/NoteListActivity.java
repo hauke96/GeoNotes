@@ -9,7 +9,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.hauke_stieler.geonotes.Injector;
 import de.hauke_stieler.geonotes.R;
@@ -42,7 +45,14 @@ public class NoteListActivity extends AppCompatActivity {
     private void load() {
         List<Note> notes = database.getAllNotes();
 
-        NoteListAdapter adapter = new NoteListAdapter(this, notes, id -> {
+        List<Note> notesWithPhoto = new ArrayList<>();
+        for (Note note: notes             ) {
+            if(database.hasPhotos(note.getId())){
+                notesWithPhoto.add(note);
+            }
+        }
+
+        NoteListAdapter adapter = new NoteListAdapter(this, notes, notesWithPhoto, id -> {
             // Close this activity and send back clicked note id
             Intent resultIntent = new Intent();
             resultIntent.putExtra(EXTRA_CLICKED_NOTE, id);
