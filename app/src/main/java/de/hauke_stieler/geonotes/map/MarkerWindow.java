@@ -1,21 +1,13 @@
 package de.hauke_stieler.geonotes.map;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.ThumbnailUtils;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
-import android.util.Size;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,9 +18,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Space;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.core.content.FileProvider;
 
 import org.apache.commons.text.StringEscapeUtils;
 import org.osmdroid.api.IMapView;
@@ -37,16 +26,13 @@ import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.infowindow.InfoWindow;
 
 import java.io.File;
-import java.text.ParseException;
 import java.util.Date;
-import java.util.List;
 
 import de.hauke_stieler.geonotes.R;
+import de.hauke_stieler.geonotes.common.FileHelper;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.notes.Note;
 import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
-
-import static android.content.ContentResolver.EXTRA_SIZE;
 
 public class MarkerWindow extends InfoWindow {
     private RequestPhotoEventHandler requestPhotoHandler;
@@ -231,7 +217,7 @@ public class MarkerWindow extends InfoWindow {
 
     public void resetImageList() {
         // When the user rotates the device, this may be called before creating the UI.
-        if(getView() == null){
+        if (getView() == null) {
             return;
         }
 
@@ -258,9 +244,7 @@ public class MarkerWindow extends InfoWindow {
         imageButton.setOnClickListener(v -> {
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
-            intent.setDataAndType(FileProvider.getUriForFile(getView().getContext(),
-                    getView().getContext().getPackageName() + ".provider",
-                    photo), "image/jpg");
+            intent.setDataAndType(FileHelper.getFileUri(getView().getContext(), photo), "image/jpg");
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             getView().getContext().startActivity(intent);
         });
