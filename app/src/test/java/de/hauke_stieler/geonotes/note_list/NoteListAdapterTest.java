@@ -3,7 +3,9 @@ package de.hauke_stieler.geonotes.note_list;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Typeface;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,7 +22,6 @@ import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.notes.Note;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 
 public class NoteListAdapterTest {
 
@@ -28,28 +29,32 @@ public class NoteListAdapterTest {
 
     private Context context;
     private Resources resourcesMock;
-    private View viewMock;
+    private ViewGroup layoutViewMock;
     private ImageView imageViewMock;
     private TextView textViewMock;
     private List<Note> notes;
     private List<Note> notesWithPhotos;
     private NoteListAdapter.NoteListClickListener clickListenerMock;
+    private LayoutInflater inflater;
 
     @Before
     public void setup() {
+        layoutViewMock = Mockito.mock(ViewGroup.class);
+
+        inflater = Mockito.mock(LayoutInflater.class);
+        Mockito.when(inflater.inflate(R.layout.note_list_row, null)).thenReturn(layoutViewMock);
+
         context = Mockito.mock(Context.class);
-        Mockito.when(context.getSystemService(anyString())).thenReturn(null);
+        Mockito.when(context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).thenReturn(inflater);
 
         resourcesMock = Mockito.mock(Resources.class);
         Mockito.when(context.getResources()).thenReturn(resourcesMock);
 
-        viewMock = Mockito.mock(View.class);
-
         imageViewMock = Mockito.mock(ImageView.class);
-        Mockito.when(viewMock.findViewById(R.id.note_list_row_icon)).thenReturn(imageViewMock);
+        Mockito.when(layoutViewMock.findViewById(R.id.note_list_row_icon)).thenReturn(imageViewMock);
 
         textViewMock = Mockito.mock(TextView.class);
-        Mockito.when(viewMock.findViewById(R.id.note_list_row_text_view)).thenReturn(textViewMock);
+        Mockito.when(layoutViewMock.findViewById(R.id.note_list_row_text_view)).thenReturn(textViewMock);
 
         notes = new ArrayList<>();
         notes.add(new Note(123L, "foo", 12, 23, "now"));
@@ -97,10 +102,10 @@ public class NoteListAdapterTest {
     @Test
     public void testCreatingView_withoutPhoto() {
         // Act
-        View view = adapter.getView(0, viewMock, null);
+        View view = adapter.getView(0, null, null);
 
         // Assert
-        Assert.assertEquals(viewMock, view);
+        Assert.assertEquals(layoutViewMock, view);
         Mockito.verify(imageViewMock).setImageResource(R.mipmap.ic_note);
         Mockito.verifyNoMoreInteractions(imageViewMock);
         Mockito.verify(textViewMock).setText(notes.get(0).getDescription());
@@ -111,10 +116,10 @@ public class NoteListAdapterTest {
     @Test
     public void testCreatingView_withPhoto() {
         // Act
-        View view = adapter.getView(1, viewMock, null);
+        View view = adapter.getView(1, null, null);
 
         // Assert
-        Assert.assertEquals(viewMock, view);
+        Assert.assertEquals(layoutViewMock, view);
         Mockito.verify(imageViewMock).setImageResource(R.mipmap.ic_note_photo);
         Mockito.verifyNoMoreInteractions(imageViewMock);
         Mockito.verify(textViewMock).setText(notes.get(1).getDescription());
@@ -129,10 +134,10 @@ public class NoteListAdapterTest {
         Mockito.when(resourcesMock.getColor(R.color.grey)).thenReturn(colorCode);
 
         // Act
-        View view = adapter.getView(2, viewMock, null);
+        View view = adapter.getView(2, null, null);
 
         // Assert
-        Assert.assertEquals(viewMock, view);
+        Assert.assertEquals(layoutViewMock, view);
         Mockito.verify(imageViewMock).setImageResource(R.mipmap.ic_note_photo);
         Mockito.verifyNoMoreInteractions(imageViewMock);
         Mockito.verify(textViewMock).setText("(only photo)");
@@ -146,7 +151,7 @@ public class NoteListAdapterTest {
     public void testClickOnTextView() {
         // Arrange
         int noteIndex = 1;
-        adapter.getView(noteIndex, viewMock, null);
+        adapter.getView(noteIndex, null, null);
 
         ArgumentCaptor<View.OnClickListener> clickListenerArgumentCaptor = ArgumentCaptor.forClass(View.OnClickListener.class);
         Mockito.verify(textViewMock).setOnClickListener(clickListenerArgumentCaptor.capture());
