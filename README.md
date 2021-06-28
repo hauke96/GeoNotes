@@ -22,6 +22,7 @@ See the [OSM Wiki page](https://wiki.openstreetmap.org/wiki/GeoNotes) for detail
 
 * Create, move and delete notes
 * Attach photos to note
+* List of all notes
 * Export all notes in GeoJson format
 * Show and follow current location
 
