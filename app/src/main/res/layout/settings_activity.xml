@@ -94,6 +94,19 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/settings_feedback_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginBottom="24dp"
+                android:text="Feeback" />
+        </RelativeLayout>
+
         <TextView
             android:id="@+id/settings_version_label"
             android:layout_width="match_parent"

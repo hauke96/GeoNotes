@@ -1,11 +1,16 @@
 package de.hauke_stieler.geonotes.settings;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.system.OsConstants;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -32,8 +37,30 @@ public class SettingsActivity extends AppCompatActivity {
 
         load();
 
-        TextView versionLabel = (TextView)findViewById(R.id.settings_version_label);
-        versionLabel.setText("Version: " + BuildConfig.VERSION_NAME);
+        TextView versionLabel = (TextView) findViewById(R.id.settings_version_label);
+        versionLabel.setText("GeoNotes version: " + BuildConfig.VERSION_NAME);
+
+        Button feedbackButton = (Button) findViewById(R.id.settings_feedback_button);
+        feedbackButton.setOnClickListener(v -> {
+            String mailDomain = getString(R.string.feedback_mail_domain);
+            String mailLocalPart = getString(R.string.feedback_mail_local_part);
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("message/rfc822");
+            i.putExtra(Intent.EXTRA_EMAIL, new String[]{mailLocalPart + "@" + mailDomain});
+            i.putExtra(Intent.EXTRA_SUBJECT, "[GeoNotes][" + BuildConfig.VERSION_NAME + "] Feedback");
+            int sdkInt = Build.VERSION.SDK_INT;
+            i.putExtra(Intent.EXTRA_TEXT, "Manufacturer: " + Build.MANUFACTURER +
+                    "\nModel: " + Build.MODEL +
+                    "\nDevice: " + Build.DEVICE +
+                    "\nSDK-Version: " + sdkInt +
+                    "\nGeoNotes-Version: " + BuildConfig.VERSION_NAME +
+                    "\n\nFeedback: ");
+            try {
+                startActivity(Intent.createChooser(i, "Choose E-Mail client"));
+            } catch (android.content.ActivityNotFoundException ex) {
+                Toast.makeText(this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void load() {
