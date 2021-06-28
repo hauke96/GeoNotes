@@ -46,8 +46,8 @@ public class NoteListActivity extends AppCompatActivity {
         List<Note> notes = database.getAllNotes();
 
         List<Note> notesWithPhoto = new ArrayList<>();
-        for (Note note: notes             ) {
-            if(database.hasPhotos(note.getId())){
+        for (Note note : notes) {
+            if (database.hasPhotos(note.getId())) {
                 notesWithPhoto.add(note);
             }
         }

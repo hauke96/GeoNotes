@@ -52,10 +52,7 @@ public class NoteListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int index, View convertView, ViewGroup parent) {
-        View view = convertView;
-        if (view == null) {
-            view = inflater.inflate(R.layout.note_list_row, null);
-        }
+        View view = inflater.inflate(R.layout.note_list_row, null);
 
         Note note = getItem(index);
         boolean noteHasPhotos = notesWithPhoto.contains(note);
