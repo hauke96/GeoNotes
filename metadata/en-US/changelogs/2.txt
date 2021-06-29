@@ -1,0 +1,4 @@
+1.0.2:
+
+* Add link to osm.org in copyright notice
+* Enable DPI dependent scaling of map tiles

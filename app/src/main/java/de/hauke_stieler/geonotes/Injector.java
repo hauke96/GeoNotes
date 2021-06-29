@@ -28,7 +28,7 @@ interface ClassBuilder<T> {
  */
 public class Injector {
     protected static Map<Class, Object> classes = new HashMap<>();
-    private static Map<Class, ClassBuilder> classBuilders = new HashMap<>();
+    protected static Map<Class, ClassBuilder> classBuilders = new HashMap<>();
     private static Context context;
     private static Activity activity;
 

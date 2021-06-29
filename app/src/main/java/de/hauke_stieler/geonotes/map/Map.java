@@ -22,6 +22,7 @@ import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
@@ -29,7 +30,9 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.R;
@@ -91,7 +94,7 @@ public class Map {
         createMarkerWindow(map);
 
         for (Note n : this.database.getAllNotes()) {
-            Marker marker = createMarker("" + n.getId(), n.getDescription(), new GeoPoint(n.getLat(), n.getLon()), markerClickListener);
+            createMarker("" + n.getId(), n.getDescription(), new GeoPoint(n.getLat(), n.getLon()), markerClickListener);
         }
     }
 
@@ -123,13 +126,6 @@ public class Map {
                 return true;
             }
 
-            // If a marker is currently selected -> deselect it
-            if (markerInfoWindow.getSelectedMarker() != null) {
-                setNormalIcon(markerInfoWindow.getSelectedMarker());
-                // We don't need to deselect the marker or close the window as we will directly assign a new marker below
-            }
-
-            centerLocationWithOffset(marker.getPosition());
             selectMarker(marker);
 
             return true;
@@ -163,8 +159,6 @@ public class Map {
                         initAndSelectMarker(p);
                     }
                 }
-
-                centerLocationWithOffset(p);
 
                 return false;
             }
@@ -255,6 +249,15 @@ public class Map {
         return location;
     }
 
+    public void selectNote(long noteId) {
+        String noteIdString = "" + noteId;
+        for (Overlay marker : map.getOverlays()) {
+            if (marker instanceof Marker && ((Marker) marker).getId().equals(noteIdString)) {
+                this.selectMarker((Marker) marker);
+            }
+        }
+    }
+
     private void selectMarker(Marker marker) {
         // Reset icon of previous selection
         Marker selectedMarker = markerInfoWindow.getSelectedMarker();
@@ -268,6 +271,12 @@ public class Map {
         markerInfoWindow.focusEditField();
 
         addImagesToMarkerWindow();
+
+        zoomToLocation(marker.getPosition(), map.getZoomLevelDouble());
+    }
+
+    private Marker getSelectedMarker() {
+        return markerInfoWindow.getSelectedMarker();
     }
 
     /**
@@ -317,11 +326,7 @@ public class Map {
         map.setTilesScaleFactor(factor);
     }
 
-    private void centerLocationWithOffset(GeoPoint p) {
-        centerLocationWithOffset(p, map.getZoomLevelDouble());
-    }
-
-    private void centerLocationWithOffset(GeoPoint p, double zoom) {
+    private void zoomToLocation(GeoPoint p, double zoom) {
         Point locationInPixels = new Point();
         map.getProjection().toPixels(p, locationInPixels);
         IGeoPoint newPoint = map.getProjection().fromPixels(locationInPixels.x, locationInPixels.y);
@@ -353,6 +358,13 @@ public class Map {
         if (!wakeLock.isHeld()) {
             wakeLock.acquire();
         }
+
+        // Before resuming (e.g. when switching back from the list of notes to the main activity),
+        // the map doesn't zoom to markers. Therefore we here zoom to the currently selected marker.
+        Marker selectedMarker = getSelectedMarker();
+        if (selectedMarker != null) {
+            zoomToLocation(selectedMarker.getPosition(), map.getZoomLevelDouble());
+        }
     }
 
     public void onPause() {
@@ -365,22 +377,12 @@ public class Map {
         }
     }
 
-    public void setLatitude(float lat) {
-        double lon = map.getMapCenter().getLongitude();
-        centerLocationWithOffset(new GeoPoint(lat, lon));
-    }
-
-    public void setLongitude(float lon) {
-        double lat = map.getMapCenter().getLatitude();
-        centerLocationWithOffset(new GeoPoint(lat, lon));
-    }
-
     public IGeoPoint getLocation() {
         return map.getMapCenter();
     }
 
     public void setLocation(float lat, float lon, float zoom) {
-        centerLocationWithOffset(new GeoPoint(lat, lon), zoom);
+        zoomToLocation(new GeoPoint(lat, lon), zoom);
     }
 
     public float getZoom() {

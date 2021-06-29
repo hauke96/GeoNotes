@@ -44,14 +44,16 @@ import de.hauke_stieler.geonotes.export.Exporter;
 import de.hauke_stieler.geonotes.map.Map;
 import de.hauke_stieler.geonotes.map.MarkerWindow;
 import de.hauke_stieler.geonotes.map.TouchDownListener;
+import de.hauke_stieler.geonotes.note_list.NoteListActivity;
 import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
 import de.hauke_stieler.geonotes.settings.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
-    private final int REQUEST_CAMERA_PERMISSIONS_REQUEST_CODE = 2;
-    static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int REQUEST_NOTE_LIST_REQUEST_CODE = 4;
+    private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 3;
+    private static final int REQUEST_CAMERA_PERMISSIONS_REQUEST_CODE = 2;
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private Map map;
     private SharedPreferences preferences;
@@ -153,6 +155,9 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.toolbar_btn_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+            case R.id.toolbar_btn_note_list:
+                startActivityForResult(new Intent(this, NoteListActivity.class), REQUEST_NOTE_LIST_REQUEST_CODE);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -275,11 +280,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // If photo-Intent was successful
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            addPhotoToDatabase(lastPhotoNoteId, lastPhotoFile);
-            addPhotoToGallery(lastPhotoFile);
-            map.addImagesToMarkerWindow();
+        // If Intent was successful
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_IMAGE_CAPTURE:
+                    addPhotoToDatabase(lastPhotoNoteId, lastPhotoFile);
+                    addPhotoToGallery(lastPhotoFile);
+                    map.addImagesToMarkerWindow();
+                    break;
+                case REQUEST_NOTE_LIST_REQUEST_CODE:
+                    long selectedNoteId = data.getLongExtra(NoteListActivity.EXTRA_CLICKED_NOTE, -1L);
+                    if (selectedNoteId != -1) {
+                        map.selectNote(selectedNoteId);
+                    }
+                    break;
+            }
         }
     }
 

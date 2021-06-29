@@ -1,0 +1,4 @@
+1.2.1:
+
+* Update arrow-icon
+* Add snapping to GPS location

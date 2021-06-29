@@ -1,6 +1,6 @@
 package de.hauke_stieler.geonotes.export;
 
-import org.junit.Assert;
+
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -8,13 +8,15 @@ import java.util.List;
 
 import de.hauke_stieler.geonotes.notes.Note;
 
+import static org.junit.Assert.assertEquals;
+
 public class GeoJsonTest {
     @Test
     public void testNoNotes() {
         // Arrange
         List<Note> notes = new ArrayList<>();
 
-        String expectedResult="{\n" +
+        String expectedResult = "{\n" +
                 "\t\"type\": \"FeatureCollection\",\n" +
                 "\t\"features\": []\n" +
                 "}";
@@ -23,7 +25,7 @@ public class GeoJsonTest {
         String actualResult = GeoJson.toGeoJson(notes);
 
         // Assert
-        Assert.assertEquals(expectedResult, actualResult);
+        assertEquals(expectedResult, actualResult);
     }
 
     @Test
@@ -32,7 +34,7 @@ public class GeoJsonTest {
         List<Note> notes = new ArrayList<>();
         notes.add(new Note(1, "foo", 1.23f, 4.56f, "2021-03-01 12:34:56"));
 
-        String expectedResult="{\n" +
+        String expectedResult = "{\n" +
                 "\t\"type\": \"FeatureCollection\",\n" +
                 "\t\"features\": [\n" +
                 "\t\t{\n" +
@@ -57,7 +59,7 @@ public class GeoJsonTest {
         String actualResult = GeoJson.toGeoJson(notes);
 
         // Assert
-        Assert.assertEquals(expectedResult, actualResult);
+        assertEquals(expectedResult, actualResult);
     }
 
     @Test
@@ -67,7 +69,7 @@ public class GeoJsonTest {
         notes.add(new Note(1, "foo", 1.23f, 4.56f, "2021-03-01 12:34:56"));
         notes.add(new Note(2, "\"bar\" with quotes", 2.34f, 5.67f, "2010-12-21 01:23:45"));
 
-        String expectedResult="{\n" +
+        String expectedResult = "{\n" +
                 "\t\"type\": \"FeatureCollection\",\n" +
                 "\t\"features\": [\n" +
                 "\t\t{\n" +
@@ -107,6 +109,6 @@ public class GeoJsonTest {
         String actualResult = GeoJson.toGeoJson(notes);
 
         // Assert
-        Assert.assertEquals(expectedResult, actualResult);
+        assertEquals(expectedResult, actualResult);
     }
 }

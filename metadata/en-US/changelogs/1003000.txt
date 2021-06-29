@@ -1,0 +1,14 @@
+1.3.0:
+
+* Notes can be exported into a GeoJson file
+* Snapping to location when tapping near location arrow/dot #24 (must be enabled in the settings menu)
+* Creation date of a note is stored and displayed
+* Annoying asking for permission has been fixed
+* Notes with at least one photo will have a different icon on the map
+* Better GPS-arrow icon
+* Bug fixed regarding device rotation
+
+Some dev changes:
+
+* Added first JUnit tests
+* Switched to a more DI (dependency injection) like way of dependency handling

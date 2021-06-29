@@ -20,6 +20,7 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.GeoNotes">
+        <activity android:name=".note_list.NoteListActivity"></activity>
         <activity
             android:name=".settings.SettingsActivity"
             android:label="@string/title_activity_settings" />

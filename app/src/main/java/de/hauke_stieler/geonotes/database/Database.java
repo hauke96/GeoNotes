@@ -68,6 +68,10 @@ public class Database extends SQLiteOpenHelper {
         return photoStore.getPhotos(getReadableDatabase(), noteId);
     }
 
+    public boolean hasPhotos(long noteId) {
+        return hasPhotos("" + noteId);
+    }
+
     public boolean hasPhotos(String noteId) {
         return getPhotos(noteId).size() > 0;
     }

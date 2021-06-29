@@ -21,20 +21,21 @@ import de.hauke_stieler.geonotes.map.Map;
 
 public class GeoNotesTestRule extends Injector implements TestRule {
 
+    static {
+        classBuilders.put(Database.class, () -> add(Database.class));
+        classBuilders.put(Exporter.class, () -> add(Exporter.class));
+        classBuilders.put(SharedPreferences.class, () -> add(SharedPreferences.class));
+        classBuilders.put(de.hauke_stieler.geonotes.map.Map.class, () -> add(Map.class));
+    }
+
     @Override
     public Statement apply(Statement base, Description description) {
-        classes = new HashMap<>();
-
-        add(Database.class);
-        add(Exporter.class);
-        add(SharedPreferences.class);
-        add(Map.class);
-
         return base;
     }
 
-    private static void add(Class<?> clazz) {
-        Object mock = Mockito.mock(clazz);
+    private static <T> T add(Class<T> clazz) {
+        T mock = Mockito.mock(clazz);
         classes.put(clazz, mock);
+        return mock;
     }
 }
