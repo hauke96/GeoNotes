@@ -39,6 +39,8 @@ public class MarkerWindow extends InfoWindow {
         void onSave(Marker marker);
 
         void onMove(Marker marker);
+
+        void onTextChanged();
     }
 
     public interface RequestPhotoEventHandler {
@@ -86,6 +88,11 @@ public class MarkerWindow extends InfoWindow {
                 }
             });
         }
+
+        // Listen to size changed such that the map can react and move the window
+        mView.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+            markerEventHandler.onTextChanged();
+        });
     }
 
     @Override

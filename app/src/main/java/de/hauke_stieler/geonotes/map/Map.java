@@ -206,6 +206,13 @@ public class Map {
                 markerToMove = marker;
                 // The new position is determined and stored in the click handler of the map
             }
+
+            @Override
+            public void onTextChanged() {
+                if (getSelectedMarker() != null) {
+                    moveMapWithMarkerWindowOnTop(getSelectedMarker());
+                }
+            }
         });
     }
 
@@ -275,6 +282,10 @@ public class Map {
 
         // Fragment not yet drawn, so we have to measure the height manually
         markerInfoWindow.getView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        moveMapWithMarkerWindowOnTop(marker);
+    }
+
+    private void moveMapWithMarkerWindowOnTop(Marker marker) {
         int markerWindowHeight = markerInfoWindow.getView().getMeasuredHeight();
 
         Point markerPositionPixel = new Point();
