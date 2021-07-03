@@ -377,7 +377,7 @@ public class Map {
     }
 
     private void zoomToLocation(IGeoPoint p, double zoom) {
-        mapController.setCenter(p);
+        mapController.setCenter(new GeoPoint(p));
         mapController.setZoom(zoom);
     }
 
