@@ -234,6 +234,10 @@ public class MarkerWindow extends InfoWindow {
         descriptionView.requestFocus();
     }
 
+    public int getHeight() {
+        return mView.getHeight();
+    }
+
     public void addPhoto(File photo) {
         int sizeInPixel = getView().getContext().getResources().getDimensionPixelSize(R.dimen.ImageButton);
         int paddingInPixel = getView().getContext().getResources().getDimensionPixelSize(R.dimen.ImageButtonPadding);

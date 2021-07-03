@@ -7,7 +7,10 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.PowerManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.MotionEvent;
+import android.view.View;
 
 import androidx.core.content.res.ResourcesCompat;
 
@@ -30,9 +33,7 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.R;
@@ -272,7 +273,36 @@ public class Map {
 
         addImagesToMarkerWindow();
 
-        zoomToLocation(marker.getPosition(), map.getZoomLevelDouble());
+        // Fragment not yet drawn, so we have to measure the height manually
+        markerInfoWindow.getView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        int markerWindowHeight = markerInfoWindow.getView().getMeasuredHeight();
+
+        Point markerPositionPixel = new Point();
+        map.getProjection().toPixels(marker.getPosition(), markerPositionPixel);
+
+        /*
+         * Center of the screen in relation to the y-coordinate of the marker such that the window
+         * is 20px below the top-edge of the map.
+         *   _________________
+         *  |   ___________   |
+         *  |  |___________|  |
+         *  |       |_|       | _  --> markerPositionPixel.y
+         *  |                 |  |
+         *  |                 |  |- distance we have to add to  markerPositionPixel.y
+         *  |                 | _|
+         *  |        X        |    --> center of the screen = Y-coordinate we need to find
+         *  |                 |
+         *  |                 |
+         *  |                 |
+         *  |                 |
+         *  |_________________|
+         */
+        int yCoordinate = markerPositionPixel.y + (map.getHeight() / 2 - markerWindowHeight - marker.getIcon().getIntrinsicHeight() - 20);
+
+        Point locationInPixels = new Point(markerPositionPixel.x, yCoordinate);
+        IGeoPoint newPoint = map.getProjection().fromPixels(locationInPixels.x, locationInPixels.y);
+
+        zoomToLocation(newPoint, map.getZoomLevelDouble());
     }
 
     private Marker getSelectedMarker() {
@@ -326,12 +356,8 @@ public class Map {
         map.setTilesScaleFactor(factor);
     }
 
-    private void zoomToLocation(GeoPoint p, double zoom) {
-        Point locationInPixels = new Point();
-        map.getProjection().toPixels(p, locationInPixels);
-        IGeoPoint newPoint = map.getProjection().fromPixels(locationInPixels.x, locationInPixels.y);
-
-        mapController.setCenter(newPoint);
+    private void zoomToLocation(IGeoPoint p, double zoom) {
+        mapController.setCenter(p);
         mapController.setZoom(zoom);
     }
 
