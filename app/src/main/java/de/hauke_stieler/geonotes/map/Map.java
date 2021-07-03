@@ -7,7 +7,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.PowerManager;
 import android.util.DisplayMetrics;
+import android.view.DragEvent;
 import android.view.MotionEvent;
+import android.view.View;
 
 import androidx.core.content.res.ResourcesCompat;
 
@@ -30,9 +32,7 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.R;
@@ -50,7 +50,6 @@ public class Map {
 
     private MarkerWindow markerInfoWindow;
     private Marker.OnMarkerClickListener markerClickListener;
-    private Marker markerToMove;
 
     private final Drawable normalIcon;
     private final Drawable normalWithPhotoIcon;
@@ -58,6 +57,10 @@ public class Map {
     private final Drawable selectedWithPhotoIcon;
 
     private boolean snapNoteToGps;
+
+    // Variables used during moving a marker. Do not use when no marker is currently in move mode (aka when markerToMove==null)
+    private Marker markerToMove;
+    private Point dragStartMarkerPosition;
 
     public Map(Context context,
                MapView map,
@@ -121,13 +124,7 @@ public class Map {
 
         // Add marker click listener. Will be called when the user clicks/taps on a marker.
         markerClickListener = (marker, mapView) -> {
-            // When we are in the state of moving an existing marker, we do not want to interact with other markers -> simply return
-            if (markerToMove != null) {
-                return true;
-            }
-
             selectMarker(marker);
-
             return true;
         };
 
@@ -135,29 +132,15 @@ public class Map {
         MapEventsReceiver mapEventsReceiver = new MapEventsReceiver() {
             @Override
             public boolean singleTapConfirmedHelper(GeoPoint p) {
-                // When we have a marker to move, set its new position, store that and disable move-state
-                if (markerToMove != null) {
-                    markerToMove.setPosition(p);
-                    selectMarker(markerToMove);
-
-                    // If the ID is set, the marker exists in the DB, therefore we store that new location
-                    String id = markerToMove.getId();
-                    if (id != null) {
-                        database.updateLocation(Long.parseLong(id), p);
-                    }
-
-                    markerToMove = null;
+                // No marker to move here -> deselect or create marker
+                // (selecting marker on the map is handles via the separate markerClickListener)
+                if (markerInfoWindow.getSelectedMarker() != null) {
+                    // Deselect selected marker:
+                    setNormalIcon(markerInfoWindow.getSelectedMarker());
+                    markerInfoWindow.close();
                 } else {
-                    // No marker to move here -> deselect or create marker
-                    // (selecting marker on the map is handles via the separate markerClickListener)
-                    if (markerInfoWindow.getSelectedMarker() != null) {
-                        // Deselect selected marker:
-                        setNormalIcon(markerInfoWindow.getSelectedMarker());
-                        markerInfoWindow.close();
-                    } else {
-                        // No marker currently selected -> create new marker at this location
-                        initAndSelectMarker(p);
-                    }
+                    // No marker currently selected -> create new marker at this location
+                    initAndSelectMarker(p);
                 }
 
                 return false;
@@ -175,8 +158,35 @@ public class Map {
     public void addMapListener(MapListener listener, TouchDownListener touchDownListener) {
         map.addMapListener(listener);
         map.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                touchDownListener.onTouchDown();
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    touchDownListener.onTouchDown();
+
+                    // Initialize movement of the marker: Store current screen-location to keep marker there
+                    if (markerToMove != null) {
+                        dragStartMarkerPosition = map.getProjection().toPixels(markerToMove.getPosition(), null);
+                    }
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    // When in drag-mode: Keep marker at original screen location by setting its position
+                    if (markerToMove != null && dragStartMarkerPosition != null) {
+                        markerToMove.setPosition((GeoPoint) map.getProjection().fromPixels(dragStartMarkerPosition.x, dragStartMarkerPosition.y));
+                    }
+                    break;
+                case MotionEvent.ACTION_UP:
+                    if (markerToMove != null) {
+                        selectMarker(markerToMove);
+
+                        // If the ID is set, the marker exists in the DB, therefore we store that new location
+                        String id = markerToMove.getId();
+                        if (id != null) {
+                            database.updateLocation(Long.parseLong(id), markerToMove.getPosition());
+                        }
+
+                        dragStartMarkerPosition = null;
+                        markerToMove = null;
+                    }
+                    break;
             }
             return false;
         });
@@ -203,7 +213,14 @@ public class Map {
             @Override
             public void onMove(Marker marker) {
                 markerToMove = marker;
-                // The new position is determined and stored in the click handler of the map
+                // The new position is determined and stored in the onTouch-handler of the map
+            }
+
+            @Override
+            public void onTextChanged() {
+                if (getSelectedMarker() != null) {
+                    moveMapWithMarkerWindowOnTop(getSelectedMarker());
+                }
             }
         });
     }
@@ -272,7 +289,40 @@ public class Map {
 
         addImagesToMarkerWindow();
 
-        zoomToLocation(marker.getPosition(), map.getZoomLevelDouble());
+        // Fragment not yet drawn, so we have to measure the height manually
+        markerInfoWindow.getView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        moveMapWithMarkerWindowOnTop(marker);
+    }
+
+    private void moveMapWithMarkerWindowOnTop(Marker marker) {
+        int markerWindowHeight = markerInfoWindow.getView().getMeasuredHeight();
+
+        Point markerPositionPixel = new Point();
+        map.getProjection().toPixels(marker.getPosition(), markerPositionPixel);
+
+        /*
+         * Center of the screen in relation to the y-coordinate of the marker such that the window
+         * is 20px below the top-edge of the map.
+         *   _________________
+         *  |   ___________   |
+         *  |  |___________|  |
+         *  |       |_|       | _  --> markerPositionPixel.y
+         *  |                 |  |
+         *  |                 |  |- distance we have to add to  markerPositionPixel.y
+         *  |                 | _|
+         *  |        X        |    --> center of the screen = Y-coordinate we need to find
+         *  |                 |
+         *  |                 |
+         *  |                 |
+         *  |                 |
+         *  |_________________|
+         */
+        int yCoordinate = markerPositionPixel.y + (map.getHeight() / 2 - markerWindowHeight - marker.getIcon().getIntrinsicHeight() - 20);
+
+        Point locationInPixels = new Point(markerPositionPixel.x, yCoordinate);
+        IGeoPoint newPoint = map.getProjection().fromPixels(locationInPixels.x, locationInPixels.y);
+
+        zoomToLocation(newPoint, map.getZoomLevelDouble());
     }
 
     private Marker getSelectedMarker() {
@@ -326,12 +376,8 @@ public class Map {
         map.setTilesScaleFactor(factor);
     }
 
-    private void zoomToLocation(GeoPoint p, double zoom) {
-        Point locationInPixels = new Point();
-        map.getProjection().toPixels(p, locationInPixels);
-        IGeoPoint newPoint = map.getProjection().fromPixels(locationInPixels.x, locationInPixels.y);
-
-        mapController.setCenter(newPoint);
+    private void zoomToLocation(IGeoPoint p, double zoom) {
+        mapController.setCenter(new GeoPoint(p));
         mapController.setZoom(zoom);
     }
 

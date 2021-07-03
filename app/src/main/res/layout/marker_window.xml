@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="350dp"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white"
     android:maxWidth="350dp"
     android:minWidth="350dp"
     android:orientation="vertical"
-    android:padding="5dp">
+    android:clickable="true"
+    android:focusable="true">
 
     <EditText
         android:id="@+id/bubble_description"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="wrap_content"
         android:gravity="top"
         android:inputType="text|textMultiLine" />
 
