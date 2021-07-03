@@ -1,0 +1,5 @@
+1.4.1:
+
+* Change the marker move behavior: The map moves underneath the marker to reposition it
+* Fix color issue on menu in the toolbar
+* Fix positioning of the marker window
