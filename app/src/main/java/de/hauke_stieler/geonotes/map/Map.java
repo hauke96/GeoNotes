@@ -33,8 +33,8 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import java.io.File;
 import java.util.List;
 
-import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.R;
+import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.notes.Note;
 
 public class Map {
@@ -110,8 +110,6 @@ public class Map {
         map.getOverlays().add(this.locationOverlay);
 
         // Add rotation overlay
-//        RotationGestureOverlay rotationGestureOverlay = new RotationGestureOverlay(map);
-//        rotationGestureOverlay.setEnabled(true);
         SnappableRotationOverlay rotationGestureOverlay = new SnappableRotationOverlay(map);
         map.setMultiTouchControls(true);
         map.getOverlays().add(rotationGestureOverlay);
