@@ -115,8 +115,9 @@ public class Map {
         map.getOverlays().add(rotationGestureOverlay);
 
         // Add compass
-        CompassOverlay compassOverlay = new CompassOverlay(context, new InternalCompassOrientationProvider(context), map);
+        CompassOverlay compassOverlay = new CompassOverlay(context, new MapRotationOrientationProvider(map), map);
         compassOverlay.enableCompass();
+        compassOverlay.setPointerMode(true);
         map.getOverlays().add(compassOverlay);
 
         // Add scale bar
