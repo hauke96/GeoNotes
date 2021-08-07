@@ -7,7 +7,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.PowerManager;
 import android.util.DisplayMetrics;
-import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -109,6 +108,13 @@ public class Map {
         locationOverlay.setDirectionArrow(locationIcon.getBitmap(), arrowIcon.getBitmap());
         locationOverlay.setPersonHotspot(32, 32);
         map.getOverlays().add(this.locationOverlay);
+
+        // Add rotation overlay
+//        RotationGestureOverlay rotationGestureOverlay = new RotationGestureOverlay(map);
+//        rotationGestureOverlay.setEnabled(true);
+        SnappableRotationOverlay rotationGestureOverlay = new SnappableRotationOverlay(map);
+        map.setMultiTouchControls(true);
+        map.getOverlays().add(rotationGestureOverlay);
 
         // Add compass
         CompassOverlay compassOverlay = new CompassOverlay(context, new InternalCompassOrientationProvider(context), map);
