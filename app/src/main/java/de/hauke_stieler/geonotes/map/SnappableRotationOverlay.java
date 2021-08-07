@@ -4,13 +4,16 @@ import android.view.MotionEvent;
 
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Overlay;
+import org.osmdroid.views.overlay.compass.IOrientationConsumer;
+import org.osmdroid.views.overlay.compass.IOrientationProvider;
 import org.osmdroid.views.overlay.gestures.RotationGestureDetector;
 
 public class SnappableRotationOverlay extends Overlay implements
-        RotationGestureDetector.RotationListener {
+        RotationGestureDetector.RotationListener, IOrientationProvider {
 
     private final RotationGestureDetector mRotationDetector;
-    private final MapView mMapView;
+    private final MapView map;
+    private IOrientationConsumer orientationConsumer;
 
     private final long deltaTime = 25L;
     private long timeLastSet = 0L;
@@ -22,7 +25,7 @@ public class SnappableRotationOverlay extends Overlay implements
 
     public SnappableRotationOverlay(MapView mapView) {
         super();
-        mMapView = mapView;
+        map = mapView;
         mRotationDetector = new RotationGestureDetector(this);
     }
 
@@ -47,7 +50,30 @@ public class SnappableRotationOverlay extends Overlay implements
 
         if (System.currentTimeMillis() - deltaTime > timeLastSet && rotationSnapped) {
             timeLastSet = System.currentTimeMillis();
-            mMapView.setMapOrientation(mMapView.getMapOrientation() + currentAngle);
+            map.setMapOrientation(map.getMapOrientation() + currentAngle);
+            orientationConsumer.onOrientationChanged(map.getMapOrientation(), this);
         }
+    }
+
+    @Override
+    public boolean startOrientationProvider(IOrientationConsumer orientationConsumer) {
+        this.orientationConsumer = orientationConsumer;
+        orientationConsumer.onOrientationChanged(currentAngle, this);
+        return true;
+    }
+
+    @Override
+    public void stopOrientationProvider() {
+        orientationConsumer = null;
+    }
+
+    @Override
+    public float getLastKnownOrientation() {
+        return currentAngle;
+    }
+
+    @Override
+    public void destroy() {
+        stopOrientationProvider();
     }
 }

@@ -26,7 +26,6 @@ import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
-import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
@@ -115,9 +114,9 @@ public class Map {
         map.getOverlays().add(rotationGestureOverlay);
 
         // Add compass
-        CompassOverlay compassOverlay = new CompassOverlay(context, new MapRotationOrientationProvider(map), map);
-        compassOverlay.enableCompass();
+        CompassOverlay compassOverlay = new CompassOverlay(context, rotationGestureOverlay, map);
         compassOverlay.setPointerMode(true);
+        compassOverlay.enableCompass();
         map.getOverlays().add(compassOverlay);
 
         // Add scale bar
