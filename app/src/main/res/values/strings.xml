@@ -7,6 +7,7 @@
     <string name="pref_zoom_buttons">PREF_ZOOM_BUTTONS</string>
     <string name="pref_map_scaling">PREF_MAP_SCALING</string>
     <string name="pref_snap_note_gps">PREF_SNAP_NOTE_GPS</string>
+    <string name="pref_enable_rotating_map">PREF_ENABLE_ROTATING_MAP</string>
     <string name="pref_last_location_lat">PREF_LAST_LOCATION_LAT</string>
     <string name="pref_last_location_lon">PREF_LAST_LOCATION_LON</string>
     <string name="pref_last_location_zoom">PREF_LAST_LOCATION_ZOOM</string>
