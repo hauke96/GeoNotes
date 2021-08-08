@@ -4,7 +4,7 @@
 A simple app to create and manage georeferenced notes (text and photos) on a map. The goal is to create the notes very fast and without any unnecessary UI/UX overhead.
 
 <p align="center">
-<img src="screenshots.png" alt="GeoNotes Screenshots" height="500"/>
+<img src="screenshots.png" alt="GeoNotes Screenshots"/>
 </p>
 
 ## Get it
