@@ -72,6 +72,6 @@ public class Injector {
 
     private static de.hauke_stieler.geonotes.map.Map buildMap() {
         MapView mapView = activity.findViewById(R.id.map);
-        return new de.hauke_stieler.geonotes.map.Map(context, mapView, get(Database.class));
+        return new de.hauke_stieler.geonotes.map.Map(context, mapView, get(Database.class), get(SharedPreferences.class));
     }
 }

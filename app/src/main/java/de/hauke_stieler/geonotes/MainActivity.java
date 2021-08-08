@@ -107,28 +107,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void loadPreferences() {
-        for (String key : preferences.getAll().keySet()) {
-            preferenceChanged(preferences, key);
-        }
+        boolean showZoomButtons = preferences.getBoolean(getString(R.string.pref_zoom_buttons), true);
+        map.setZoomButtonVisibility(showZoomButtons);
+
+        float mapScale = preferences.getFloat(getString(R.string.pref_map_scaling), 1.0f);
+        map.setMapScaleFactor(mapScale);
+
+        boolean snapNoteToGps = preferences.getBoolean(getString(R.string.pref_snap_note_gps), false);
+        map.setSnapNoteToGps(snapNoteToGps);
+
+        boolean enableRotatingMap1 = preferences.getBoolean(getString(R.string.pref_enable_rotating_map), false);
+        map.updateMapRotationBehavior(enableRotatingMap1);
 
         float lat = preferences.getFloat(getString(R.string.pref_last_location_lat), 0f);
         float lon = preferences.getFloat(getString(R.string.pref_last_location_lon), 0f);
         float zoom = preferences.getFloat(getString(R.string.pref_last_location_zoom), 2);
 
         map.setLocation(lat, lon, zoom);
-    }
-
-    private void preferenceChanged(SharedPreferences pref, String key) {
-        if (getString(R.string.pref_zoom_buttons).equals(key)) {
-            boolean showZoomButtons = pref.getBoolean(key, true);
-            map.setZoomButtonVisibility(showZoomButtons);
-        } else if (getString(R.string.pref_map_scaling).equals(key)) {
-            float mapScale = pref.getFloat(key, 1.0f);
-            map.setMapScaleFactor(mapScale);
-        } else if (getString(R.string.pref_snap_note_gps).equals(key)) {
-            boolean snapNoteToGps = pref.getBoolean(key, false);
-            map.setSnapNoteToGps(snapNoteToGps);
-        }
     }
 
     @Override

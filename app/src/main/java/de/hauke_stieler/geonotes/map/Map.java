@@ -2,12 +2,12 @@ package de.hauke_stieler.geonotes.map;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.PowerManager;
 import android.util.DisplayMetrics;
-import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -27,21 +27,22 @@ import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
-import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.io.File;
 import java.util.List;
 
-import de.hauke_stieler.geonotes.database.Database;
+import de.hauke_stieler.geonotes.Injector;
 import de.hauke_stieler.geonotes.R;
+import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.notes.Note;
 
 public class Map {
     private final Context context;
     private final PowerManager.WakeLock wakeLock;
     private final Database database;
+    private SharedPreferences preferences;
 
     private final MapView map;
     private final IMapController mapController;
@@ -62,12 +63,17 @@ public class Map {
     private Marker markerToMove;
     private Point dragStartMarkerPosition;
 
+    private SnappableRotationOverlay rotationGestureOverlay;
+    private ClickableMapCompass compassOverlay;
+
     public Map(Context context,
                MapView map,
-               Database database) {
+               Database database,
+               SharedPreferences preferences) {
         this.context = context;
         this.map = map;
         this.database = database;
+        this.preferences = preferences;
 
         // Keep device on
         final PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
@@ -93,7 +99,7 @@ public class Map {
         GeoPoint startPoint = new GeoPoint(53.563, 9.9866);
         mapController.setCenter(startPoint);
 
-        createOverlays(context, map, (BitmapDrawable) locationIcon, (BitmapDrawable) arrowIcon);
+        createOverlays((BitmapDrawable) locationIcon, (BitmapDrawable) arrowIcon);
         createMarkerWindow(map);
 
         for (Note n : this.database.getAllNotes()) {
@@ -101,7 +107,7 @@ public class Map {
         }
     }
 
-    private void createOverlays(Context context, MapView map, BitmapDrawable locationIcon, BitmapDrawable arrowIcon) {
+    private void createOverlays(BitmapDrawable locationIcon, BitmapDrawable arrowIcon) {
         // Add location icon
         gpsLocationProvider = new GpsMyLocationProvider(context);
         locationOverlay = new MyLocationNewOverlay(gpsLocationProvider, map);
@@ -110,10 +116,10 @@ public class Map {
         locationOverlay.setPersonHotspot(32, 32);
         map.getOverlays().add(this.locationOverlay);
 
-        // Add compass
-        CompassOverlay compassOverlay = new CompassOverlay(context, new InternalCompassOrientationProvider(context), map);
-        compassOverlay.enableCompass();
-        map.getOverlays().add(compassOverlay);
+        // Add rotation overlay
+        rotationGestureOverlay = new SnappableRotationOverlay(map);
+        map.setMultiTouchControls(true);
+        map.getOverlays().add(rotationGestureOverlay);
 
         // Add scale bar
         final DisplayMetrics dm = context.getResources().getDisplayMetrics();
@@ -152,6 +158,17 @@ public class Map {
             }
         };
         map.getOverlays().add(new MapEventsOverlay(mapEventsReceiver));
+
+        // Add compass after mapEventReceiver so that a click on the compass does not create a new note
+        compassOverlay = new ClickableMapCompass(context, rotationGestureOverlay, map);
+        compassOverlay.enableCompass();
+        map.getOverlays().add(compassOverlay);
+    }
+
+    public void updateMapRotationBehavior(boolean rotatingMapEnabled) {
+        rotationGestureOverlay.resetRotation();
+        rotationGestureOverlay.setEnabled(rotatingMapEnabled);
+        compassOverlay.setPointerMode(rotatingMapEnabled);
     }
 
     @SuppressLint("ClickableViewAccessibility")
