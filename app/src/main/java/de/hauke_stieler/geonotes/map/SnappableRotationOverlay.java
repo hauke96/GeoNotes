@@ -41,6 +41,10 @@ public class SnappableRotationOverlay extends Overlay implements
 
     @Override
     public void onRotate(float deltaAngle) {
+        if (!isEnabled() || orientationConsumer == null) {
+            return;
+        }
+
         currentAngle += deltaAngle;
         currentSnapAngle += deltaAngle;
 
@@ -83,6 +87,8 @@ public class SnappableRotationOverlay extends Overlay implements
         currentSnapAngle = 0f;
 
         map.setMapOrientation(currentAngle);
-        orientationConsumer.onOrientationChanged(currentAngle, this);
+        if (orientationConsumer != null) {
+            orientationConsumer.onOrientationChanged(currentAngle, this);
+        }
     }
 }

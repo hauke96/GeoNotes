@@ -72,6 +72,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         boolean prefSnapNoteGps = preferences.getBoolean(getString(R.string.pref_snap_note_gps), false);
         ((Switch) findViewById(R.id.settings_snap_note_gps)).setChecked(prefSnapNoteGps);
+
+        boolean prefEnableRotatingMap = preferences.getBoolean(getString(R.string.pref_enable_rotating_map), false);
+        ((Switch) findViewById(R.id.settings_enable_rotating_map)).setChecked(prefEnableRotatingMap);
     }
 
     private void save() {
@@ -94,6 +97,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         boolean gpsSnapSwitchChecked = ((Switch) findViewById(R.id.settings_snap_note_gps)).isChecked();
         editor.putBoolean(getString(R.string.pref_snap_note_gps), gpsSnapSwitchChecked);
+
+        boolean enableRotatingMapChecked = ((Switch) findViewById(R.id.settings_enable_rotating_map)).isChecked();
+        editor.putBoolean(getString(R.string.pref_enable_rotating_map), enableRotatingMapChecked);
 
         editor.commit();
     }
