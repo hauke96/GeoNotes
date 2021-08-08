@@ -76,4 +76,13 @@ public class SnappableRotationOverlay extends Overlay implements
     public void destroy() {
         stopOrientationProvider();
     }
+
+    public void resetRotation() {
+        currentAngle = 0;
+        rotationSnapped = false;
+        currentSnapAngle = 0f;
+
+        map.setMapOrientation(currentAngle);
+        orientationConsumer.onOrientationChanged(currentAngle, this);
+    }
 }

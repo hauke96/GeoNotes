@@ -113,12 +113,6 @@ public class Map {
         map.setMultiTouchControls(true);
         map.getOverlays().add(rotationGestureOverlay);
 
-        // Add compass
-        CompassOverlay compassOverlay = new CompassOverlay(context, rotationGestureOverlay, map);
-        compassOverlay.setPointerMode(true);
-        compassOverlay.enableCompass();
-        map.getOverlays().add(compassOverlay);
-
         // Add scale bar
         final DisplayMetrics dm = context.getResources().getDisplayMetrics();
         ScaleBarOverlay scaleBarOverlay = new ScaleBarOverlay(map);
@@ -156,6 +150,12 @@ public class Map {
             }
         };
         map.getOverlays().add(new MapEventsOverlay(mapEventsReceiver));
+
+        // Add compass after mapEventReceiver so that a click on the compass does not create a new note
+        CompassOverlay compassOverlay = new ClickableMapCompass(context, rotationGestureOverlay, map);
+        compassOverlay.setPointerMode(true);
+        compassOverlay.enableCompass();
+        map.getOverlays().add(compassOverlay);
     }
 
     @SuppressLint("ClickableViewAccessibility")
