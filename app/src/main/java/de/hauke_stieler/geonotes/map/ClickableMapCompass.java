@@ -11,7 +11,7 @@ import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 
 public class ClickableMapCompass extends CompassOverlay {
-    private SnappableRotationOverlay orientationProvider;
+    private final SnappableRotationOverlay orientationProvider;
 
     public ClickableMapCompass(Context context, SnappableRotationOverlay orientationProvider, MapView mapView) {
         super(context, orientationProvider, mapView);
@@ -20,10 +20,13 @@ public class ClickableMapCompass extends CompassOverlay {
 
     @Override
     public boolean onSingleTapConfirmed(MotionEvent e, MapView mapView) {
-        Point pixelPosition = mapView.getProjection().rotateAndScalePoint((int)e.getX(), (int)e.getY(), null);
+        Point pixelPosition = mapView.getProjection().rotateAndScalePoint((int) e.getX(), (int) e.getY(), null);
         return hitTest(pixelPosition.x, pixelPosition.y);
     }
 
+    /**
+     * Checks in a hacky way whether the given pixel position is roughly within the compass rose.
+     */
     private boolean hitTest(float x, float y) {
         float xStart = mCompassFrameCenterX - mCompassFrameBitmap.getWidth() / 2f;
         float xEnd = mCompassFrameCenterX + mCompassFrameBitmap.getWidth() / 2f;
