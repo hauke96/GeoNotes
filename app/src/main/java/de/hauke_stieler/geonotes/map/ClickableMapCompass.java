@@ -10,6 +10,10 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 
+/**
+ * A normal compass rose which can be clicked to reset the rotation overlays rotation (and therefore
+ * to reset the maps rotation).
+ */
 public class ClickableMapCompass extends CompassOverlay {
     private final SnappableRotationOverlay orientationProvider;
 

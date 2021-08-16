@@ -26,14 +26,12 @@ import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
-import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.io.File;
 import java.util.List;
 
-import de.hauke_stieler.geonotes.Injector;
 import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.notes.Note;
@@ -118,6 +116,7 @@ public class Map {
 
         // Add rotation overlay
         rotationGestureOverlay = new SnappableRotationOverlay(map);
+        rotationGestureOverlay.setRotationActionListener(this::saveMapRotationProperty);
         map.setMultiTouchControls(true);
         map.getOverlays().add(rotationGestureOverlay);
 
@@ -165,9 +164,14 @@ public class Map {
         map.getOverlays().add(compassOverlay);
     }
 
-    public void updateMapRotationBehavior(boolean rotatingMapEnabled) {
-        rotationGestureOverlay.resetRotation();
-        rotationGestureOverlay.setEnabled(rotatingMapEnabled);
+    private void saveMapRotationProperty(float angle) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putFloat(context.getString(R.string.pref_map_rotation), angle);
+        editor.commit();
+    }
+
+    public void updateMapRotation(boolean rotatingMapEnabled, float angle) {
+        rotationGestureOverlay.setEnabledAndRotation(rotatingMapEnabled, angle);
         compassOverlay.setPointerMode(rotatingMapEnabled);
     }
 

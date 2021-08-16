@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
 
         @SuppressLint("RestrictedApi")
         TouchDownListener touchDownListener = () -> {
-            ActionMenuItemView menuItem = (ActionMenuItemView) findViewById(R.id.toolbar_btn_gps_follow);
+            ActionMenuItemView menuItem = findViewById(R.id.toolbar_btn_gps_follow);
             if (menuItem != null) {
                 menuItem.setIcon(getResources().getDrawable(R.drawable.ic_location_searching));
             }
