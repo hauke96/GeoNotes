@@ -96,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
         exporter = Injector.get(Exporter.class);
 
         createMap();
-        loadPreferences();
     }
 
     private void createMap() {
@@ -116,8 +115,9 @@ public class MainActivity extends AppCompatActivity {
         boolean snapNoteToGps = preferences.getBoolean(getString(R.string.pref_snap_note_gps), false);
         map.setSnapNoteToGps(snapNoteToGps);
 
-        boolean enableRotatingMap1 = preferences.getBoolean(getString(R.string.pref_enable_rotating_map), false);
-        map.updateMapRotationBehavior(enableRotatingMap1);
+        boolean enableRotatingMap = preferences.getBoolean(getString(R.string.pref_enable_rotating_map), false);
+        float mapRotation = preferences.getFloat(getString(R.string.pref_map_rotation), 0f);
+        map.updateMapRotation(enableRotatingMap, mapRotation);
 
         float lat = preferences.getFloat(getString(R.string.pref_last_location_lat), 0f);
         float lon = preferences.getFloat(getString(R.string.pref_last_location_lon), 0f);
