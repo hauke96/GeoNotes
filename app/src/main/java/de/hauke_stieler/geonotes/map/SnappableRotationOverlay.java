@@ -35,13 +35,23 @@ public class SnappableRotationOverlay extends Overlay implements
     private IOrientationConsumer orientationConsumer;
     private RotationActionListener rotationActionListener;
 
-    private final long deltaTime = 25L;
-    private long timeLastSet = 0L;
+    private final long rotationUpdateDelay = 25L; // in ms
+    private long lastMapRotation = 0L;
     private float currentAngle = 0f;
+    private float currentMotionAngle = 0f; // Angle rotated since start of interaction/motion
 
-    private final float minSnapAngle = 15; // Amount of rotation before map actually rotates
-    private float currentSnapAngle = 0f; // Angle rotated since start of interaction
-    private boolean rotationSnapped = false; // True when the user first reached the minSnapAngle
+    /**
+     * Amount of rotation before map actually rotates. Before this amount of rotation the map is
+     * "locked" and therefore doesn't rotate. This prevent unwanted rotation while zooming.
+     */
+    private final float rotationLockMinAngle = 15;
+    /**
+     * True when the user started rotating and hasn't yet reached the "rotationLockMinAngle".
+     * <p>
+     * False when the user rotated at least "rotationLockMinAngle", the rotation-lock has now been
+     * released/deactivated.
+     */
+    private boolean rotationLocked = true;
 
     public SnappableRotationOverlay(MapView mapView) {
         super();
@@ -52,8 +62,8 @@ public class SnappableRotationOverlay extends Overlay implements
     @Override
     public boolean onTouchEvent(MotionEvent event, MapView mapView) {
         if (event.getPointerCount() < 2) {
-            rotationSnapped = false;
-            currentSnapAngle = 0f;
+            rotationLocked = true;
+            currentMotionAngle = 0f;
         }
         if (event.getPointerCount() == 2 && rotationActionListener != null) {
             int action = event.getAction();
@@ -77,15 +87,18 @@ public class SnappableRotationOverlay extends Overlay implements
         }
 
         currentAngle += deltaAngle;
-        currentSnapAngle += deltaAngle;
+        currentMotionAngle += deltaAngle;
 
-        if (!rotationSnapped && Math.abs(currentSnapAngle) > minSnapAngle) {
-            rotationSnapped = true;
+        boolean rotationPassedLockMinValue = Math.abs(currentMotionAngle) > rotationLockMinAngle;
+        if (rotationLocked && rotationPassedLockMinValue) {
+            rotationLocked = false;
         }
 
-        if (System.currentTimeMillis() - deltaTime > timeLastSet && rotationSnapped) {
-            timeLastSet = System.currentTimeMillis();
-            map.setMapOrientation(map.getMapOrientation() + currentAngle);
+        long now = System.currentTimeMillis();
+        boolean passedMapRotationDelay = now - rotationUpdateDelay > this.lastMapRotation;
+        if (passedMapRotationDelay && !rotationLocked) {
+            this.lastMapRotation = now;
+            map.setMapOrientation(map.getMapOrientation() + currentMotionAngle);
             orientationConsumer.onOrientationChanged(map.getMapOrientation(), this);
         }
     }
@@ -134,8 +147,8 @@ public class SnappableRotationOverlay extends Overlay implements
 
     private void setRotation(float newAngle) {
         currentAngle = newAngle;
-        rotationSnapped = false;
-        currentSnapAngle = newAngle;
+        rotationLocked = true;
+        currentMotionAngle = 0;
 
         map.setMapOrientation(currentAngle);
         if (orientationConsumer != null) {
