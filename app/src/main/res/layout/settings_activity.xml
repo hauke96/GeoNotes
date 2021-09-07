@@ -127,7 +127,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_marginBottom="24dp"
-                android:text="Feeback" />
+                android:text="Feedback" />
         </RelativeLayout>
 
         <TextView
