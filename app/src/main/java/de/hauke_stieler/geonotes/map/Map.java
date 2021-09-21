@@ -37,6 +37,11 @@ import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.notes.Note;
 
 public class Map {
+
+    public interface DeletePhotoEventHandler {
+        void onDeletePhoto(File photoFile);
+    }
+
     private final Context context;
     private final PowerManager.WakeLock wakeLock;
     private final Database database;
@@ -49,6 +54,7 @@ public class Map {
 
     private MarkerWindow markerInfoWindow;
     private Marker.OnMarkerClickListener markerClickListener;
+    private DeletePhotoEventHandler deletePhotoEventHandler;
 
     private final Drawable normalIcon;
     private final Drawable normalWithPhotoIcon;
@@ -176,7 +182,8 @@ public class Map {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    public void addMapListener(MapListener listener, TouchDownListener touchDownListener) {
+    public void addMapListener(MapListener listener, TouchDownListener touchDownListener, DeletePhotoEventHandler deletePhotoEventHandler) {
+        this.deletePhotoEventHandler = deletePhotoEventHandler;
         map.addMapListener(listener);
         map.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
@@ -219,6 +226,7 @@ public class Map {
             @Override
             public void onDelete(Marker marker) {
                 // We always have an ID and can therefore delete the note
+                deletePhotoEventHandler.onDeletePhoto(database.getPhotoFile(Long.parseLong(marker.getId()), context.getExternalFilesDir("GeoNotes")));
                 database.removeNote(Long.parseLong(marker.getId()));
                 database.removePhotos(Long.parseLong(marker.getId()), context.getExternalFilesDir("GeoNotes"));
                 map.getOverlays().remove(marker);

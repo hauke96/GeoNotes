@@ -68,6 +68,10 @@ public class Database extends SQLiteOpenHelper {
         return photoStore.getPhotos(getReadableDatabase(), noteId);
     }
 
+    public String getPhoto(String noteId) {
+        return photoStore.getPhotos(getReadableDatabase(), noteId).get(0);
+    }
+
     public boolean hasPhotos(long noteId) {
         return hasPhotos("" + noteId);
     }
@@ -81,13 +85,18 @@ public class Database extends SQLiteOpenHelper {
 
         photoStore.removePhotos(getWritableDatabase(), noteId);
 
-        for(String photo:photos){
+        for (String photo : photos) {
             File photoFile = new File(storageDir, photo);
             File thumbnailFile = ThumbnailUtil.getThumbnailFile(photoFile);
 
             photoFile.delete();
             thumbnailFile.delete();
         }
+    }
+
+    public File getPhotoFile(long noteId, File storageDir) {
+        String photoFileString = getPhoto("" + noteId);
+        return new File(storageDir, photoFileString);
     }
 
     public Note getNote(String noteId) {

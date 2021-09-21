@@ -2,11 +2,14 @@ package de.hauke_stieler.geonotes;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -36,6 +39,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 import de.hauke_stieler.geonotes.common.FileHelper;
@@ -233,7 +237,9 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        map.addMapListener(delayedMapListener, touchDownListener);
+        Map.DeletePhotoEventHandler deletePhotoEventHandler = this::removePhotoFromGallery;
+
+        map.addMapListener(delayedMapListener, touchDownListener, deletePhotoEventHandler);
     }
 
     /**
@@ -328,6 +334,37 @@ public class MainActivity extends AppCompatActivity {
         values.put(MediaStore.Images.Media.DATA, photoFile.toString());
 
         getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+    }
+
+    private void removePhotoFromGallery(File photoFile) {
+//        Uri photoURI = FileHelper.getFileUri(this, photoFile);
+//        getContentResolver().delete(photoURI, null);
+
+//        MediaStore.createDeleteRequest(getContentResolver(), Collections.singletonList(photoURI));
+
+
+        // Set up the projection (we only need the ID)
+        String[] projection = {MediaStore.Images.Media._ID};
+
+// Match on the file path
+        String selection = MediaStore.Images.Media.DATA + " = ?";
+        String[] selectionArgs = new String[]{photoFile.getAbsolutePath()};
+
+// Query for the ID of the media matching the file path
+        Uri queryUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        ContentResolver contentResolver = getContentResolver();
+        Cursor c = contentResolver.query(queryUri, projection, selection, selectionArgs, null);
+        if (c.moveToFirst()) {
+            // We found the ID. Deleting the item via the content provider will also remove the file
+            long id = c.getLong(c.getColumnIndexOrThrow(MediaStore.Images.Media._ID));
+            Uri deleteUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
+            contentResolver.delete(deleteUri, null, null);
+        } else {
+            // File not found in media store DB
+        }
+        c.close();
+
+
     }
 
     /**
