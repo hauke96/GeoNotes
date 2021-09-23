@@ -226,9 +226,11 @@ public class Map {
             @Override
             public void onDelete(Marker marker) {
                 // We always have an ID and can therefore delete the note
-                deletePhotoEventHandler.onDeletePhoto(database.getPhotoFile(Long.parseLong(marker.getId()), context.getExternalFilesDir("GeoNotes")));
+                if (database.hasPhotos(marker.getId())) {
+                    deletePhotoEventHandler.onDeletePhoto(database.getPhotoFile(Long.parseLong(marker.getId()), context.getExternalFilesDir("GeoNotes")));
+                    database.removePhotos(Long.parseLong(marker.getId()), context.getExternalFilesDir("GeoNotes"));
+                }
                 database.removeNote(Long.parseLong(marker.getId()));
-                database.removePhotos(Long.parseLong(marker.getId()), context.getExternalFilesDir("GeoNotes"));
                 map.getOverlays().remove(marker);
             }
 
