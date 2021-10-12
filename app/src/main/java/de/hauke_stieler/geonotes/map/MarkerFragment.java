@@ -50,6 +50,16 @@ public class MarkerFragment extends Fragment {
         void onRequestPhoto(Long noteId);
     }
 
+    /**
+     * The state of the fragment describes the actions that are possible.
+     * <p>
+     * In NEW-state the user should not be able to add photos because no note exists yet.
+     * <p>
+     * During DRAGGING no actions are possible because the user is busy dragging the map, therefore
+     * a notice-panel is shown.
+     * <p>
+     * When EDITING a note, the normal buttons and input field are visible.
+     */
     public enum State {
         DRAGGING,
         NEW,
