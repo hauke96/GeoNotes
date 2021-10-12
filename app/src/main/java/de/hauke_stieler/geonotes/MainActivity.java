@@ -250,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
      * Adds a listener for the camera button. The camera action can only be performed from within an activity.
      */
     private void addCameraListener() {
-        MarkerWindow.RequestPhotoEventHandler requestPhotoEventHandler = (Long noteId) -> {
+        MarkerFragment.RequestPhotoEventHandler requestPhotoEventHandler = (Long noteId) -> {
             if (!hasPermission(Manifest.permission.CAMERA) || !hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 // We don't have camera and/or storage permissions -> ask for them
                 ActivityCompat.requestPermissions(

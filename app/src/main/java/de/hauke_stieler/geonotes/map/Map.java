@@ -244,11 +244,6 @@ public class Map {
             public void onTextChanged() {
                 // TODO remove this handler
             }
-
-            @Override
-            public void onRequestPhoto(Long noteId) {
-                // TODO
-            }
         });
     }
 
@@ -444,8 +439,8 @@ public class Map {
         return this.locationOverlay.isFollowLocationEnabled();
     }
 
-    public void addRequestPhotoHandler(MarkerWindow.RequestPhotoEventHandler requestPhotoEventHandler) {
-        // TODO this.markerInfoWindow.addRequestPhotoHandler(requestPhotoEventHandler);
+    public void addRequestPhotoHandler(MarkerFragment.RequestPhotoEventHandler requestPhotoEventHandler) {
+        this.markerFragment.addRequestPhotoHandler(requestPhotoEventHandler);
     }
 
     public void setSnapNoteToGps(boolean snapNoteToGps) {

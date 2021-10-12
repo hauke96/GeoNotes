@@ -48,11 +48,14 @@ public class MarkerFragment extends Fragment {
         void onMove(Marker marker);
 
         void onTextChanged();
+    }
 
+    public interface RequestPhotoEventHandler {
         void onRequestPhoto(Long noteId);
     }
 
     private MarkerFragmentEventHandler markerEventHandler;
+    private RequestPhotoEventHandler requestPhotoHandler;
     private Marker selectedMarker;
     private final Database database;
 
@@ -66,6 +69,10 @@ public class MarkerFragment extends Fragment {
         this.markerEventHandler = markerEventHandler;
     }
 
+    void addRequestPhotoHandler(RequestPhotoEventHandler handler) {
+        requestPhotoHandler = handler;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -73,17 +80,7 @@ public class MarkerFragment extends Fragment {
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
-        // Show/hide keyboard on edit field focus
         EditText descriptionView = view.findViewById(R.id.bubble_description);
-//        descriptionView.setOnFocusChangeListener((v, hasFocus) -> {
-//            InputMethodManager inputMethodManager = (InputMethodManager) mView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-//            if (hasFocus) {
-//                inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
-//            } else {
-//                inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-//            }
-//        });
-
         descriptionView.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -163,7 +160,7 @@ public class MarkerFragment extends Fragment {
 
         ImageButton cameraButton = mView.findViewById(R.id.camera_button);
         cameraButton.setOnClickListener(v -> {
-            markerEventHandler.onRequestPhoto(Long.parseLong(marker.getId()));
+            requestPhotoHandler.onRequestPhoto(Long.parseLong(marker.getId()));
         });
     }
 
