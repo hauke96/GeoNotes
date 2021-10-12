@@ -75,7 +75,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Injector.registerActivity(this);
 
-        MarkerFragment markerFragment = new MarkerFragment();
+        database = Injector.get(Database.class);
+        MarkerFragment markerFragment = new MarkerFragment(database);
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -101,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.CAMERA
         });
 
-        database = Injector.get(Database.class);
         preferences = Injector.get(SharedPreferences.class);
         exporter = Injector.get(Exporter.class);
 
