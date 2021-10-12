@@ -100,11 +100,12 @@ public class MarkerFragment extends Fragment {
 
     public void selectMarker(Marker marker, boolean transferEditTextContent) {
         selectedMarker = marker;
+
         Note note = database.getNote(marker.getId());
-        View mView = this.getView();
+        View view = getView();
 
         // Title
-        TextView titleView = mView.findViewById(R.id.bubble_title);
+        TextView titleView = view.findViewById(R.id.bubble_title);
         String title = marker.getTitle();
         if (title != null && titleView != null) {
             titleView.setText(title);
@@ -112,7 +113,7 @@ public class MarkerFragment extends Fragment {
 
         // Creation date
         try {
-            TextView creationDateLabel = mView.findViewById(R.id.creation_date_label);
+            TextView creationDateLabel = view.findViewById(R.id.creation_date_label);
             if (creationDateLabel != null) {
                 Date time = note.getCreationDateTime().getTime();
                 String creationDateString = DateFormat.getDateFormat(getView().getContext()).format(time) + " " + DateFormat.getTimeFormat(getView().getContext()).format(time);
@@ -127,7 +128,7 @@ public class MarkerFragment extends Fragment {
 
         // Use already typed text
         if (transferEditTextContent) {
-            description = ((EditText) mView.findViewById(R.id.bubble_description)).getText().toString();
+            description = ((EditText) view.findViewById(R.id.bubble_description)).getText().toString();
         } else { // Use text from marker
             description = marker.getSnippet();
             if (description == null) {
@@ -139,30 +140,30 @@ public class MarkerFragment extends Fragment {
         description = StringEscapeUtils.escapeHtml4(description).replace("\n", "<br>");
 
         Spanned snippetHtml = Html.fromHtml(description);
-        EditText descriptionView = mView.findViewById(R.id.bubble_description);
+        EditText descriptionView = view.findViewById(R.id.bubble_description);
         if (descriptionView != null) {
             descriptionView.setText(snippetHtml);
         }
 
-        Button deleteButton = mView.findViewById(R.id.delete_button);
+        Button deleteButton = view.findViewById(R.id.delete_button);
         deleteButton.setOnClickListener(v -> {
             markerEventHandler.onDelete(marker);
             reset();
         });
 
-        Button saveButton = mView.findViewById(R.id.save_button);
+        Button saveButton = view.findViewById(R.id.save_button);
         saveButton.setOnClickListener(v -> {
             markerEventHandler.onSave(marker);
             reset();
         });
 
-        Button moveButton = mView.findViewById(R.id.move_button);
+        Button moveButton = view.findViewById(R.id.move_button);
         moveButton.setOnClickListener(v -> {
             markerEventHandler.onMove(marker);
             reset();
         });
 
-        ImageButton cameraButton = mView.findViewById(R.id.camera_button);
+        ImageButton cameraButton = view.findViewById(R.id.camera_button);
         cameraButton.setOnClickListener(v -> {
             requestPhotoHandler.onRequestPhoto(Long.parseLong(marker.getId()));
         });
