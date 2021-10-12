@@ -98,6 +98,13 @@ public class MarkerFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        setButtonPanelVisibility(false);
+    }
+
     public void selectMarker(Marker marker, boolean transferEditTextContent) {
         selectedMarker = marker;
 
@@ -144,6 +151,9 @@ public class MarkerFragment extends Fragment {
         if (descriptionView != null) {
             descriptionView.setText(snippetHtml);
         }
+
+        // Button
+        setButtonPanelVisibility(true);
 
         Button deleteButton = view.findViewById(R.id.delete_button);
         deleteButton.setOnClickListener(v -> {
@@ -217,5 +227,12 @@ public class MarkerFragment extends Fragment {
 
         LinearLayout photoLayout = getView().findViewById(R.id.note_image_pane);
         photoLayout.removeAllViews();
+
+        setButtonPanelVisibility(false);
+    }
+
+    private void setButtonPanelVisibility(boolean visible) {
+        getView().findViewById(R.id.button_panel).setVisibility(visible ? View.VISIBLE : View.GONE);
+        getView().findViewById(R.id.new_note_notice).setVisibility(visible ? View.GONE : View.VISIBLE);
     }
 }
