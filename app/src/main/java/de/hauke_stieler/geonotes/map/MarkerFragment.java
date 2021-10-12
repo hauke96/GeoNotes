@@ -1,6 +1,5 @@
 package de.hauke_stieler.geonotes.map;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -13,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -26,7 +24,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import org.apache.commons.text.StringEscapeUtils;
-import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 
 import java.io.File;
@@ -62,7 +59,7 @@ public class MarkerFragment extends Fragment {
     private final Database database;
 
     public MarkerFragment(Database database) {
-        super(R.layout.marker_window);
+        super(R.layout.marker_fragment);
 
         this.database = database;
     }
