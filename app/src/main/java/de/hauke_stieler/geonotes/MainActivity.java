@@ -95,8 +95,6 @@ public class MainActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.copyright)).setMovementMethod(LinkMovementMethod.getInstance());
         ((TextView) findViewById(R.id.copyright)).setText(Html.fromHtml("© <a href=\"https://openstreetmap.org/copyright\">OpenStreetMap</a> contributors"));
 
-        final Context context = getApplicationContext();
-
         requestPermissionsIfNecessary(new String[]{
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.ACCESS_FINE_LOCATION,

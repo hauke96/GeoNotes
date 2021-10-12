@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
@@ -13,25 +13,16 @@
         android:elevation="5dp"
         android:theme="@style/ToolbarTheme" />
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/map_marker_fragment"
         android:orientation="vertical">
 
         <org.osmdroid.views.MapView
             android:id="@+id/map"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent" />
-
-        <androidx.fragment.app.FragmentContainerView
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/map_marker_fragment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:windowSoftInputMode="stateVisible|adjustPan"
-            android:name="de.hauke_stieler.geonotes.map.MarkerFragment" />
-
+            android:layout_height="match_parent" />
 
         <TextView
             android:id="@+id/copyright"
@@ -43,4 +34,11 @@
             android:padding="8dp"
             android:text="© OpenStreetMap contributors ODbL" />
     </RelativeLayout>
-</LinearLayout>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/map_marker_fragment"
+        android:name="de.hauke_stieler.geonotes.map.MarkerFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
+</RelativeLayout>
