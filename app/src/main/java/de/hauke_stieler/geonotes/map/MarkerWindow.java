@@ -33,6 +33,8 @@ import de.hauke_stieler.geonotes.notes.Note;
 import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
 
 public class MarkerWindow extends InfoWindow {
+    private static String LOGTAG = MarkerWindow.class.getName();
+
     public interface MarkerEventHandler {
         void onDelete(Marker marker);
 
@@ -100,11 +102,11 @@ public class MarkerWindow extends InfoWindow {
     @Override
     public void onOpen(Object item) {
         if (mView == null) {
-            Log.w(IMapView.LOGTAG, "Error trapped, BasicInfoWindow.open, mView is null!");
+            Log.w(LOGTAG, "Error trapped, MarkerWindow.open, mView is null!");
             return;
         }
         if (!(item instanceof Marker)) {
-            Log.e(IMapView.LOGTAG, "Opened item is not a marker!");
+            Log.e(LOGTAG, "Opened item is not a marker!");
             return;
         }
 
@@ -128,7 +130,7 @@ public class MarkerWindow extends InfoWindow {
                 creationDateLabel.setText(creationDateString);
             }
         } catch (Exception e) {
-            Log.e("MarkerWindow", String.format("Could not create creation date label for note %d with date string '%s'", note.getId(), note.getCreationDateTimeString()));
+            Log.e(LOGTAG, String.format("Could not create creation date label for note %d with date string '%s'", note.getId(), note.getCreationDateTimeString()));
         }
 
         // Description / Snippet
@@ -136,6 +138,8 @@ public class MarkerWindow extends InfoWindow {
         if (snippet == null) {
             snippet = "";
         }
+
+        // Escape as HTML to make sure line breaks are handled correctly everywhere
         snippet = StringEscapeUtils.escapeHtml4(snippet).replace("\n", "<br>");
 
         Spanned snippetHtml = Html.fromHtml(snippet);
