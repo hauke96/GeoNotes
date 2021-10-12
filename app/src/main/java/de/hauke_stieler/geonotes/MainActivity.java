@@ -2,7 +2,6 @@ package de.hauke_stieler.geonotes;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,6 +24,7 @@ import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
 
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.events.DelayedMapListener;
@@ -42,6 +42,7 @@ import de.hauke_stieler.geonotes.common.FileHelper;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.export.Exporter;
 import de.hauke_stieler.geonotes.map.Map;
+import de.hauke_stieler.geonotes.map.MarkerFragment;
 import de.hauke_stieler.geonotes.map.MarkerWindow;
 import de.hauke_stieler.geonotes.map.TouchDownListener;
 import de.hauke_stieler.geonotes.note_list.NoteListActivity;
@@ -73,6 +74,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Injector.registerActivity(this);
+
+        MarkerFragment markerFragment = new MarkerFragment();
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .setReorderingAllowed(true)
+                    .add(R.id.map_marker_fragment, markerFragment, null)
+                    .commit();
+        }
+
+        Injector.put(markerFragment);
 
         setContentView(R.layout.activity_main);
 

@@ -32,6 +32,7 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import java.io.File;
 import java.util.List;
 
+import de.hauke_stieler.geonotes.Injector;
 import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.notes.Note;
@@ -48,6 +49,7 @@ public class Map {
     private GpsMyLocationProvider gpsLocationProvider;
 
     private MarkerWindow markerInfoWindow;
+    private MarkerFragment markerFragment;
     private Marker.OnMarkerClickListener markerClickListener;
 
     private final Drawable normalIcon;
@@ -72,6 +74,9 @@ public class Map {
         this.map = map;
         this.database = database;
         this.preferences = preferences;
+
+        markerFragment = Injector.get(MarkerFragment.class);
+        addMarkerFragmentEventHandler(markerFragment);
 
         // Keep device on
         final PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
@@ -242,6 +247,43 @@ public class Map {
                 if (getSelectedMarker() != null) {
                     moveMapWithMarkerWindowOnTop(getSelectedMarker());
                 }
+            }
+        });
+    }
+
+    private void addMarkerFragmentEventHandler(MarkerFragment fragment) {
+        fragment.addEventHandler(new MarkerFragment.MarkerFragmentEventHandler() {
+            @Override
+            public void onDelete(Marker marker) {
+                // We always have an ID and can therefore delete the note
+                database.removeNote(Long.parseLong(marker.getId()));
+                database.removePhotos(Long.parseLong(marker.getId()), context.getExternalFilesDir("GeoNotes"));
+                map.getOverlays().remove(marker);
+            }
+
+            @Override
+            public void onSave(Marker marker) {
+                // We always have an ID and can therefore update the note
+                database.updateDescription(Long.parseLong(marker.getId()), marker.getSnippet());
+                setNormalIcon(marker);
+            }
+
+            @Override
+            public void onMove(Marker marker) {
+                markerToMove = marker;
+                // The new position is determined and stored in the onTouch-handler of the map
+            }
+
+            @Override
+            public void onTextChanged() {
+                if (getSelectedMarker() != null) {
+                    moveMapWithMarkerWindowOnTop(getSelectedMarker());
+                }
+            }
+
+            @Override
+            public void onRequestPhoto(Long noteId) {
+                // TODO
             }
         });
     }

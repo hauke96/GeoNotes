@@ -7,11 +7,11 @@
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        android:theme="@style/ToolbarTheme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/primary"
-        android:elevation="5dp" />
+        android:elevation="5dp"
+        android:theme="@style/ToolbarTheme" />
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
@@ -22,6 +22,16 @@
             android:id="@+id/map"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" />
+
+        <androidx.fragment.app.FragmentContainerView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/map_marker_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:windowSoftInputMode="stateVisible|adjustPan"
+            android:name="de.hauke_stieler.geonotes.map.MarkerFragment" />
+
 
         <TextView
             android:id="@+id/copyright"

@@ -59,6 +59,10 @@ public class Injector {
         return (T) instance;
     }
 
+    public static void put(Object instance) {
+        classes.put(instance.getClass(), instance);
+    }
+
     private static Database buildDatabase() {
         return new Database(context);
     }
