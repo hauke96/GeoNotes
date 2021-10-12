@@ -94,7 +94,7 @@ public class MarkerFragment extends Fragment {
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
-        EditText descriptionView = view.findViewById(R.id.bubble_description);
+        EditText descriptionView = view.findViewById(R.id.note_description);
         descriptionView.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -154,7 +154,7 @@ public class MarkerFragment extends Fragment {
 
         // Use already typed text
         if (transferEditTextContent) {
-            description = ((EditText) view.findViewById(R.id.bubble_description)).getText().toString();
+            description = ((EditText) view.findViewById(R.id.note_description)).getText().toString();
         } else { // Use text from marker
             description = marker.getSnippet();
             if (description == null) {
@@ -166,7 +166,7 @@ public class MarkerFragment extends Fragment {
         description = StringEscapeUtils.escapeHtml4(description).replace("\n", "<br>");
 
         Spanned snippetHtml = Html.fromHtml(description);
-        EditText descriptionView = view.findViewById(R.id.bubble_description);
+        EditText descriptionView = view.findViewById(R.id.note_description);
         if (descriptionView != null) {
             descriptionView.setText(snippetHtml);
         }
@@ -210,7 +210,7 @@ public class MarkerFragment extends Fragment {
             return;
         }
 
-        LinearLayout photoLayout = getView().findViewById(R.id.note_image_pane);
+        LinearLayout photoLayout = getView().findViewById(R.id.note_image_panel);
         photoLayout.removeAllViews();
     }
 
@@ -232,7 +232,7 @@ public class MarkerFragment extends Fragment {
         // Get thumbnail that can be shown on image button
         imageButton.setImageBitmap(ThumbnailUtil.loadThumbnail(photo));
 
-        LinearLayout photoLayout = getView().findViewById(R.id.note_image_pane);
+        LinearLayout photoLayout = getView().findViewById(R.id.note_image_panel);
         photoLayout.addView(imageButton);
 
         Space space = new Space(getView().getContext());
@@ -244,9 +244,9 @@ public class MarkerFragment extends Fragment {
         // First reset the marker, so that change events fired by input fields do not have any effect
         selectedMarker = null;
 
-        ((EditText) getView().findViewById(R.id.bubble_description)).setText("");
+        ((EditText) getView().findViewById(R.id.note_description)).setText("");
 
-        LinearLayout photoLayout = getView().findViewById(R.id.note_image_pane);
+        LinearLayout photoLayout = getView().findViewById(R.id.note_image_panel);
         photoLayout.removeAllViews();
 
         state = State.NEW;

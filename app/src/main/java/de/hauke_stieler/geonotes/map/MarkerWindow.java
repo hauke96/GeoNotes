@@ -18,7 +18,6 @@ import android.widget.Space;
 import android.widget.TextView;
 
 import org.apache.commons.text.StringEscapeUtils;
-import org.osmdroid.api.IMapView;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.infowindow.InfoWindow;
@@ -49,7 +48,7 @@ public class MarkerWindow extends InfoWindow {
         void onRequestPhoto(Long noteId);
     }
 
-    static int mDescriptionId = R.id.bubble_description;
+    static int mDescriptionId = R.id.note_description;
 
     private final Database database;
     private final MarkerEventHandler markerEventHandler;
@@ -185,7 +184,7 @@ public class MarkerWindow extends InfoWindow {
             return;
         }
 
-        LinearLayout photoLayout = getView().findViewById(R.id.note_image_pane);
+        LinearLayout photoLayout = getView().findViewById(R.id.note_image_panel);
         photoLayout.removeAllViews();
     }
 
@@ -220,7 +219,7 @@ public class MarkerWindow extends InfoWindow {
         // Get thumbnail that can be shown on image button
         imageButton.setImageBitmap(ThumbnailUtil.loadThumbnail(photo));
 
-        LinearLayout photoLayout = getView().findViewById(R.id.note_image_pane);
+        LinearLayout photoLayout = getView().findViewById(R.id.note_image_panel);
         photoLayout.addView(imageButton);
 
         Space space = new Space(getView().getContext());
