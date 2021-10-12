@@ -1,105 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:clickable="true"
-    android:focusable="true"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/new_note_notice"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/layout_drag_notice"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Text for a new note:" />
+        android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/bubble_description"
-        android:layout_width="match_parent"
-        android:layout_height="65dp"
-        android:gravity="top"
-        android:inputType="text|textMultiLine" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:text="1. Move the map\n2. Release your finger to save location" />
+    </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/button_panel"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/layout_note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:clickable="true"
+        android:focusable="true"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/creation_date_label"
+            android:id="@+id/new_note_notice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:textSize="5pt" />
+            android:layout_margin="5dp"
+            android:text="Text for a new note:" />
 
-        <Space
+        <EditText
+            android:id="@+id/bubble_description"
             android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:layout_weight="1" />
+            android:layout_height="65dp"
+            android:gravity="top"
+            android:inputType="text|textMultiLine" />
 
         <LinearLayout
+            android:id="@+id/button_panel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="left">
+            android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/camera_button"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                android:layout_width="55dp"
-                android:layout_height="55dp"
-                android:padding="10dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_add_a_photo"
-                android:tint="@color/primary" />
-
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <LinearLayout
-                    android:id="@+id/note_image_pane"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal" />
-            </HorizontalScrollView>
-        </LinearLayout>
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:layout_weight="1" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/move_button"
+            <TextView
+                android:id="@+id/creation_date_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_move"
-                android:text="Move" />
-
-            <Button
-                android:id="@+id/delete_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_delete"
-                android:text="Delete" />
+                android:layout_marginLeft="5dp"
+                android:textSize="5pt" />
 
             <Space
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
                 android:layout_weight="1" />
 
-            <Button
-                android:id="@+id/save_button"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_save"
-                android:text="OK" />
+                android:gravity="left">
+
+                <ImageButton
+                    android:id="@+id/camera_button"
+                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:padding="10dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_add_a_photo"
+                    android:tint="@color/primary" />
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:id="@+id/note_image_pane"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" />
+                </HorizontalScrollView>
+            </LinearLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_weight="1" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/move_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_move"
+                    android:text="Move" />
+
+                <Button
+                    android:id="@+id/delete_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_delete"
+                    android:text="Delete" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:id="@+id/save_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_save"
+                    android:text="OK" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

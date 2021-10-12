@@ -50,9 +50,16 @@ public class MarkerFragment extends Fragment {
         void onRequestPhoto(Long noteId);
     }
 
+    public enum State {
+        DRAGGING,
+        NEW,
+        EDITING
+    }
+
     private MarkerFragmentEventHandler markerEventHandler;
     private RequestPhotoEventHandler requestPhotoHandler;
     private Marker selectedMarker;
+    private State state;
 
     private final Database database;
 
@@ -102,11 +109,13 @@ public class MarkerFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        setButtonPanelVisibility(false);
+        state = State.NEW;
+        updatePanelVisibility();
     }
 
     public void selectMarker(Marker marker, boolean transferEditTextContent) {
         selectedMarker = marker;
+        state = State.EDITING;
 
         Note note = database.getNote(marker.getId());
         View view = getView();
@@ -153,7 +162,7 @@ public class MarkerFragment extends Fragment {
         }
 
         // Button
-        setButtonPanelVisibility(true);
+        updatePanelVisibility();
 
         Button deleteButton = view.findViewById(R.id.delete_button);
         deleteButton.setOnClickListener(v -> {
@@ -169,8 +178,10 @@ public class MarkerFragment extends Fragment {
 
         Button moveButton = view.findViewById(R.id.move_button);
         moveButton.setOnClickListener(v -> {
+            state = State.DRAGGING;
+            updatePanelVisibility();
+
             markerEventHandler.onMove(marker);
-            reset();
         });
 
         ImageButton cameraButton = view.findViewById(R.id.camera_button);
@@ -228,11 +239,30 @@ public class MarkerFragment extends Fragment {
         LinearLayout photoLayout = getView().findViewById(R.id.note_image_pane);
         photoLayout.removeAllViews();
 
-        setButtonPanelVisibility(false);
+        state = State.NEW;
+        updatePanelVisibility();
     }
 
-    private void setButtonPanelVisibility(boolean visible) {
-        getView().findViewById(R.id.button_panel).setVisibility(visible ? View.VISIBLE : View.GONE);
-        getView().findViewById(R.id.new_note_notice).setVisibility(visible ? View.GONE : View.VISIBLE);
+    private void updatePanelVisibility() {
+        // Default state: Note panel with buttons visible
+        getView().findViewById(R.id.layout_drag_notice).setVisibility(View.GONE);
+        getView().findViewById(R.id.layout_note).setVisibility(View.VISIBLE);
+
+        getView().findViewById(R.id.button_panel).setVisibility(View.VISIBLE);
+        getView().findViewById(R.id.new_note_notice).setVisibility(View.GONE);
+
+        switch (state) {
+            case DRAGGING:
+                getView().findViewById(R.id.layout_drag_notice).setVisibility(View.VISIBLE);
+                getView().findViewById(R.id.layout_note).setVisibility(View.GONE);
+                break;
+            case NEW:
+                getView().findViewById(R.id.button_panel).setVisibility(View.GONE);
+                getView().findViewById(R.id.new_note_notice).setVisibility(View.VISIBLE);
+                break;
+            case EDITING:
+                // This is the above configured default case, nothing to do here.
+                break;
+        }
     }
 }
