@@ -280,7 +280,6 @@ public class MainActivity extends AppCompatActivity {
             switch (requestCode) {
                 case REQUEST_IMAGE_CAPTURE:
                     addPhotoToDatabase(lastPhotoNoteId, lastPhotoFile);
-                    addPhotoToGallery(lastPhotoFile);
                     map.addImagesToMarkerWindow();
                     break;
                 case REQUEST_NOTE_LIST_REQUEST_CODE:
@@ -316,18 +315,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             Toast.makeText(getApplicationContext(), "Creating thumbnail failed", Toast.LENGTH_SHORT);
         }
-    }
-
-    private void addPhotoToGallery(File photoFile) {
-        ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.Media.TITLE, photoFile.getName());
-        values.put(MediaStore.Images.Media.DISPLAY_NAME, photoFile.getName());
-        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg");
-        values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis());
-        values.put(MediaStore.Images.Media.DATE_TAKEN, photoFile.lastModified());
-        values.put(MediaStore.Images.Media.DATA, photoFile.toString());
-
-        getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
     }
 
     /**
