@@ -31,6 +31,7 @@ import org.osmdroid.events.DelayedMapListener;
 import org.osmdroid.events.MapListener;
 import org.osmdroid.events.ScrollEvent;
 import org.osmdroid.events.ZoomEvent;
+import org.osmdroid.views.MapView;
 
 import java.io.File;
 import java.io.IOException;
@@ -75,19 +76,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Injector.registerActivity(this);
 
-        database = Injector.get(Database.class);
-        MarkerFragment markerFragment = new MarkerFragment(database);
-
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .setReorderingAllowed(true)
-                    .add(R.id.map_marker_fragment, markerFragment, null)
-                    .commit();
-        }
-
-        Injector.put(markerFragment);
-
         setContentView(R.layout.activity_main);
+
+        database = Injector.get(Database.class);
+        preferences = Injector.get(SharedPreferences.class);
+        exporter = Injector.get(Exporter.class);
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -102,10 +95,21 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.CAMERA
         });
 
-        preferences = Injector.get(SharedPreferences.class);
-        exporter = Injector.get(Exporter.class);
-
+        createMarkerFragment(savedInstanceState);
         createMap();
+    }
+
+    private void createMarkerFragment(Bundle savedInstanceState) {
+        MarkerFragment markerFragment = new MarkerFragment(database);
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .setReorderingAllowed(true)
+                    .add(R.id.map_marker_fragment, markerFragment, null)
+                    .commit();
+        }
+
+        Injector.put(markerFragment);
     }
 
     private void createMap() {

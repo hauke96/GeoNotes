@@ -26,6 +26,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import org.apache.commons.text.StringEscapeUtils;
+import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 
 import java.io.File;
@@ -57,6 +58,7 @@ public class MarkerFragment extends Fragment {
     private MarkerFragmentEventHandler markerEventHandler;
     private RequestPhotoEventHandler requestPhotoHandler;
     private Marker selectedMarker;
+
     private final Database database;
 
     public MarkerFragment(Database database) {
@@ -88,7 +90,7 @@ public class MarkerFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(selectedMarker != null) {
+                if (selectedMarker != null) {
                     selectedMarker.setSnippet(s.toString());
                 }
             }
@@ -101,7 +103,7 @@ public class MarkerFragment extends Fragment {
         return view;
     }
 
-    public void selectMarker(Marker marker){
+    public void selectMarker(Marker marker, boolean transferEditTextContent) {
         selectedMarker = marker;
         Note note = database.getNote(marker.getId());
         View mView = this.getView();
@@ -126,15 +128,22 @@ public class MarkerFragment extends Fragment {
         }
 
         // Description / Snippet
-        String snippet = marker.getSnippet();
-        if (snippet == null) {
-            snippet = "";
+        String description = "";
+
+        // Use already typed text
+        if (transferEditTextContent) {
+            description = ((EditText) mView.findViewById(R.id.bubble_description)).getText().toString();
+        } else { // Use text from marker
+            description = marker.getSnippet();
+            if (description == null) {
+                description = "";
+            }
         }
 
         // Escape as HTML to make sure line breaks are handled correctly everywhere
-        snippet = StringEscapeUtils.escapeHtml4(snippet).replace("\n", "<br>");
+        description = StringEscapeUtils.escapeHtml4(description).replace("\n", "<br>");
 
-        Spanned snippetHtml = Html.fromHtml(snippet);
+        Spanned snippetHtml = Html.fromHtml(description);
         EditText descriptionView = mView.findViewById(R.id.bubble_description);
         if (descriptionView != null) {
             descriptionView.setText(snippetHtml);
@@ -143,19 +152,19 @@ public class MarkerFragment extends Fragment {
         Button deleteButton = mView.findViewById(R.id.delete_button);
         deleteButton.setOnClickListener(v -> {
             markerEventHandler.onDelete(marker);
-//            TODO close();
+            reset();
         });
 
         Button saveButton = mView.findViewById(R.id.save_button);
         saveButton.setOnClickListener(v -> {
             markerEventHandler.onSave(marker);
-//            TODO close();
+            reset();
         });
 
         Button moveButton = mView.findViewById(R.id.move_button);
         moveButton.setOnClickListener(v -> {
             markerEventHandler.onMove(marker);
-//            TODO close();
+            reset();
         });
 
         ImageButton cameraButton = mView.findViewById(R.id.camera_button);
@@ -202,5 +211,15 @@ public class MarkerFragment extends Fragment {
         Space space = new Space(getView().getContext());
         space.setLayoutParams(new LinearLayout.LayoutParams(paddingInPixel, ViewGroup.LayoutParams.WRAP_CONTENT));
         photoLayout.addView(space);
+    }
+
+    public void reset() {
+        // First reset the marker, so that change events fired by input fields do not have any effect
+        selectedMarker = null;
+
+        ((EditText) getView().findViewById(R.id.bubble_description)).setText("");
+
+        LinearLayout photoLayout = getView().findViewById(R.id.note_image_pane);
+        photoLayout.removeAllViews();
     }
 }

@@ -9,7 +9,6 @@ import android.graphics.drawable.Drawable;
 import android.os.PowerManager;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
-import android.view.View;
 
 import androidx.core.content.res.ResourcesCompat;
 
@@ -132,7 +131,7 @@ public class Map {
 
         // Add marker click listener. Will be called when the user clicks/taps on a marker.
         markerClickListener = (marker, mapView) -> {
-            selectMarker(marker);
+            selectMarker(marker, false);
             return true;
         };
 
@@ -145,8 +144,8 @@ public class Map {
                 if (markerFragment.getSelectedMarker() != null) {
                     // Deselect selected marker:
                     setNormalIcon(markerFragment.getSelectedMarker());
-
-                    // TODO markerFragment.close();
+                    markerFragment.reset();
+                    redraw();
                 } else {
                     // No marker currently selected -> create new marker at this location
                     initAndSelectMarker(p);
@@ -200,7 +199,7 @@ public class Map {
                     break;
                 case MotionEvent.ACTION_UP:
                     if (markerToMove != null) {
-                        selectMarker(markerToMove);
+                        selectMarker(markerToMove, false);
 
                         // If the ID is set, the marker exists in the DB, therefore we store that new location
                         String id = markerToMove.getId();
@@ -225,6 +224,7 @@ public class Map {
                 database.removeNote(Long.parseLong(marker.getId()));
                 database.removePhotos(Long.parseLong(marker.getId()), context.getExternalFilesDir("GeoNotes"));
                 map.getOverlays().remove(marker);
+                redraw();
             }
 
             @Override
@@ -232,12 +232,13 @@ public class Map {
                 // We always have an ID and can therefore update the note
                 database.updateDescription(Long.parseLong(marker.getId()), marker.getSnippet());
                 setNormalIcon(marker);
+                redraw();
             }
 
             @Override
             public void onMove(Marker marker) {
                 markerToMove = marker;
-                // The new position is determined and stored in the onTouch-handler of the map
+                redraw();
             }
 
             @Override
@@ -245,6 +246,11 @@ public class Map {
                 // TODO remove this handler
             }
         });
+    }
+
+    // This forces a re-draw of the map. Otherwise changes will only be visible when moving the map after e.g. the selected marker changed.
+    private void redraw() {
+        map.postInvalidate();
     }
 
     /**
@@ -258,7 +264,7 @@ public class Map {
         }
 
         Marker newMarker = createMarker("" + id, "", location, markerClickListener);
-        selectMarker(newMarker);
+        selectMarker(newMarker, true);
     }
 
     /**
@@ -292,27 +298,34 @@ public class Map {
         String noteIdString = "" + noteId;
         for (Overlay marker : map.getOverlays()) {
             if (marker instanceof Marker && ((Marker) marker).getId().equals(noteIdString)) {
-                this.selectMarker((Marker) marker);
+                this.selectMarker((Marker) marker, false);
             }
         }
     }
 
-    private void selectMarker(Marker marker) {
-        // Reset icon of previous selection
+    /**
+     * @param marker                  The marker to select.
+     * @param transferEditTextContent When set to true: If the user typed any text into the input
+     *                                field without a selected note and *then* tapped on the map
+     *                                to create or select one, this prior entered text schould be
+     *                                used as the content of the note.
+     *                                When set to false: The text of the tapped note will be read
+     *                                and shown in the edit field.
+     */
+    private void selectMarker(Marker marker, boolean transferEditTextContent) {
+        // Deselect previously selected marker
         Marker selectedMarker = markerFragment.getSelectedMarker();
         if (selectedMarker != null) {
             // This icon will not be the selected marker after "showInfoWindow", therefore we set the normal icon here.
             setNormalIcon(selectedMarker);
+            markerFragment.reset();
         }
 
         setSelectedIcon(marker);
-        markerFragment.selectMarker(marker);
-//        TODO will man das noch? markerFragment.focusEditField();
+        markerFragment.selectMarker(marker, transferEditTextContent);
 
         addImagesToMarkerWindow();
-
-        // Force a re-draw of the map. Otherwise changes will only be visible when moving the map.
-        map.postInvalidate();
+        redraw();
     }
 
     private Marker getSelectedMarker() {
