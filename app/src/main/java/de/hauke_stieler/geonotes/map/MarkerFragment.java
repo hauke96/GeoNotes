@@ -1,5 +1,6 @@
 package de.hauke_stieler.geonotes.map;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -8,6 +9,7 @@ import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -215,18 +217,20 @@ public class MarkerFragment extends Fragment {
     }
 
     public void addPhoto(File photo) {
-        int sizeInPixel = getView().getContext().getResources().getDimensionPixelSize(R.dimen.ImageButton);
-        int paddingInPixel = getView().getContext().getResources().getDimensionPixelSize(R.dimen.ImageButtonPadding);
+        Context context = getView().getContext();
 
-        ImageButton imageButton = new ImageButton(getView().getContext());
+        int sizeInPixel = context.getResources().getDimensionPixelSize(R.dimen.ImageButton);
+        int paddingInPixel = context.getResources().getDimensionPixelSize(R.dimen.ImageButtonPadding);
+
+        ImageButton imageButton = new ImageButton(context);
         imageButton.setLayoutParams(new LinearLayout.LayoutParams(sizeInPixel, sizeInPixel));
         imageButton.setPadding(paddingInPixel, paddingInPixel, paddingInPixel, paddingInPixel);
         imageButton.setOnClickListener(v -> {
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
-            intent.setDataAndType(FileHelper.getFileUri(getView().getContext(), photo), "image/jpg");
+            intent.setDataAndType(FileHelper.getFileUri(context, photo), "image/jpg");
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            getView().getContext().startActivity(intent);
+            context.startActivity(intent);
         });
 
         // Get thumbnail that can be shown on image button
@@ -235,7 +239,7 @@ public class MarkerFragment extends Fragment {
         LinearLayout photoLayout = getView().findViewById(R.id.note_image_panel);
         photoLayout.addView(imageButton);
 
-        Space space = new Space(getView().getContext());
+        Space space = new Space(context);
         space.setLayoutParams(new LinearLayout.LayoutParams(paddingInPixel, ViewGroup.LayoutParams.WRAP_CONTENT));
         photoLayout.addView(space);
     }

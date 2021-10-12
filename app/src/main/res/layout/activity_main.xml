@@ -17,6 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/map_marker_fragment"
+        android:layout_below="@+id/toolbar"
         android:orientation="vertical">
 
         <org.osmdroid.views.MapView
@@ -30,9 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:background="@color/white_transparent"
-            android:clickable="true"
-            android:padding="8dp"
-            android:text="© OpenStreetMap contributors ODbL" />
+            android:padding="3dp" />
     </RelativeLayout>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"

@@ -31,7 +31,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="Text for a new note:" />
+            android:layout_marginBottom="0dp"
+            android:text="Enter text for a new note:" />
 
         <EditText
             android:id="@+id/note_description"
@@ -66,9 +67,10 @@
                 <ImageButton
                     android:id="@+id/camera_button"
                     style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                    android:layout_width="55dp"
-                    android:layout_height="55dp"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
                     android:padding="10dp"
+                    android:layout_marginLeft="5dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_add_a_photo"
                     android:tint="@color/primary" />
@@ -81,7 +83,8 @@
                         android:id="@+id/note_image_panel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal" />
+                        android:orientation="horizontal" >
+                    </LinearLayout>
                 </HorizontalScrollView>
             </LinearLayout>
 
