@@ -15,8 +15,13 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import org.osmdroid.tileprovider.modules.SqlTileWriter;
+import org.osmdroid.views.MapView;
+
 import de.hauke_stieler.geonotes.BuildConfig;
+import de.hauke_stieler.geonotes.Injector;
 import de.hauke_stieler.geonotes.R;
+import de.hauke_stieler.geonotes.map.Map;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -26,6 +31,8 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
+
+        MapView mapView = Injector.get(MapView.class);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -39,6 +46,28 @@ public class SettingsActivity extends AppCompatActivity {
 
         TextView versionLabel = (TextView) findViewById(R.id.settings_version_label);
         versionLabel.setText("GeoNotes version: " + BuildConfig.VERSION_NAME);
+
+        Button clearCacheButton = (Button) findViewById(R.id.settings_clear_cache);
+        clearCacheButton.setOnClickListener(v -> {
+            findViewById(R.id.settings_clear_cache_loading_spinner).setVisibility(View.VISIBLE);
+            clearCacheButton.setEnabled(false);
+
+            new Thread(() -> {
+                SqlTileWriter sqlTileWriter = new SqlTileWriter();
+                boolean cacheCleared = sqlTileWriter.purgeCache();
+
+                this.runOnUiThread(() -> {
+                    findViewById(R.id.settings_clear_cache_loading_spinner).setVisibility(View.GONE);
+                    clearCacheButton.setEnabled(true);
+
+                    if (cacheCleared) {
+                        Toast.makeText(this, "Cache cleared", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "Error clearing cache", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }).start();
+        });
 
         Button feedbackButton = (Button) findViewById(R.id.settings_feedback_button);
         feedbackButton.setOnClickListener(v -> {
