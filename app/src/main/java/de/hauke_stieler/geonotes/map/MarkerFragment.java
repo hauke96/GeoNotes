@@ -44,8 +44,6 @@ public class MarkerFragment extends Fragment {
         void onSave(Marker marker);
 
         void onMove(Marker marker);
-
-        void onTextChanged();
     }
 
     public interface RequestPhotoEventHandler {

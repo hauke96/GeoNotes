@@ -240,11 +240,6 @@ public class Map {
                 markerToMove = marker;
                 redraw();
             }
-
-            @Override
-            public void onTextChanged() {
-                // TODO remove this handler
-            }
         });
     }
 
