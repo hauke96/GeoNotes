@@ -144,12 +144,10 @@ public class Map {
                 if (markerFragment.getSelectedMarker() != null) {
                     // Deselect selected marker:
                     setNormalIcon(markerFragment.getSelectedMarker());
-                    markerFragment.reset();
-                    redraw();
-                } else {
-                    // No marker currently selected -> create new marker at this location
-                    initAndSelectMarker(p);
                 }
+
+                // Create new marker at this location and select it
+                initAndSelectMarker(p);
 
                 return false;
             }

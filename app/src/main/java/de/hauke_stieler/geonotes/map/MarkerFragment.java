@@ -14,12 +14,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Space;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -94,9 +96,22 @@ public class MarkerFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
+        // Resize window when the keyboard popups up
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
         EditText descriptionView = view.findViewById(R.id.note_description);
+
+        // Show/hide keyboard on edit field focus
+        descriptionView.setOnFocusChangeListener((v, hasFocus) -> {
+            InputMethodManager inputMethodManager = (InputMethodManager) descriptionView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (hasFocus) {
+                inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+            } else {
+                inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+            }
+        });
+
+        // React to changed text and update the content of the marker
         descriptionView.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -152,25 +167,26 @@ public class MarkerFragment extends Fragment {
         }
 
         // Description / Snippet
-        String description = "";
-
-        // Use already typed text
-        if (transferEditTextContent) {
-            description = ((EditText) view.findViewById(R.id.note_description)).getText().toString();
-        } else { // Use text from marker
-            description = marker.getSnippet();
-            if (description == null) {
-                description = "";
-            }
-        }
-
-        // Escape as HTML to make sure line breaks are handled correctly everywhere
-        description = StringEscapeUtils.escapeHtml4(description).replace("\n", "<br>");
-
-        Spanned snippetHtml = Html.fromHtml(description);
         EditText descriptionView = view.findViewById(R.id.note_description);
         if (descriptionView != null) {
+            String description = "";
+
+            // Use already typed text
+            if (transferEditTextContent) {
+                description = descriptionView.getText().toString();
+            } else { // Use text from marker
+                description = marker.getSnippet();
+                if (description == null) {
+                    description = "";
+                }
+            }
+
+            // Escape as HTML to make sure line breaks are handled correctly everywhere
+            description = StringEscapeUtils.escapeHtml4(description).replace("\n", "<br>");
+
+            Spanned snippetHtml = Html.fromHtml(description);
             descriptionView.setText(snippetHtml);
+            descriptionView.requestFocus();
         }
 
         // Button
@@ -180,12 +196,14 @@ public class MarkerFragment extends Fragment {
         deleteButton.setOnClickListener(v -> {
             markerEventHandler.onDelete(marker);
             reset();
+            ((EditText) getView().findViewById(R.id.note_description)).clearFocus();
         });
 
         Button saveButton = view.findViewById(R.id.save_button);
         saveButton.setOnClickListener(v -> {
             markerEventHandler.onSave(marker);
             reset();
+            ((EditText) getView().findViewById(R.id.note_description)).clearFocus();
         });
 
         Button moveButton = view.findViewById(R.id.move_button);
