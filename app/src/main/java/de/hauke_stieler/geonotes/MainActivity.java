@@ -2,7 +2,6 @@ package de.hauke_stieler.geonotes;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -24,14 +23,12 @@ import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentManager;
 
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.events.DelayedMapListener;
 import org.osmdroid.events.MapListener;
 import org.osmdroid.events.ScrollEvent;
 import org.osmdroid.events.ZoomEvent;
-import org.osmdroid.views.MapView;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,7 +41,6 @@ import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.export.Exporter;
 import de.hauke_stieler.geonotes.map.Map;
 import de.hauke_stieler.geonotes.map.MarkerFragment;
-import de.hauke_stieler.geonotes.map.MarkerWindow;
 import de.hauke_stieler.geonotes.map.TouchDownListener;
 import de.hauke_stieler.geonotes.note_list.NoteListActivity;
 import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
@@ -95,19 +91,17 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.CAMERA
         });
 
-        createMarkerFragment(savedInstanceState);
+        createMarkerFragment();
         createMap();
     }
 
-    private void createMarkerFragment(Bundle savedInstanceState) {
+    private void createMarkerFragment() {
         MarkerFragment markerFragment = new MarkerFragment();
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .setReorderingAllowed(true)
-                    .add(R.id.map_marker_fragment, markerFragment, null)
-                    .commit();
-        }
+        getSupportFragmentManager().beginTransaction()
+                .setReorderingAllowed(true)
+                .add(R.id.map_marker_fragment, markerFragment, null)
+                .commit();
 
         Injector.put(markerFragment);
     }
