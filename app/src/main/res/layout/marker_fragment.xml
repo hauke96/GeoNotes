@@ -17,7 +17,7 @@
             android:text="1. Move the map\n2. Release your finger to save location" />
     </LinearLayout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:id="@+id/layout_note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,8 +30,8 @@
             android:id="@+id/new_note_notice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_marginBottom="0dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp"
             android:text="Enter text for a new note:" />
 
         <EditText
@@ -61,15 +61,15 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:gravity="left">
 
                 <ImageButton
                     android:id="@+id/camera_button"
                     style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:padding="10dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:padding="5dp"
                     android:layout_marginLeft="5dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_add_a_photo"
@@ -77,7 +77,7 @@
 
                 <HorizontalScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="50dp">
 
                     <LinearLayout
                         android:id="@+id/note_image_panel"

@@ -33,6 +33,7 @@ import org.osmdroid.views.overlay.Marker;
 import java.io.File;
 import java.util.Date;
 
+import de.hauke_stieler.geonotes.Injector;
 import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.common.FileHelper;
 import de.hauke_stieler.geonotes.database.Database;
@@ -77,10 +78,10 @@ public class MarkerFragment extends Fragment {
 
     private final Database database;
 
-    public MarkerFragment(Database database) {
+    public MarkerFragment() {
         super(R.layout.marker_fragment);
 
-        this.database = database;
+        this.database = Injector.get(Database.class);
     }
 
     public void addEventHandler(MarkerFragmentEventHandler markerEventHandler) {
@@ -238,11 +239,13 @@ public class MarkerFragment extends Fragment {
         Context context = getView().getContext();
 
         int sizeInPixel = context.getResources().getDimensionPixelSize(R.dimen.ImageButton);
-        int paddingInPixel = context.getResources().getDimensionPixelSize(R.dimen.ImageButtonPadding);
+        int marginInPixel = context.getResources().getDimensionPixelSize(R.dimen.ImageButtonMargin);
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(sizeInPixel, sizeInPixel);
+        layoutParams.leftMargin = marginInPixel;
 
         ImageButton imageButton = new ImageButton(context);
-        imageButton.setLayoutParams(new LinearLayout.LayoutParams(sizeInPixel, sizeInPixel));
-        imageButton.setPadding(paddingInPixel, paddingInPixel, paddingInPixel, paddingInPixel);
+        imageButton.setLayoutParams(layoutParams);
         imageButton.setOnClickListener(v -> {
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
@@ -258,7 +261,7 @@ public class MarkerFragment extends Fragment {
         photoLayout.addView(imageButton);
 
         Space space = new Space(context);
-        space.setLayoutParams(new LinearLayout.LayoutParams(paddingInPixel, ViewGroup.LayoutParams.WRAP_CONTENT));
+        space.setLayoutParams(new LinearLayout.LayoutParams(marginInPixel, ViewGroup.LayoutParams.WRAP_CONTENT));
         photoLayout.addView(space);
     }
 

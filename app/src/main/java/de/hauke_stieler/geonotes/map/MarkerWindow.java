@@ -203,7 +203,7 @@ public class MarkerWindow extends InfoWindow {
 
     public void addPhoto(File photo) {
         int sizeInPixel = getView().getContext().getResources().getDimensionPixelSize(R.dimen.ImageButton);
-        int paddingInPixel = getView().getContext().getResources().getDimensionPixelSize(R.dimen.ImageButtonPadding);
+        int paddingInPixel = getView().getContext().getResources().getDimensionPixelSize(R.dimen.ImageButtonMargin);
 
         ImageButton imageButton = new ImageButton(getView().getContext());
         imageButton.setLayoutParams(new LinearLayout.LayoutParams(sizeInPixel, sizeInPixel));

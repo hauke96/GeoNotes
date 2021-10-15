@@ -346,6 +346,7 @@ public class Map {
         }
 
         setSelectedIcon(marker);
+        redraw();
     }
 
     private void setSelectedIcon(Marker marker) {

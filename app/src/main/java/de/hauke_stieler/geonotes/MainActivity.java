@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createMarkerFragment(Bundle savedInstanceState) {
-        MarkerFragment markerFragment = new MarkerFragment(database);
+        MarkerFragment markerFragment = new MarkerFragment();
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
