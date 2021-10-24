@@ -316,6 +316,7 @@ public class Map {
 
         setSelectedIcon(marker);
         markerFragment.selectMarker(marker, transferEditTextContent);
+        zoomToSelectedMarker();
 
         addImagesToMarkerWindow();
         redraw();
@@ -373,6 +374,15 @@ public class Map {
         map.setTilesScaleFactor(factor);
     }
 
+    private void zoomToSelectedMarker() {
+        // Before resuming (e.g. when switching back from the list of notes to the main activity),
+        // the map doesn't zoom to markers. Therefore we here zoom to the currently selected marker.
+        Marker selectedMarker = getSelectedMarker();
+        if (selectedMarker != null) {
+            zoomToLocation(selectedMarker.getPosition(), map.getZoomLevelDouble());
+        }
+    }
+
     private void zoomToLocation(IGeoPoint p, double zoom) {
         mapController.setCenter(new GeoPoint(p));
         mapController.setZoom(zoom);
@@ -401,12 +411,7 @@ public class Map {
             wakeLock.acquire();
         }
 
-        // Before resuming (e.g. when switching back from the list of notes to the main activity),
-        // the map doesn't zoom to markers. Therefore we here zoom to the currently selected marker.
-        Marker selectedMarker = getSelectedMarker();
-        if (selectedMarker != null) {
-            zoomToLocation(selectedMarker.getPosition(), map.getZoomLevelDouble());
-        }
+        zoomToSelectedMarker();
     }
 
     public void onPause() {
