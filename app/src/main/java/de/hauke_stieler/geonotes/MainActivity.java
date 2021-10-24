@@ -94,28 +94,8 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.CAMERA
         });
 
-        createExportPopupMenu();
         createMarkerFragment();
         createMap();
-    }
-
-    private void createExportPopupMenu() {
-        exportPopupMenu = new PopupMenu(this, findViewById(R.id.toolbar_btn_export));
-
-        exportPopupMenu.getMenu().add(0, 0, 0, "GeoJson");
-        exportPopupMenu.getMenu().add(0, 1, 1, "GPX");
-
-        exportPopupMenu.setOnMenuItemClickListener(menuItem -> {
-            switch (menuItem.getItemId()) {
-                case 0:
-                    exporter.shareAsGeoJson();
-                    break;
-                case 1:
-                    exporter.shareAsGpx();
-                    break;
-            }
-            return true;
-        });
     }
 
     private void createMarkerFragment() {
@@ -157,6 +137,26 @@ public class MainActivity extends AppCompatActivity {
         map.setLocation(lat, lon, zoom);
     }
 
+    private void showExportPopupMenu() {
+        exportPopupMenu = new PopupMenu(this, findViewById(R.id.toolbar_btn_export));
+
+        exportPopupMenu.getMenu().add(0, 0, 0, "GeoJson");
+        exportPopupMenu.getMenu().add(0, 1, 1, "GPX");
+
+        exportPopupMenu.setOnMenuItemClickListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case 0:
+                    exporter.shareAsGeoJson();
+                    break;
+                case 1:
+                    exporter.shareAsGpx();
+                    break;
+            }
+            return true;
+        });
+        exportPopupMenu.show();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return true;
             case R.id.toolbar_btn_export:
-                exportPopupMenu.show();
+                showExportPopupMenu();
                 return true;
             case R.id.toolbar_btn_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
