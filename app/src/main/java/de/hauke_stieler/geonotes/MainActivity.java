@@ -54,8 +54,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CAMERA_PERMISSIONS_REQUEST_CODE = 2;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
 
-    PopupMenu exportPopupMenu;
-
     private Map map;
     private SharedPreferences preferences;
     private Database database;
@@ -138,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showExportPopupMenu() {
-        exportPopupMenu = new PopupMenu(this, findViewById(R.id.toolbar_btn_export));
+        PopupMenu exportPopupMenu = new PopupMenu(this, findViewById(R.id.toolbar_btn_export));
 
         exportPopupMenu.getMenu().add(0, 0, 0, "GeoJson");
         exportPopupMenu.getMenu().add(0, 1, 1, "GPX");
