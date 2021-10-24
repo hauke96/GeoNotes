@@ -40,14 +40,14 @@ public class Map {
     private final Context context;
     private final PowerManager.WakeLock wakeLock;
     private final Database database;
-    private SharedPreferences preferences;
+    private final SharedPreferences preferences;
 
     private final MapView map;
     private final IMapController mapController;
     private MyLocationNewOverlay locationOverlay;
     private GpsMyLocationProvider gpsLocationProvider;
 
-    private MarkerFragment markerFragment;
+    private final MarkerFragment markerFragment;
     private Marker.OnMarkerClickListener markerClickListener;
 
     private final Drawable normalIcon;

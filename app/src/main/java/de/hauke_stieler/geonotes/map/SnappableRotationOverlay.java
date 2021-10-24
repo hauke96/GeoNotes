@@ -1,6 +1,5 @@
 package de.hauke_stieler.geonotes.map;
 
-import android.util.Log;
 import android.view.MotionEvent;
 
 import org.osmdroid.views.MapView;

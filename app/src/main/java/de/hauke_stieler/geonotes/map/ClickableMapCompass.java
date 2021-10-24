@@ -4,10 +4,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.view.MotionEvent;
 
-import org.osmdroid.events.MapEventsReceiver;
-import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 
 /**

@@ -32,7 +32,7 @@ import de.hauke_stieler.geonotes.notes.Note;
 import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
 
 public class MarkerWindow extends InfoWindow {
-    private static String LOGTAG = MarkerWindow.class.getName();
+    private static final String LOGTAG = MarkerWindow.class.getName();
 
     public interface MarkerEventHandler {
         void onDelete(Marker marker);

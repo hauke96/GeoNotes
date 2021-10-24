@@ -9,7 +9,6 @@ import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Space;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,7 +39,7 @@ import de.hauke_stieler.geonotes.notes.Note;
 import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
 
 public class MarkerFragment extends Fragment {
-    private static String LOGTAG = MarkerFragment.class.getName();
+    private static final String LOGTAG = MarkerFragment.class.getName();
 
     public interface MarkerFragmentEventHandler {
         void onDelete(Marker marker);

@@ -20,7 +20,7 @@ import me.himanshusoni.gpxparser.modal.GPX;
 import me.himanshusoni.gpxparser.modal.Waypoint;
 
 public class Exporter {
-    private static String LOGTAG = Exporter.class.getName();
+    private static final String LOGTAG = Exporter.class.getName();
 
     private final Database database;
     private final Context context;

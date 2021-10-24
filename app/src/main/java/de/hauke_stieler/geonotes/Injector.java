@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ComponentActivity;
-
 import org.osmdroid.views.MapView;
 
 import java.util.HashMap;

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.system.OsConstants;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,7 +20,6 @@ import org.osmdroid.views.MapView;
 import de.hauke_stieler.geonotes.BuildConfig;
 import de.hauke_stieler.geonotes.Injector;
 import de.hauke_stieler.geonotes.R;
-import de.hauke_stieler.geonotes.map.Map;
 
 public class SettingsActivity extends AppCompatActivity {
 
