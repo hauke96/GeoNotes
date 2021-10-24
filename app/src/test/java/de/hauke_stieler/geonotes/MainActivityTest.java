@@ -62,7 +62,7 @@ public class MainActivityTest {
         activityRule.getScenario().onActivity(activity -> activity.onOptionsItemSelected(getMenuItem(R.id.toolbar_btn_export)));
 
         // Assert
-        Mockito.verify(exporterMock).export();
+        Mockito.verify(exporterMock).shareAsGeoJson();
     }
 
     @Test

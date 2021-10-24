@@ -40,13 +40,13 @@ class NoteFeatureModel {
 }
 
 class NotePropertiesModel {
-    long id;
-    String note;
+    long name;
+    String description;
     String created_at;
 
     NotePropertiesModel(long id, String note, String created_at) {
-        this.id = id;
-        this.note = note;
+        this.name = id;
+        this.description = note;
         this.created_at = created_at;
     }
 }

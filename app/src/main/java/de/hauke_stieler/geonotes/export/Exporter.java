@@ -22,7 +22,7 @@ public class Exporter {
         this.context = context;
     }
 
-    public void export() {
+    public void shareAsGeoJson() {
         String geoJson = GeoJson.toGeoJson(database.getAllNotes());
 
         try {
