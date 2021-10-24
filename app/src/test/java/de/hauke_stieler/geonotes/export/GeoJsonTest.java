@@ -39,8 +39,8 @@ public class GeoJsonTest {
                 "    {\n" +
                 "      \"type\": \"Feature\",\n" +
                 "      \"properties\": {\n" +
-                "        \"id\": 1,\n" +
-                "        \"note\": \"foo\",\n" +
+                "        \"name\": 1,\n" +
+                "        \"description\": \"foo\",\n" +
                 "        \"created_at\": \"2021-03-01 12:34:56\"\n" +
                 "      },\n" +
                 "      \"geometry\": {\n" +
@@ -73,8 +73,8 @@ public class GeoJsonTest {
                 "    {\n" +
                 "      \"type\": \"Feature\",\n" +
                 "      \"properties\": {\n" +
-                "        \"id\": 1,\n" +
-                "        \"note\": \"foo\\nbar\",\n" +
+                "        \"name\": 1,\n" +
+                "        \"description\": \"foo\\nbar\",\n" +
                 "        \"created_at\": \"2021-03-01 12:34:56\"\n" +
                 "      },\n" +
                 "      \"geometry\": {\n" +
@@ -107,8 +107,8 @@ public class GeoJsonTest {
                 "    {\n" +
                 "      \"type\": \"Feature\",\n" +
                 "      \"properties\": {\n" +
-                "        \"id\": 1,\n" +
-                "        \"note\": \"\\\"foo\\\"\",\n" +
+                "        \"name\": 1,\n" +
+                "        \"description\": \"\\\"foo\\\"\",\n" +
                 "        \"created_at\": \"2021-03-01 12:34:56\"\n" +
                 "      },\n" +
                 "      \"geometry\": {\n" +
@@ -142,8 +142,8 @@ public class GeoJsonTest {
                 "    {\n" +
                 "      \"type\": \"Feature\",\n" +
                 "      \"properties\": {\n" +
-                "        \"id\": 1,\n" +
-                "        \"note\": \"foo\",\n" +
+                "        \"name\": 1,\n" +
+                "        \"description\": \"foo\",\n" +
                 "        \"created_at\": \"2021-03-01 12:34:56\"\n" +
                 "      },\n" +
                 "      \"geometry\": {\n" +
@@ -157,8 +157,8 @@ public class GeoJsonTest {
                 "    {\n" +
                 "      \"type\": \"Feature\",\n" +
                 "      \"properties\": {\n" +
-                "        \"id\": 2,\n" +
-                "        \"note\": \"\\\"bar\\\" with quotes\",\n" +
+                "        \"name\": 2,\n" +
+                "        \"description\": \"\\\"bar\\\" with quotes\",\n" +
                 "        \"created_at\": \"2010-12-21 01:23:45\"\n" +
                 "      },\n" +
                 "      \"geometry\": {\n" +

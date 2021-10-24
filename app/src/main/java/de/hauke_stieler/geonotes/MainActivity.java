@@ -54,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CAMERA_PERMISSIONS_REQUEST_CODE = 2;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
 
+    PopupMenu exportPopupMenu;
+
     private Map map;
     private SharedPreferences preferences;
     private Database database;
@@ -92,8 +94,29 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.CAMERA
         });
 
+        createExportPopupMenu();
         createMarkerFragment();
         createMap();
+    }
+
+    private void createExportPopupMenu() {
+        exportPopupMenu = new PopupMenu(this, findViewById(R.id.toolbar_btn_export));
+
+        exportPopupMenu.getMenu().add(0, 0, 0, "GeoJson");
+        exportPopupMenu.getMenu().add(0, 1, 1, "GPX");
+
+        exportPopupMenu.setOnMenuItemClickListener(menuItem -> {
+            switch (menuItem.getItemId()){
+                case 0:
+                    exporter.shareAsGeoJson();
+                    break;
+                case 1:
+                    exporter.shareAsGpx();
+                    break;
+            }
+            return true;
+        });
+
     }
 
     private void createMarkerFragment() {
@@ -155,14 +178,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return true;
             case R.id.toolbar_btn_export:
-                PopupMenu menu = new PopupMenu(this, item.getActionView());
-
-                menu.getMenu().add("One");
-                menu.getMenu().add("Two");
-                menu.getMenu().add("Three");
-
-                menu.show();
-//                exporter.shareAsGeoJson();
+                exportPopupMenu.show();
                 return true;
             case R.id.toolbar_btn_settings:
                 startActivity(new Intent(this, SettingsActivity.class));

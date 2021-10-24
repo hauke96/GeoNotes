@@ -9,17 +9,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import de.hauke_stieler.geonotes.common.FileHelper;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.notes.Note;
-import io.ticofab.androidgpxparser.parser.GPXParser;
-import io.ticofab.androidgpxparser.parser.domain.Gpx;
-import io.ticofab.androidgpxparser.parser.domain.Point;
-import io.ticofab.androidgpxparser.parser.domain.WayPoint;
 import me.himanshusoni.gpxparser.GPXWriter;
 import me.himanshusoni.gpxparser.modal.GPX;
 import me.himanshusoni.gpxparser.modal.Waypoint;
