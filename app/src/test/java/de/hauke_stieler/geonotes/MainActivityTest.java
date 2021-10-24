@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.view.MenuItem;
 
+import androidx.appcompat.view.menu.MenuItemImpl;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -23,6 +24,7 @@ import java.util.List;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.export.Exporter;
 import de.hauke_stieler.geonotes.map.Map;
+import de.hauke_stieler.geonotes.map.MarkerFragment;
 import de.hauke_stieler.geonotes.map.MarkerWindow;
 import de.hauke_stieler.geonotes.map.TouchDownListener;
 import de.hauke_stieler.geonotes.notes.Note;
@@ -51,7 +53,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void testOptionItemSelected_export_callsExporter() {
+    public void testExportGeoJsonClicked_callsExporter() {
         // Arrange
         List<Note> notes = new ArrayList<>();
         notes.add(new Note(1, "foo", 1.23f, 4.56f, "2021-03-01 12:34:56"));
@@ -59,10 +61,25 @@ public class MainActivityTest {
         Mockito.when(databaseMock.getAllNotes()).thenReturn(notes);
 
         // Act
-        activityRule.getScenario().onActivity(activity -> activity.onOptionsItemSelected(getMenuItem(R.id.toolbar_btn_export)));
+        activityRule.getScenario().onActivity(activity -> activity.exportPopupMenu.getMenu().performIdentifierAction(0, 0));
 
         // Assert
-        Mockito.verify(exporterMock).export();
+        Mockito.verify(exporterMock).shareAsGeoJson();
+    }
+
+    @Test
+    public void testExportGpxClicked_callsExporter() {
+        // Arrange
+        List<Note> notes = new ArrayList<>();
+        notes.add(new Note(1, "foo", 1.23f, 4.56f, "2021-03-01 12:34:56"));
+        notes.add(new Note(2, "bar", 2.34f, 5.67f, "2021-03-02 11:11:11"));
+        Mockito.when(databaseMock.getAllNotes()).thenReturn(notes);
+
+        // Act
+        activityRule.getScenario().onActivity(activity -> activity.exportPopupMenu.getMenu().performIdentifierAction(1, 0));
+
+        // Assert
+        Mockito.verify(exporterMock).shareAsGpx();
     }
 
     @Test
@@ -88,7 +105,7 @@ public class MainActivityTest {
     @Test
     public void testloadPreferences_setsPhotoListener() {
         // Act & Assert
-        Mockito.verify(mapMock).addRequestPhotoHandler(Mockito.any(MarkerWindow.RequestPhotoEventHandler.class));
+        Mockito.verify(mapMock).addRequestPhotoHandler(Mockito.any(MarkerFragment.RequestPhotoEventHandler.class));
     }
 
     private MenuItem getMenuItem(int id) {

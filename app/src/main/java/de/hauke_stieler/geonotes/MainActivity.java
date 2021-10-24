@@ -2,8 +2,6 @@ package de.hauke_stieler.geonotes;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -22,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.ActionMenuItemView;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -42,7 +41,7 @@ import de.hauke_stieler.geonotes.common.FileHelper;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.export.Exporter;
 import de.hauke_stieler.geonotes.map.Map;
-import de.hauke_stieler.geonotes.map.MarkerWindow;
+import de.hauke_stieler.geonotes.map.MarkerFragment;
 import de.hauke_stieler.geonotes.map.TouchDownListener;
 import de.hauke_stieler.geonotes.note_list.NoteListActivity;
 import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
@@ -76,6 +75,10 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
+        database = Injector.get(Database.class);
+        preferences = Injector.get(SharedPreferences.class);
+        exporter = Injector.get(Exporter.class);
+
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -83,20 +86,25 @@ public class MainActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.copyright)).setMovementMethod(LinkMovementMethod.getInstance());
         ((TextView) findViewById(R.id.copyright)).setText(Html.fromHtml("© <a href=\"https://openstreetmap.org/copyright\">OpenStreetMap</a> contributors"));
 
-        final Context context = getApplicationContext();
-
         requestPermissionsIfNecessary(new String[]{
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.CAMERA
         });
 
-        database = Injector.get(Database.class);
-        preferences = Injector.get(SharedPreferences.class);
-        exporter = Injector.get(Exporter.class);
-
+        createMarkerFragment();
         createMap();
-        loadPreferences();
+    }
+
+    private void createMarkerFragment() {
+        MarkerFragment markerFragment = new MarkerFragment();
+
+        getSupportFragmentManager().beginTransaction()
+                .setReorderingAllowed(true)
+                .add(R.id.map_marker_fragment, markerFragment, null)
+                .commit();
+
+        Injector.put(markerFragment);
     }
 
     private void createMap() {
@@ -116,14 +124,35 @@ public class MainActivity extends AppCompatActivity {
         boolean snapNoteToGps = preferences.getBoolean(getString(R.string.pref_snap_note_gps), false);
         map.setSnapNoteToGps(snapNoteToGps);
 
-        boolean enableRotatingMap1 = preferences.getBoolean(getString(R.string.pref_enable_rotating_map), false);
-        map.updateMapRotationBehavior(enableRotatingMap1);
+        boolean enableRotatingMap = preferences.getBoolean(getString(R.string.pref_enable_rotating_map), false);
+        float mapRotation = preferences.getFloat(getString(R.string.pref_map_rotation), 0f);
+        map.updateMapRotation(enableRotatingMap, mapRotation);
 
         float lat = preferences.getFloat(getString(R.string.pref_last_location_lat), 0f);
         float lon = preferences.getFloat(getString(R.string.pref_last_location_lon), 0f);
         float zoom = preferences.getFloat(getString(R.string.pref_last_location_zoom), 2);
 
         map.setLocation(lat, lon, zoom);
+    }
+
+    private void showExportPopupMenu() {
+        PopupMenu exportPopupMenu = new PopupMenu(this, findViewById(R.id.toolbar_btn_export));
+
+        exportPopupMenu.getMenu().add(0, 0, 0, "GeoJson");
+        exportPopupMenu.getMenu().add(0, 1, 1, "GPX");
+
+        exportPopupMenu.setOnMenuItemClickListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case 0:
+                    exporter.shareAsGeoJson();
+                    break;
+                case 1:
+                    exporter.shareAsGpx();
+                    break;
+            }
+            return true;
+        });
+        exportPopupMenu.show();
     }
 
     @Override
@@ -146,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return true;
             case R.id.toolbar_btn_export:
-                exporter.export();
+                showExportPopupMenu();
                 return true;
             case R.id.toolbar_btn_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
@@ -227,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
 
         @SuppressLint("RestrictedApi")
         TouchDownListener touchDownListener = () -> {
-            ActionMenuItemView menuItem = (ActionMenuItemView) findViewById(R.id.toolbar_btn_gps_follow);
+            ActionMenuItemView menuItem = findViewById(R.id.toolbar_btn_gps_follow);
             if (menuItem != null) {
                 menuItem.setIcon(getResources().getDrawable(R.drawable.ic_location_searching));
             }
@@ -240,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
      * Adds a listener for the camera button. The camera action can only be performed from within an activity.
      */
     private void addCameraListener() {
-        MarkerWindow.RequestPhotoEventHandler requestPhotoEventHandler = (Long noteId) -> {
+        MarkerFragment.RequestPhotoEventHandler requestPhotoEventHandler = (Long noteId) -> {
             if (!hasPermission(Manifest.permission.CAMERA) || !hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 // We don't have camera and/or storage permissions -> ask for them
                 ActivityCompat.requestPermissions(
@@ -280,7 +309,6 @@ public class MainActivity extends AppCompatActivity {
             switch (requestCode) {
                 case REQUEST_IMAGE_CAPTURE:
                     addPhotoToDatabase(lastPhotoNoteId, lastPhotoFile);
-                    addPhotoToGallery(lastPhotoFile);
                     map.addImagesToMarkerWindow();
                     break;
                 case REQUEST_NOTE_LIST_REQUEST_CODE:
@@ -316,18 +344,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             Toast.makeText(getApplicationContext(), "Creating thumbnail failed", Toast.LENGTH_SHORT);
         }
-    }
-
-    private void addPhotoToGallery(File photoFile) {
-        ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.Media.TITLE, photoFile.getName());
-        values.put(MediaStore.Images.Media.DISPLAY_NAME, photoFile.getName());
-        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg");
-        values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis());
-        values.put(MediaStore.Images.Media.DATE_TAKEN, photoFile.lastModified());
-        values.put(MediaStore.Images.Media.DATA, photoFile.toString());
-
-        getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
     }
 
     /**

@@ -81,7 +81,7 @@ public class Database extends SQLiteOpenHelper {
 
         photoStore.removePhotos(getWritableDatabase(), noteId);
 
-        for(String photo:photos){
+        for (String photo : photos) {
             File photoFile = new File(storageDir, photo);
             File thumbnailFile = ThumbnailUtil.getThumbnailFile(photoFile);
 

@@ -9,7 +9,6 @@ import android.graphics.drawable.Drawable;
 import android.os.PowerManager;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
-import android.view.View;
 
 import androidx.core.content.res.ResourcesCompat;
 
@@ -26,7 +25,6 @@ import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
-import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
@@ -42,14 +40,14 @@ public class Map {
     private final Context context;
     private final PowerManager.WakeLock wakeLock;
     private final Database database;
-    private SharedPreferences preferences;
+    private final SharedPreferences preferences;
 
     private final MapView map;
     private final IMapController mapController;
     private MyLocationNewOverlay locationOverlay;
     private GpsMyLocationProvider gpsLocationProvider;
 
-    private MarkerWindow markerInfoWindow;
+    private final MarkerFragment markerFragment;
     private Marker.OnMarkerClickListener markerClickListener;
 
     private final Drawable normalIcon;
@@ -74,6 +72,9 @@ public class Map {
         this.map = map;
         this.database = database;
         this.preferences = preferences;
+
+        markerFragment = Injector.get(MarkerFragment.class);
+        addMarkerFragmentEventHandler(markerFragment);
 
         // Keep device on
         final PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
@@ -100,7 +101,6 @@ public class Map {
         mapController.setCenter(startPoint);
 
         createOverlays((BitmapDrawable) locationIcon, (BitmapDrawable) arrowIcon);
-        createMarkerWindow(map);
 
         for (Note n : this.database.getAllNotes()) {
             createMarker("" + n.getId(), n.getDescription(), new GeoPoint(n.getLat(), n.getLon()), markerClickListener);
@@ -118,6 +118,7 @@ public class Map {
 
         // Add rotation overlay
         rotationGestureOverlay = new SnappableRotationOverlay(map);
+        rotationGestureOverlay.setRotationActionListener(this::saveMapRotationProperty);
         map.setMultiTouchControls(true);
         map.getOverlays().add(rotationGestureOverlay);
 
@@ -130,7 +131,7 @@ public class Map {
 
         // Add marker click listener. Will be called when the user clicks/taps on a marker.
         markerClickListener = (marker, mapView) -> {
-            selectMarker(marker);
+            selectMarker(marker, false);
             return true;
         };
 
@@ -140,14 +141,13 @@ public class Map {
             public boolean singleTapConfirmedHelper(GeoPoint p) {
                 // No marker to move here -> deselect or create marker
                 // (selecting marker on the map is handles via the separate markerClickListener)
-                if (markerInfoWindow.getSelectedMarker() != null) {
+                if (markerFragment.getSelectedMarker() != null) {
                     // Deselect selected marker:
-                    setNormalIcon(markerInfoWindow.getSelectedMarker());
-                    markerInfoWindow.close();
-                } else {
-                    // No marker currently selected -> create new marker at this location
-                    initAndSelectMarker(p);
+                    setNormalIcon(markerFragment.getSelectedMarker());
                 }
+
+                // Create new marker at this location and select it
+                initAndSelectMarker(p);
 
                 return false;
             }
@@ -165,9 +165,14 @@ public class Map {
         map.getOverlays().add(compassOverlay);
     }
 
-    public void updateMapRotationBehavior(boolean rotatingMapEnabled) {
-        rotationGestureOverlay.resetRotation();
-        rotationGestureOverlay.setEnabled(rotatingMapEnabled);
+    private void saveMapRotationProperty(float angle) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putFloat(context.getString(R.string.pref_map_rotation), angle);
+        editor.commit();
+    }
+
+    public void updateMapRotation(boolean rotatingMapEnabled, float angle) {
+        rotationGestureOverlay.setEnabledAndRotation(rotatingMapEnabled, angle);
         compassOverlay.setPointerMode(rotatingMapEnabled);
     }
 
@@ -192,7 +197,7 @@ public class Map {
                     break;
                 case MotionEvent.ACTION_UP:
                     if (markerToMove != null) {
-                        selectMarker(markerToMove);
+                        selectMarker(markerToMove, false);
 
                         // If the ID is set, the marker exists in the DB, therefore we store that new location
                         String id = markerToMove.getId();
@@ -209,15 +214,15 @@ public class Map {
         });
     }
 
-    private void createMarkerWindow(MapView map) {
-        // General marker info window
-        markerInfoWindow = new MarkerWindow(R.layout.marker_window, map, database, new MarkerWindow.MarkerEventHandler() {
+    private void addMarkerFragmentEventHandler(MarkerFragment fragment) {
+        fragment.addEventHandler(new MarkerFragment.MarkerFragmentEventHandler() {
             @Override
             public void onDelete(Marker marker) {
                 // We always have an ID and can therefore delete the note
                 database.removeNote(Long.parseLong(marker.getId()));
                 database.removePhotos(Long.parseLong(marker.getId()), context.getExternalFilesDir("GeoNotes"));
                 map.getOverlays().remove(marker);
+                redraw();
             }
 
             @Override
@@ -225,21 +230,20 @@ public class Map {
                 // We always have an ID and can therefore update the note
                 database.updateDescription(Long.parseLong(marker.getId()), marker.getSnippet());
                 setNormalIcon(marker);
+                redraw();
             }
 
             @Override
             public void onMove(Marker marker) {
                 markerToMove = marker;
-                // The new position is determined and stored in the onTouch-handler of the map
-            }
-
-            @Override
-            public void onTextChanged() {
-                if (getSelectedMarker() != null) {
-                    moveMapWithMarkerWindowOnTop(getSelectedMarker());
-                }
+                redraw();
             }
         });
+    }
+
+    // This forces a re-draw of the map. Otherwise changes will only be visible when moving the map after e.g. the selected marker changed.
+    private void redraw() {
+        map.postInvalidate();
     }
 
     /**
@@ -253,7 +257,7 @@ public class Map {
         }
 
         Marker newMarker = createMarker("" + id, "", location, markerClickListener);
-        selectMarker(newMarker);
+        selectMarker(newMarker, true);
     }
 
     /**
@@ -287,71 +291,47 @@ public class Map {
         String noteIdString = "" + noteId;
         for (Overlay marker : map.getOverlays()) {
             if (marker instanceof Marker && ((Marker) marker).getId().equals(noteIdString)) {
-                this.selectMarker((Marker) marker);
+                this.selectMarker((Marker) marker, false);
             }
         }
     }
 
-    private void selectMarker(Marker marker) {
-        // Reset icon of previous selection
-        Marker selectedMarker = markerInfoWindow.getSelectedMarker();
+    /**
+     * @param marker                  The marker to select.
+     * @param transferEditTextContent When set to true: If the user typed any text into the input
+     *                                field without a selected note and *then* tapped on the map
+     *                                to create or select one, this prior entered text schould be
+     *                                used as the content of the note.
+     *                                When set to false: The text of the tapped note will be read
+     *                                and shown in the edit field.
+     */
+    private void selectMarker(Marker marker, boolean transferEditTextContent) {
+        // Deselect previously selected marker
+        Marker selectedMarker = markerFragment.getSelectedMarker();
         if (selectedMarker != null) {
             // This icon will not be the selected marker after "showInfoWindow", therefore we set the normal icon here.
             setNormalIcon(selectedMarker);
+            markerFragment.reset();
         }
 
         setSelectedIcon(marker);
-        marker.showInfoWindow();
-        markerInfoWindow.focusEditField();
+        markerFragment.selectMarker(marker, transferEditTextContent);
+        zoomToSelectedMarker();
 
         addImagesToMarkerWindow();
-
-        // Fragment not yet drawn, so we have to measure the height manually
-        markerInfoWindow.getView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        moveMapWithMarkerWindowOnTop(marker);
-    }
-
-    private void moveMapWithMarkerWindowOnTop(Marker marker) {
-        int markerWindowHeight = markerInfoWindow.getView().getMeasuredHeight();
-
-        Point markerPositionPixel = new Point();
-        map.getProjection().toPixels(marker.getPosition(), markerPositionPixel);
-
-        /*
-         * Center of the screen in relation to the y-coordinate of the marker such that the window
-         * is 20px below the top-edge of the map.
-         *   _________________
-         *  |   ___________   |
-         *  |  |___________|  |
-         *  |       |_|       | _  --> markerPositionPixel.y
-         *  |                 |  |
-         *  |                 |  |- distance we have to add to  markerPositionPixel.y
-         *  |                 | _|
-         *  |        X        |    --> center of the screen = Y-coordinate we need to find
-         *  |                 |
-         *  |                 |
-         *  |                 |
-         *  |                 |
-         *  |_________________|
-         */
-        int yCoordinate = markerPositionPixel.y + (map.getHeight() / 2 - markerWindowHeight - marker.getIcon().getIntrinsicHeight() - 20);
-
-        Point locationInPixels = new Point(markerPositionPixel.x, yCoordinate);
-        IGeoPoint newPoint = map.getProjection().fromPixels(locationInPixels.x, locationInPixels.y);
-
-        zoomToLocation(newPoint, map.getZoomLevelDouble());
+        redraw();
     }
 
     private Marker getSelectedMarker() {
-        return markerInfoWindow.getSelectedMarker();
+        return markerFragment.getSelectedMarker();
     }
 
     /**
      * Loads images of current marker (which contains the note-ID) from database and show them.
      */
     public void addImagesToMarkerWindow() {
-        markerInfoWindow.resetImageList();
-        Marker marker = markerInfoWindow.getSelectedMarker();
+        markerFragment.resetImageList();
+        Marker marker = markerFragment.getSelectedMarker();
 
         // It could happen that the user rotates the device (e.g. while taking a photo) and this
         // causes the whole activity to be reset. Therefore we might not have a marker here.
@@ -363,10 +343,11 @@ public class Map {
         for (String photoFileName : photoFileNames) {
             File storageDir = context.getExternalFilesDir("GeoNotes");
             File image = new File(storageDir, photoFileName);
-            markerInfoWindow.addPhoto(image);
+            markerFragment.addPhoto(image);
         }
 
         setSelectedIcon(marker);
+        redraw();
     }
 
     private void setSelectedIcon(Marker marker) {
@@ -393,6 +374,15 @@ public class Map {
         map.setTilesScaleFactor(factor);
     }
 
+    private void zoomToSelectedMarker() {
+        // Before resuming (e.g. when switching back from the list of notes to the main activity),
+        // the map doesn't zoom to markers. Therefore we here zoom to the currently selected marker.
+        Marker selectedMarker = getSelectedMarker();
+        if (selectedMarker != null) {
+            zoomToLocation(selectedMarker.getPosition(), map.getZoomLevelDouble());
+        }
+    }
+
     private void zoomToLocation(IGeoPoint p, double zoom) {
         mapController.setCenter(new GeoPoint(p));
         mapController.setZoom(zoom);
@@ -406,7 +396,6 @@ public class Map {
         marker.setId(id);
         marker.setPosition(p);
         marker.setSnippet(description);
-        marker.setInfoWindow(markerInfoWindow);
         marker.setOnMarkerClickListener(markerClickListener);
 
         setNormalIcon(marker);
@@ -422,12 +411,7 @@ public class Map {
             wakeLock.acquire();
         }
 
-        // Before resuming (e.g. when switching back from the list of notes to the main activity),
-        // the map doesn't zoom to markers. Therefore we here zoom to the currently selected marker.
-        Marker selectedMarker = getSelectedMarker();
-        if (selectedMarker != null) {
-            zoomToLocation(selectedMarker.getPosition(), map.getZoomLevelDouble());
-        }
+        zoomToSelectedMarker();
     }
 
     public void onPause() {
@@ -467,8 +451,8 @@ public class Map {
         return this.locationOverlay.isFollowLocationEnabled();
     }
 
-    public void addRequestPhotoHandler(MarkerWindow.RequestPhotoEventHandler requestPhotoEventHandler) {
-        this.markerInfoWindow.addRequestPhotoHandler(requestPhotoEventHandler);
+    public void addRequestPhotoHandler(MarkerFragment.RequestPhotoEventHandler requestPhotoEventHandler) {
+        this.markerFragment.addRequestPhotoHandler(requestPhotoEventHandler);
     }
 
     public void setSnapNoteToGps(boolean snapNoteToGps) {

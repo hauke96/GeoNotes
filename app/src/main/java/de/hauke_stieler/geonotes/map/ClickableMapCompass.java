@@ -4,12 +4,13 @@ import android.content.Context;
 import android.graphics.Point;
 import android.view.MotionEvent;
 
-import org.osmdroid.events.MapEventsReceiver;
-import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 
+/**
+ * A normal compass rose which can be clicked to reset the rotation overlays rotation (and therefore
+ * to reset the maps rotation).
+ */
 public class ClickableMapCompass extends CompassOverlay {
     private final SnappableRotationOverlay orientationProvider;
 

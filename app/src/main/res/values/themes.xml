@@ -9,6 +9,6 @@
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textColor">@color/dark_grey</item>
     </style>
-    <dimen name="ImageButton">64dp</dimen>
-    <dimen name="ImageButtonPadding">10dp</dimen>
+    <dimen name="ImageButton">50dp</dimen>
+    <dimen name="ImageButtonMargin">5dp</dimen>
 </resources>

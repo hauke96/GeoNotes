@@ -18,7 +18,6 @@ import android.widget.Space;
 import android.widget.TextView;
 
 import org.apache.commons.text.StringEscapeUtils;
-import org.osmdroid.api.IMapView;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.infowindow.InfoWindow;
@@ -33,6 +32,8 @@ import de.hauke_stieler.geonotes.notes.Note;
 import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
 
 public class MarkerWindow extends InfoWindow {
+    private static final String LOGTAG = MarkerWindow.class.getName();
+
     public interface MarkerEventHandler {
         void onDelete(Marker marker);
 
@@ -47,7 +48,7 @@ public class MarkerWindow extends InfoWindow {
         void onRequestPhoto(Long noteId);
     }
 
-    static int mDescriptionId = R.id.bubble_description;
+    static int mDescriptionId = R.id.note_description;
 
     private final Database database;
     private final MarkerEventHandler markerEventHandler;
@@ -100,11 +101,11 @@ public class MarkerWindow extends InfoWindow {
     @Override
     public void onOpen(Object item) {
         if (mView == null) {
-            Log.w(IMapView.LOGTAG, "Error trapped, BasicInfoWindow.open, mView is null!");
+            Log.w(LOGTAG, "Error trapped, MarkerWindow.open, mView is null!");
             return;
         }
         if (!(item instanceof Marker)) {
-            Log.e(IMapView.LOGTAG, "Opened item is not a marker!");
+            Log.e(LOGTAG, "Opened item is not a marker!");
             return;
         }
 
@@ -128,7 +129,7 @@ public class MarkerWindow extends InfoWindow {
                 creationDateLabel.setText(creationDateString);
             }
         } catch (Exception e) {
-            Log.e("MarkerWindow", String.format("Could not create creation date label for note %d with date string '%s'", note.getId(), note.getCreationDateTimeString()));
+            Log.e(LOGTAG, String.format("Could not create creation date label for note %d with date string '%s'", note.getId(), note.getCreationDateTimeString()));
         }
 
         // Description / Snippet
@@ -136,6 +137,8 @@ public class MarkerWindow extends InfoWindow {
         if (snippet == null) {
             snippet = "";
         }
+
+        // Escape as HTML to make sure line breaks are handled correctly everywhere
         snippet = StringEscapeUtils.escapeHtml4(snippet).replace("\n", "<br>");
 
         Spanned snippetHtml = Html.fromHtml(snippet);
@@ -181,7 +184,7 @@ public class MarkerWindow extends InfoWindow {
             return;
         }
 
-        LinearLayout photoLayout = getView().findViewById(R.id.note_image_pane);
+        LinearLayout photoLayout = getView().findViewById(R.id.note_image_panel);
         photoLayout.removeAllViews();
     }
 
@@ -200,7 +203,7 @@ public class MarkerWindow extends InfoWindow {
 
     public void addPhoto(File photo) {
         int sizeInPixel = getView().getContext().getResources().getDimensionPixelSize(R.dimen.ImageButton);
-        int paddingInPixel = getView().getContext().getResources().getDimensionPixelSize(R.dimen.ImageButtonPadding);
+        int paddingInPixel = getView().getContext().getResources().getDimensionPixelSize(R.dimen.ImageButtonMargin);
 
         ImageButton imageButton = new ImageButton(getView().getContext());
         imageButton.setLayoutParams(new LinearLayout.LayoutParams(sizeInPixel, sizeInPixel));
@@ -216,7 +219,7 @@ public class MarkerWindow extends InfoWindow {
         // Get thumbnail that can be shown on image button
         imageButton.setImageBitmap(ThumbnailUtil.loadThumbnail(photo));
 
-        LinearLayout photoLayout = getView().findViewById(R.id.note_image_pane);
+        LinearLayout photoLayout = getView().findViewById(R.id.note_image_panel);
         photoLayout.addView(imageButton);
 
         Space space = new Space(getView().getContext());
