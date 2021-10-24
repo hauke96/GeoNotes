@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         exportPopupMenu.getMenu().add(0, 1, 1, "GPX");
 
         exportPopupMenu.setOnMenuItemClickListener(menuItem -> {
-            switch (menuItem.getItemId()){
+            switch (menuItem.getItemId()) {
                 case 0:
                     exporter.shareAsGeoJson();
                     break;
@@ -116,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         });
-
     }
 
     private void createMarkerFragment() {
