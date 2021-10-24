@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.ActionMenuItemView;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -154,7 +155,14 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return true;
             case R.id.toolbar_btn_export:
-                exporter.shareAsGeoJson();
+                PopupMenu menu = new PopupMenu(this, item.getActionView());
+
+                menu.getMenu().add("One");
+                menu.getMenu().add("Two");
+                menu.getMenu().add("Three");
+
+                menu.show();
+//                exporter.shareAsGeoJson();
                 return true;
             case R.id.toolbar_btn_settings:
                 startActivity(new Intent(this, SettingsActivity.class));

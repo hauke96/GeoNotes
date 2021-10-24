@@ -9,14 +9,20 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import de.hauke_stieler.geonotes.common.FileHelper;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.notes.Note;
-import io.jenetics.jpx.GPX;
-import io.jenetics.jpx.WayPoint;
+import io.ticofab.androidgpxparser.parser.GPXParser;
+import io.ticofab.androidgpxparser.parser.domain.Gpx;
+import io.ticofab.androidgpxparser.parser.domain.Point;
+import io.ticofab.androidgpxparser.parser.domain.WayPoint;
+import me.himanshusoni.gpxparser.GPXWriter;
+import me.himanshusoni.gpxparser.modal.GPX;
+import me.himanshusoni.gpxparser.modal.Waypoint;
 
 public class Exporter {
     private static String LOGTAG = Exporter.class.getName();
@@ -40,21 +46,18 @@ public class Exporter {
     public void shareAsGpx() {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         List<Note> notes = database.getAllNotes();
+        GPX gpx = new GPX();
 
         try {
-            GPX.Builder builder = GPX.builder();
-
             for (Note note : notes) {
-                WayPoint waypoint = WayPoint.builder()
-                        .lat(note.getLat())
-                        .lon(note.getLon())
-                        .name(note.getId() + "")
-                        .desc(note.getDescription())
-                        .build();
-                builder.addWayPoint(waypoint);
+                Waypoint waypoint = new Waypoint(note.getLat(), note.getLon());
+                waypoint.setName(note.getId() + "");
+                waypoint.setDescription(note.getDescription());
+                gpx.addWaypoint(waypoint);
             }
 
-            GPX.write(builder.build(), outputStream);
+            GPXWriter writer = new GPXWriter();
+            writer.writeGPX(gpx, outputStream);
         } catch (Exception e) {
             Log.e(LOGTAG, "GPX creation failed: " + e.toString());
         }
