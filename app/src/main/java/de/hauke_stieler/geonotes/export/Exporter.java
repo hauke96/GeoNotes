@@ -3,8 +3,8 @@ package de.hauke_stieler.geonotes.export;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
@@ -15,9 +15,6 @@ import java.util.List;
 import de.hauke_stieler.geonotes.common.FileHelper;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.notes.Note;
-import me.himanshusoni.gpxparser.GPXWriter;
-import me.himanshusoni.gpxparser.modal.GPX;
-import me.himanshusoni.gpxparser.modal.Waypoint;
 
 public class Exporter {
     private static final String LOGTAG = Exporter.class.getName();
@@ -39,28 +36,17 @@ public class Exporter {
     }
 
     public void shareAsGpx() {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         List<Note> notes = database.getAllNotes();
-        GPX gpx = new GPX();
+        String gpxString = Gpx.toGpx(notes);
 
-        try {
-            for (Note note : notes) {
-                Waypoint waypoint = new Waypoint(note.getLat(), note.getLon());
-                waypoint.setName(note.getId() + "");
-                waypoint.setDescription(note.getDescription());
-                gpx.addWaypoint(waypoint);
-            }
-
-            GPXWriter writer = new GPXWriter();
-            writer.writeGPX(gpx, outputStream);
-        } catch (Exception e) {
-            Log.e(LOGTAG, "GPX creation failed: " + e.toString());
+        if ("".equals(gpxString)) {
+            Toast.makeText(context, "Exporting GPX file failed", Toast.LENGTH_SHORT).show();
         }
 
         String fileExtension = ".gpx";
         String mimeType = "application/gpx+xml";
 
-        openShareIntent(new String(outputStream.toByteArray()), fileExtension, mimeType);
+        openShareIntent(gpxString, fileExtension, mimeType);
     }
 
     private void openShareIntent(String data, String fileExtension, String mimeType) {
