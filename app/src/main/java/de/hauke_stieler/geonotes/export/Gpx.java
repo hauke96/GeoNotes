@@ -26,7 +26,7 @@ public class Gpx {
                 gpx.addWaypoint(waypoint);
             }
 
-            GPXWriter writer = new GPXWriter();
+            GPXWriter writer = new CustomGpxWriter();
             writer.writeGPX(gpx, outputStream);
         } catch (Exception e) {
             Log.e(LOGTAG, "GPX creation failed: " + e.toString());
