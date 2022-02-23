@@ -17,4 +17,8 @@
     <!-- Misc strings -->
     <string name="feedback_mail_domain">hauke-stieler.de</string>
     <string name="feedback_mail_local_part">geonotes</string>
+
+    <!-- Dialog buttons -->
+    <string name="dialog_yes">Yes</string>
+    <string name="dialog_no">No</string>
 </resources>

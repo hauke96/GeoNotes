@@ -4,8 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -28,7 +32,7 @@ public class NoteListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_list);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar_note_list);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -66,5 +70,31 @@ public class NoteListActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         finish();
         return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_note_list, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.toolbar_btn_delete_all:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Really delete all notes? This is not reversible!");
+                builder.setPositiveButton(R.string.dialog_yes, (dialog, id) -> {
+                    database.removeAllNotes();
+                    load();
+                });
+                builder.setNegativeButton(R.string.dialog_no, (dialog, id) -> {});
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

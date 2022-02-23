@@ -56,6 +56,10 @@ public class Database extends SQLiteOpenHelper {
         noteStore.removeNote(getWritableDatabase(), id);
     }
 
+    public void removeAllNotes() {
+        noteStore.removeAllNotes(getWritableDatabase());
+    }
+
     public List<Note> getAllNotes() {
         return noteStore.getAllNotes(getWritableDatabase());
     }
