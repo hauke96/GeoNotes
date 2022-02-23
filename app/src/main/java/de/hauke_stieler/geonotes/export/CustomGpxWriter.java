@@ -36,6 +36,7 @@ import me.himanshusoni.gpxparser.modal.Track;
 import me.himanshusoni.gpxparser.modal.TrackSegment;
 import me.himanshusoni.gpxparser.modal.Waypoint;
 
+// TODO Remove when the gpx-library support indentation
 public class CustomGpxWriter extends GPXWriter {
 
     final static SimpleDateFormat xmlDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");

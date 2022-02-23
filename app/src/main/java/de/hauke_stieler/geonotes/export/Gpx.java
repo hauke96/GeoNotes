@@ -26,6 +26,7 @@ public class Gpx {
                 gpx.addWaypoint(waypoint);
             }
 
+            // TODO Use normal GPXWriter from library, when indentation is supported
             GPXWriter writer = new CustomGpxWriter();
             writer.writeGPX(gpx, outputStream);
         } catch (Exception e) {
