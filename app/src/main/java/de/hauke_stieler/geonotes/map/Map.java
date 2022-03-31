@@ -102,6 +102,16 @@ public class Map {
 
         createOverlays((BitmapDrawable) locationIcon, (BitmapDrawable) arrowIcon);
 
+        reloadAllNotes();
+    }
+
+    public void reloadAllNotes() {
+        for (Overlay o : map.getOverlays()) {
+            if (o instanceof Marker) {
+                map.getOverlayManager().remove(o);
+            }
+        }
+
         for (Note n : this.database.getAllNotes()) {
             createMarker("" + n.getId(), n.getDescription(), new GeoPoint(n.getLat(), n.getLon()), markerClickListener);
         }
@@ -139,6 +149,23 @@ public class Map {
         MapEventsReceiver mapEventsReceiver = new MapEventsReceiver() {
             @Override
             public boolean singleTapConfirmedHelper(GeoPoint p) {
+                if (!preferences.getBoolean(context.getString(R.string.pref_tap_duration), false)) {
+                    createMarker(p);
+                }
+
+                return false;
+            }
+
+            @Override
+            public boolean longPressHelper(GeoPoint p) {
+                if (preferences.getBoolean(context.getString(R.string.pref_tap_duration), false)) {
+                    createMarker(p);
+                }
+
+                return false;
+            }
+
+            private void createMarker(GeoPoint p) {
                 // No marker to move here -> deselect or create marker
                 // (selecting marker on the map is handles via the separate markerClickListener)
                 if (markerFragment.getSelectedMarker() != null) {
@@ -148,13 +175,6 @@ public class Map {
 
                 // Create new marker at this location and select it
                 initAndSelectMarker(p);
-
-                return false;
-            }
-
-            @Override
-            public boolean longPressHelper(GeoPoint p) {
-                return false;
             }
         };
         map.getOverlays().add(new MapEventsOverlay(mapEventsReceiver));

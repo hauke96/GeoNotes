@@ -15,10 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import org.osmdroid.tileprovider.modules.SqlTileWriter;
-import org.osmdroid.views.MapView;
 
 import de.hauke_stieler.geonotes.BuildConfig;
-import de.hauke_stieler.geonotes.Injector;
 import de.hauke_stieler.geonotes.R;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -29,8 +27,6 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
-
-        MapView mapView = Injector.get(MapView.class);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -102,6 +98,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         boolean prefEnableRotatingMap = preferences.getBoolean(getString(R.string.pref_enable_rotating_map), false);
         ((Switch) findViewById(R.id.settings_enable_rotating_map)).setChecked(prefEnableRotatingMap);
+
+        boolean prefLongTap = preferences.getBoolean(getString(R.string.pref_tap_duration), false);
+        ((Switch) findViewById(R.id.settings_tap_long)).setChecked(prefLongTap);
     }
 
     private void save() {
@@ -127,6 +126,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         boolean enableRotatingMapChecked = ((Switch) findViewById(R.id.settings_enable_rotating_map)).isChecked();
         editor.putBoolean(getString(R.string.pref_enable_rotating_map), enableRotatingMapChecked);
+
+        boolean useLongTap = ((Switch) findViewById(R.id.settings_tap_long)).isChecked();
+        editor.putBoolean(getString(R.string.pref_tap_duration), useLongTap);
 
         editor.commit();
     }

@@ -70,6 +70,10 @@ public class NoteStore {
         db.delete(NOTES_TABLE_NAME, NOTES_COL_ID + " = ?", new String[]{"" + id});
     }
 
+    public void removeAllNotes(SQLiteDatabase db) {
+        db.delete(NOTES_TABLE_NAME, null, null);
+    }
+
     public List<Note> getAllNotes(SQLiteDatabase db) {
         Cursor cursor = db.query(NOTES_TABLE_NAME, new String[]{NOTES_COL_ID, NOTES_COL_DESCRIPTION, NOTES_COL_LAT, NOTES_COL_LON, NOTES_COL_CREATED_AT}, null, null, null, null, null);
 

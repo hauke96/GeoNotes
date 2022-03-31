@@ -1,0 +1,10 @@
+1.4.4:
+
+New features & breaking changes:
+* Add button to delete all notes (you'll be asked before notes get actually deleted)
+* Add indentation to GPX export
+* Add creation time of a note to GPX export
+
+Other changes:
+* Updated code-dependencies
+* README.md now contains some information about contributing to this project

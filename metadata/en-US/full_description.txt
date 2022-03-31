@@ -1,10 +1,10 @@
-A simple app to create and manage georeferences notes (text and photos) on a map. The goal is to create the notes very fast and without any unnecessary UI/UX overhead. One possible use-case is to collect geospatial data which can be later uploaded to OpenStreetMap.
+A simple app to create and manage georeferenced notes (text and photos) on a map. The goal is to create the notes very fast and without any unnecessary interaction overhead. The typical use-case is to collect geospatial data which can be later uploaded to OpenStreetMap.
 
 Currently the basic features are:
 <ul>
 <li>Create, move and delete notes on a map</li>
 <li>Attach photos to a note</li>
 <li>List of all notes</li>
-<li>Export all notes in GeoJson format</li>
+<li>Export all notes in GeoJson or GPX format</li>
 <li>Show and follow current location</li>
 </ul>

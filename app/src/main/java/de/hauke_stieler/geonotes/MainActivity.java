@@ -319,6 +319,11 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         }
+
+        // Maybe some or all notes got deleted via the note list -> reload map
+        if (requestCode == REQUEST_NOTE_LIST_REQUEST_CODE) {
+            map.reloadAllNotes();
+        }
     }
 
     /**

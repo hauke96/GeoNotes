@@ -7,7 +7,7 @@
     tools:context=".note_list.NoteListActivity">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/toolbar_note_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/primary"

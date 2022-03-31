@@ -3,15 +3,15 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 32
     buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId "de.hauke_stieler.geonotes"
         minSdkVersion 16
-        targetSdkVersion 30
-        versionCode 1004003
-        versionName "1.4.3"
+        targetSdkVersion 32
+        versionCode 1004004
+        versionName "1.4.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -37,9 +37,9 @@ android {
 dependencies {
     implementation 'org.osmdroid:osmdroid-android:6.1.8'
 
-    implementation 'androidx.appcompat:appcompat:1.3.1'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.preference:preference:1.1.1'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'androidx.preference:preference:1.2.0'
     implementation 'org.apache.commons:commons-text:1.9'
     implementation 'com.google.code.gson:gson:2.8.8'
     implementation 'me.himanshusoni.gpxparser:gpx-parser:1.13'
