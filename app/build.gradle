@@ -10,8 +10,8 @@ android {
         applicationId "de.hauke_stieler.geonotes"
         minSdkVersion 16
         targetSdkVersion 32
-        versionCode 1004004
-        versionName "1.4.4"
+        versionCode 1004005
+        versionName "1.4.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
