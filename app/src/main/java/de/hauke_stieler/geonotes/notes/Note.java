@@ -15,6 +15,7 @@ public class Note {
     private final double lat;
     private final double lon;
     private final String creationDateTime;
+    // TODO Add category.
 
     public Note(long id, String description, double lat, double lon, String creationDateTime) {
         this.id = id;

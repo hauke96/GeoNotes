@@ -37,6 +37,7 @@ import de.hauke_stieler.geonotes.Injector;
 import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.common.FileHelper;
 import de.hauke_stieler.geonotes.database.Database;
+import de.hauke_stieler.geonotes.categories.Category;
 import de.hauke_stieler.geonotes.notes.Note;
 import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
 
@@ -76,6 +77,7 @@ public class MarkerFragment extends Fragment {
     private Marker selectedMarker;
     private State state;
     private Spinner categorySpinner;
+    private CategorySpinnerAdapter categorySpinnerAdapter;
 
     private final Database database;
 
@@ -131,10 +133,10 @@ public class MarkerFragment extends Fragment {
             }
         });
 
-        CategorySpinnerAdapter categorySpinnerAdapter = new CategorySpinnerAdapter(getContext(), R.layout.item_category_spinner);
-        categorySpinnerAdapter.add("#ff0000");
-        categorySpinnerAdapter.add("#00ff00");
-        categorySpinnerAdapter.add("#0000ff");
+        categorySpinnerAdapter = new CategorySpinnerAdapter(getContext(), R.layout.item_category_spinner);
+        for (Category category : database.getAllCategories()) {
+            categorySpinnerAdapter.add(category);
+        }
 
         categorySpinner = view.findViewById(R.id.category_spinner);
         categorySpinner.setAdapter(categorySpinnerAdapter);
@@ -142,9 +144,7 @@ public class MarkerFragment extends Fragment {
         categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                parent.setSelection(position);
-//                categorySpinnerAdapter.notifyDataSetChanged();
-//                Log.i(LOGTAG, "onItemSelected: " + position + ", " + id);
+                // TODO store selected category in note
             }
 
             @Override
@@ -241,6 +241,8 @@ public class MarkerFragment extends Fragment {
         cameraButton.setOnClickListener(v -> {
             requestPhotoHandler.onRequestPhoto(Long.parseLong(marker.getId()));
         });
+
+        // TODO Load category from note. If none is set, just leave the current selected category.
     }
 
     public Marker getSelectedMarker() {
