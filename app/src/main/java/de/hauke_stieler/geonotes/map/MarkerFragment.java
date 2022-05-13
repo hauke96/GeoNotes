@@ -14,11 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Space;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -73,6 +75,7 @@ public class MarkerFragment extends Fragment {
     private RequestPhotoEventHandler requestPhotoHandler;
     private Marker selectedMarker;
     private State state;
+    private Spinner categorySpinner;
 
     private final Database database;
 
@@ -125,6 +128,27 @@ public class MarkerFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
+            }
+        });
+
+        CategorySpinnerAdapter categorySpinnerAdapter = new CategorySpinnerAdapter(getContext(), R.layout.item_category_spinner);
+        categorySpinnerAdapter.add("#ff0000");
+        categorySpinnerAdapter.add("#00ff00");
+        categorySpinnerAdapter.add("#0000ff");
+
+        categorySpinner = view.findViewById(R.id.category_spinner);
+        categorySpinner.setAdapter(categorySpinnerAdapter);
+        categorySpinner.setSelection(0);
+        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                parent.setSelection(position);
+//                categorySpinnerAdapter.notifyDataSetChanged();
+//                Log.i(LOGTAG, "onItemSelected: " + position + ", " + id);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
 
