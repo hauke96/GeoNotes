@@ -6,6 +6,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
+import de.hauke_stieler.geonotes.categories.Category;
+
 public class Note {
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat(DATE_TIME_FORMAT, Locale.getDefault());
@@ -15,14 +17,15 @@ public class Note {
     private final double lat;
     private final double lon;
     private final String creationDateTime;
-    // TODO Add category.
+    private final Category category;
 
-    public Note(long id, String description, double lat, double lon, String creationDateTime) {
+    public Note(long id, String description, double lat, double lon, String creationDateTime, Category category) {
         this.id = id;
         this.description = description;
         this.lat = lat;
         this.lon = lon;
         this.creationDateTime = creationDateTime;
+        this.category = category;
     }
 
     public long getId() {
@@ -56,5 +59,9 @@ public class Note {
 
     public static String getDateTimeString(Calendar now) {
         return SIMPLE_DATE_FORMAT.format(now.getTime());
+    }
+
+    public Category getCategory() {
+        return category;
     }
 }
