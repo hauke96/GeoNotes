@@ -76,6 +76,14 @@ public class NoteStore {
         db.update(NOTES_TABLE_NAME, values, NOTES_COL_ID + " = ?", new String[]{"" + id});
     }
 
+    public void updateCategory(SQLiteDatabase db, long id, long categoryId) {
+        ContentValues values = new ContentValues();
+        values.put(NOTES_COL_ID, id);
+        values.put(NOTES_COL_CATEGORY, categoryId);
+
+        db.update(NOTES_TABLE_NAME, values, NOTES_COL_ID + " = ?", new String[]{"" + id});
+    }
+
     public void updateLocation(SQLiteDatabase db, long id, GeoPoint location) {
         ContentValues values = new ContentValues();
         values.put(NOTES_COL_ID, id);
@@ -94,7 +102,7 @@ public class NoteStore {
     }
 
     public List<Note> getAllNotes(SQLiteDatabase db) {
-        Cursor cursor = db.query(NOTES_TABLE_NAME, new String[]{NOTES_COL_ID, NOTES_COL_DESCRIPTION, NOTES_COL_LAT, NOTES_COL_LON, NOTES_COL_CREATED_AT}, null, null, null, null, null);
+        Cursor cursor = db.query(NOTES_TABLE_NAME, new String[]{NOTES_COL_ID, NOTES_COL_DESCRIPTION, NOTES_COL_LAT, NOTES_COL_LON, NOTES_COL_CREATED_AT, NOTES_COL_CATEGORY}, null, null, null, null, null);
 
         List<Note> notes = new ArrayList<>();
         if (cursor.moveToFirst()) {

@@ -59,6 +59,7 @@ public class CategoryStore {
 
     public Category getCategory(SQLiteDatabase db, String id) {
         Cursor cursor = db.query(CATEGORIES_TABLE_NAME, new String[]{CATEGORIES_COL_ID, CATEGORIES_COL_COLOR, CATEGORIES_COL_NAME}, CATEGORIES_COL_ID + "=?", new String[]{id}, null, null, null);
+        cursor.moveToFirst();
         return getCategoryFromCursor(cursor);
     }
 

@@ -60,6 +60,10 @@ public class Database extends SQLiteOpenHelper {
         noteStore.updateDescription(getWritableDatabase(), id, newDescription);
     }
 
+    public void updateCategory(long id, long categoryId) {
+        noteStore.updateCategory(getWritableDatabase(), id, categoryId);
+    }
+
     public void updateLocation(long id, GeoPoint location) {
         noteStore.updateLocation(getWritableDatabase(), id, location);
     }

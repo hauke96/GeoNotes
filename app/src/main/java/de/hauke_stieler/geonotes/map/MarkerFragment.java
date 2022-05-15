@@ -45,11 +45,11 @@ public class MarkerFragment extends Fragment {
     private static final String LOGTAG = MarkerFragment.class.getName();
 
     public interface MarkerFragmentEventHandler {
-        void onDelete(Marker marker);
+        void onDelete(GeoNotesMarker marker);
 
-        void onSave(Marker marker);
+        void onSave(GeoNotesMarker marker);
 
-        void onMove(Marker marker);
+        void onMove(GeoNotesMarker marker);
     }
 
     public interface RequestPhotoEventHandler {
@@ -74,7 +74,7 @@ public class MarkerFragment extends Fragment {
 
     private MarkerFragmentEventHandler markerEventHandler;
     private RequestPhotoEventHandler requestPhotoHandler;
-    private Marker selectedMarker;
+    private GeoNotesMarker selectedMarker;
     private State state;
     private Spinner categorySpinner;
     private CategorySpinnerAdapter categorySpinnerAdapter;
@@ -163,7 +163,7 @@ public class MarkerFragment extends Fragment {
         updatePanelVisibility();
     }
 
-    public void selectMarker(Marker marker, boolean transferEditTextContent) {
+    public void selectMarker(GeoNotesMarker marker, boolean transferEditTextContent) {
         selectedMarker = marker;
         state = State.EDITING;
 
@@ -245,7 +245,7 @@ public class MarkerFragment extends Fragment {
         // TODO Load category from note.
     }
 
-    public Marker getSelectedMarker() {
+    public GeoNotesMarker getSelectedMarker() {
         return selectedMarker;
     }
 

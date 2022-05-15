@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.PowerManager;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
 import androidx.core.content.res.ResourcesCompat;
 
@@ -58,7 +59,7 @@ public class Map {
     private boolean snapNoteToGps;
 
     // Variables used during moving a marker. Do not use when no marker is currently in move mode (aka when markerToMove==null)
-    private Marker markerToMove;
+    private GeoNotesMarker markerToMove;
     private Point dragStartMarkerPosition;
 
     private SnappableRotationOverlay rotationGestureOverlay;
@@ -113,7 +114,7 @@ public class Map {
         }
 
         for (Note n : this.database.getAllNotes()) {
-            createMarker("" + n.getId(), n.getDescription(), new GeoPoint(n.getLat(), n.getLon()), markerClickListener);
+            createMarker("" + n.getId(), n.getDescription(), new GeoPoint(n.getLat(), n.getLon()), n.getCategory().getId(), markerClickListener);
         }
     }
 
@@ -141,8 +142,12 @@ public class Map {
 
         // Add marker click listener. Will be called when the user clicks/taps on a marker.
         markerClickListener = (marker, mapView) -> {
-            selectMarker(marker, false);
-            return true;
+            if (marker instanceof GeoNotesMarker) {
+                selectMarker((GeoNotesMarker) marker, false);
+                return true;
+            }
+            Toast.makeText(context, "Marker " + marker.getId() + " is NOT a GeoNotesMarker", Toast.LENGTH_LONG).show();
+            return false;
         };
 
         // React to touches on the map
@@ -237,7 +242,7 @@ public class Map {
     private void addMarkerFragmentEventHandler(MarkerFragment fragment) {
         fragment.addEventHandler(new MarkerFragment.MarkerFragmentEventHandler() {
             @Override
-            public void onDelete(Marker marker) {
+            public void onDelete(GeoNotesMarker marker) {
                 // We always have an ID and can therefore delete the note
                 database.removeNote(Long.parseLong(marker.getId()));
                 database.removePhotos(Long.parseLong(marker.getId()), context.getExternalFilesDir("GeoNotes"));
@@ -246,9 +251,10 @@ public class Map {
             }
 
             @Override
-            public void onSave(Marker marker) {
+            public void onSave(GeoNotesMarker marker) {
                 // We always have an ID and can therefore update the note
                 database.updateDescription(Long.parseLong(marker.getId()), marker.getSnippet());
+                database.updateCategory(Long.parseLong(marker.getId()), marker.getCategoryId());
                 // TODO store category on note
                 // TODO store category ID in preferences
                 setNormalIcon(marker);
@@ -256,7 +262,7 @@ public class Map {
             }
 
             @Override
-            public void onMove(Marker marker) {
+            public void onMove(GeoNotesMarker marker) {
                 markerToMove = marker;
                 redraw();
             }
@@ -273,13 +279,15 @@ public class Map {
      */
     private void initAndSelectMarker(GeoPoint location) {
         // TODO Read last used category ID from preferences.
-        long id = database.addNote("", location.getLatitude(), location.getLongitude(), 0);
+        int categoryId = 1;
+
+        long id = database.addNote("", location.getLatitude(), location.getLongitude(), categoryId);
 
         if (snapNoteToGps) {
             location = snapToGpsLocation(location);
         }
 
-        Marker newMarker = createMarker("" + id, "", location, markerClickListener);
+        GeoNotesMarker newMarker = createMarker("" + id, "", location, categoryId, markerClickListener);
         selectMarker(newMarker, true);
     }
 
@@ -313,14 +321,14 @@ public class Map {
     public void selectNote(long noteId) {
         String noteIdString = "" + noteId;
         for (Overlay marker : map.getOverlays()) {
-            if (marker instanceof Marker && ((Marker) marker).getId().equals(noteIdString)) {
-                this.selectMarker((Marker) marker, false);
+            if (marker instanceof GeoNotesMarker && ((GeoNotesMarker) marker).getId().equals(noteIdString)) {
+                this.selectMarker((GeoNotesMarker) marker, false);
             }
         }
     }
 
     /**
-     * @param marker                  The marker to select.
+     * @param markerToSelect          The marker to select.
      * @param transferEditTextContent When set to true: If the user typed any text into the input
      *                                field without a selected note and *then* tapped on the map
      *                                to create or select one, this prior entered text schould be
@@ -328,17 +336,17 @@ public class Map {
      *                                When set to false: The text of the tapped note will be read
      *                                and shown in the edit field.
      */
-    private void selectMarker(Marker marker, boolean transferEditTextContent) {
+    private void selectMarker(GeoNotesMarker markerToSelect, boolean transferEditTextContent) {
         // Deselect previously selected marker
-        Marker selectedMarker = markerFragment.getSelectedMarker();
-        if (selectedMarker != null) {
+        GeoNotesMarker currentlySelectedMarker = markerFragment.getSelectedMarker();
+        if (currentlySelectedMarker != null) {
             // This icon will not be the selected marker after "showInfoWindow", therefore we set the normal icon here.
-            setNormalIcon(selectedMarker);
+            setNormalIcon(currentlySelectedMarker);
             markerFragment.reset();
         }
 
-        setSelectedIcon(marker);
-        markerFragment.selectMarker(marker, transferEditTextContent);
+        setSelectedIcon(markerToSelect);
+        markerFragment.selectMarker(markerToSelect, transferEditTextContent);
         zoomToSelectedMarker();
 
         addImagesToMarkerWindow();
@@ -414,11 +422,8 @@ public class Map {
     /**
      * Just creates a new marker and adds it to the map overlay. No database operations or selection is performed.
      */
-    private Marker createMarker(String id, String description, GeoPoint p, Marker.OnMarkerClickListener markerClickListener) {
-        Marker marker = new Marker(map);
-        marker.setId(id);
-        marker.setPosition(p);
-        marker.setSnippet(description);
+    private GeoNotesMarker createMarker(String id, String description, GeoPoint p, long categoryId, Marker.OnMarkerClickListener markerClickListener) {
+        GeoNotesMarker marker = new GeoNotesMarker(map, id, description, p, categoryId);
         marker.setOnMarkerClickListener(markerClickListener);
 
         setNormalIcon(marker);
