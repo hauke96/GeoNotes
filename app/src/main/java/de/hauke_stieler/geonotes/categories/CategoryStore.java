@@ -22,27 +22,31 @@ public class CategoryStore {
                 CATEGORIES_COL_ID,
                 CATEGORIES_COL_COLOR,
                 CATEGORIES_COL_NAME));
+        addInitialCategories(db);
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < 6) {
             onCreate(db);
-            addCategory(db, "#f44336", "Red");
-            addCategory(db, "#e91e63", "Pink");
-            addCategory(db, "#9c27b0", "Purple");
-            addCategory(db, "#3f51b5", "Blue");
-            addCategory(db, "#03a9f4", "Light blue");
-            addCategory(db, "#009688", "Teal");
-            addCategory(db, "#4caf50", "Green");
-            addCategory(db, "#ffeb3b", "Yellow");
-            addCategory(db, "#ff9800", "Orange");
-            addCategory(db, "#795548", "Brown");
-            addCategory(db, "#9e9e9e", "Grey");
-            addCategory(db, "#000000", "Black");
-            addCategory(db, "#ffffff", "White");
         }
 
         Log.i("CategoryStore", String.format("onUpgrade: from version %d to version %d", oldVersion, newVersion));
+    }
+
+    private void addInitialCategories(SQLiteDatabase db) {
+        addCategory(db, "#f44336", "Red");
+        addCategory(db, "#e91e63", "Pink");
+        addCategory(db, "#9c27b0", "Purple");
+        addCategory(db, "#3f51b5", "Blue");
+        addCategory(db, "#03a9f4", "Light blue");
+        addCategory(db, "#009688", "Teal");
+        addCategory(db, "#4caf50", "Green");
+        addCategory(db, "#ffeb3b", "Yellow");
+        addCategory(db, "#ff9800", "Orange");
+        addCategory(db, "#795548", "Brown");
+        addCategory(db, "#9e9e9e", "Grey");
+        addCategory(db, "#000000", "Black");
+        addCategory(db, "#ffffff", "White");
     }
 
     public long addCategory(SQLiteDatabase db, String color, String name) {

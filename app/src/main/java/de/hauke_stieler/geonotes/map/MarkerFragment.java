@@ -242,7 +242,7 @@ public class MarkerFragment extends Fragment {
             requestPhotoHandler.onRequestPhoto(Long.parseLong(marker.getId()));
         });
 
-        // TODO Load category from note. If none is set, just leave the current selected category.
+        // TODO Load category from note.
     }
 
     public Marker getSelectedMarker() {

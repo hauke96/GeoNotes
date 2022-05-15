@@ -31,13 +31,14 @@ public class NoteStore {
     }
 
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s(%s INTEGER PRIMARY KEY, %s DOUBLE NOT NULL, %s DOUBLE NOT NULL, %s VARCHAR NOT NULL, %s VARCHAR NOT NULL);",
+        db.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s(%s INTEGER PRIMARY KEY, %s DOUBLE NOT NULL, %s DOUBLE NOT NULL, %s VARCHAR NOT NULL, %s VARCHAR NOT NULL, %s INTEGER NOT NULL);",
                 NOTES_TABLE_NAME,
                 NOTES_COL_ID,
                 NOTES_COL_LAT,
                 NOTES_COL_LON,
                 NOTES_COL_DESCRIPTION,
-                NOTES_COL_CREATED_AT));
+                NOTES_COL_CREATED_AT,
+                NOTES_COL_CATEGORY));
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -56,13 +57,13 @@ public class NoteStore {
         Log.i("NoteStore", String.format("onUpgrade: from version %d to version %d", oldVersion, newVersion));
     }
 
-    public long addNote(SQLiteDatabase db, String description, double lat, double lon) {
-        // TODO add category
+    public long addNote(SQLiteDatabase db, String description, double lat, double lon, long categoryId) {
         ContentValues values = new ContentValues();
         values.put(NOTES_COL_LAT, lat);
         values.put(NOTES_COL_LON, lon);
         values.put(NOTES_COL_DESCRIPTION, description);
         values.put(NOTES_COL_CREATED_AT, Note.getDateTimeString(GregorianCalendar.getInstance()));
+        values.put(NOTES_COL_CATEGORY, categoryId);
 
         return db.insert(NOTES_TABLE_NAME, null, values);
     }

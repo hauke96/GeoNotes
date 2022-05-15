@@ -249,6 +249,8 @@ public class Map {
             public void onSave(Marker marker) {
                 // We always have an ID and can therefore update the note
                 database.updateDescription(Long.parseLong(marker.getId()), marker.getSnippet());
+                // TODO store category on note
+                // TODO store category ID in preferences
                 setNormalIcon(marker);
                 redraw();
             }
@@ -270,7 +272,8 @@ public class Map {
      * Creates a new note in the database, creates a corresponding marker (s. createMarker()) and also selects this new marker.
      */
     private void initAndSelectMarker(GeoPoint location) {
-        long id = database.addNote("", location.getLatitude(), location.getLongitude());
+        // TODO Read last used category ID from preferences.
+        long id = database.addNote("", location.getLatitude(), location.getLongitude(), 0);
 
         if (snapNoteToGps) {
             location = snapToGpsLocation(location);

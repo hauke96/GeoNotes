@@ -52,8 +52,8 @@ public class Database extends SQLiteOpenHelper {
         photoStore.onUpgrade(db, oldVersion, newVersion);
     }
 
-    public long addNote(String description, double lat, double lon) {
-        return noteStore.addNote(getWritableDatabase(), description, lat, lon);
+    public long addNote(String description, double lat, double lon, long categoryId) {
+        return noteStore.addNote(getWritableDatabase(), description, lat, lon, categoryId);
     }
 
     public void updateDescription(long id, String newDescription) {
