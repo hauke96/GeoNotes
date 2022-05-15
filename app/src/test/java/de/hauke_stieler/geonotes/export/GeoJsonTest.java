@@ -32,7 +32,7 @@ public class GeoJsonTest {
     public void testSingleNote() {
         // Arrange
         List<Note> notes = new ArrayList<>();
-        notes.add(new Note(1, "foo", 1.23f, 4.56f, "2021-03-01 12:34:56", new Category(1, "", "")));
+        notes.add(new Note(1, "foo", 1.23f, 4.56f, "2021-03-01 12:34:56", new Category(1, "#ff00aa", "Bar")));
 
         String expectedResult = "{\n" +
                 "  \"type\": \"FeatureCollection\",\n" +
@@ -42,7 +42,12 @@ public class GeoJsonTest {
                 "      \"properties\": {\n" +
                 "        \"name\": 1,\n" +
                 "        \"description\": \"foo\",\n" +
-                "        \"created_at\": \"2021-03-01 12:34:56\"\n" +
+                "        \"created_at\": \"2021-03-01 12:34:56\",\n" +
+                "        \"category\": {\n" +
+                "          \"id\": 1,\n" +
+                "          \"name\": \"Bar\",\n" +
+                "          \"color\": \"#ff00aa\"\n" +
+                "        }\n" +
                 "      },\n" +
                 "      \"geometry\": {\n" +
                 "        \"type\": \"Point\",\n" +
@@ -66,7 +71,7 @@ public class GeoJsonTest {
     public void testSingleNote_withLineBreak() {
         // Arrange
         List<Note> notes = new ArrayList<>();
-        notes.add(new Note(1, "foo\nbar", 1.23f, 4.56f, "2021-03-01 12:34:56", new Category(1, "", "")));
+        notes.add(new Note(1, "foo\nbar", 1.23f, 4.56f, "2021-03-01 12:34:56", new Category(1, "#ff00aa", "Bar")));
 
         String expectedResult = "{\n" +
                 "  \"type\": \"FeatureCollection\",\n" +
@@ -76,7 +81,12 @@ public class GeoJsonTest {
                 "      \"properties\": {\n" +
                 "        \"name\": 1,\n" +
                 "        \"description\": \"foo\\nbar\",\n" +
-                "        \"created_at\": \"2021-03-01 12:34:56\"\n" +
+                "        \"created_at\": \"2021-03-01 12:34:56\",\n" +
+                "        \"category\": {\n" +
+                "          \"id\": 1,\n" +
+                "          \"name\": \"Bar\",\n" +
+                "          \"color\": \"#ff00aa\"\n" +
+                "        }\n" +
                 "      },\n" +
                 "      \"geometry\": {\n" +
                 "        \"type\": \"Point\",\n" +
@@ -100,7 +110,7 @@ public class GeoJsonTest {
     public void testSingleNote_withQuotes() {
         // Arrange
         List<Note> notes = new ArrayList<>();
-        notes.add(new Note(1, "\"foo\"", 1.23f, 4.56f, "2021-03-01 12:34:56", new Category(1, "", "")));
+        notes.add(new Note(1, "\"foo\"", 1.23f, 4.56f, "2021-03-01 12:34:56", new Category(1, "#ff00aa", "Bar")));
 
         String expectedResult = "{\n" +
                 "  \"type\": \"FeatureCollection\",\n" +
@@ -110,7 +120,12 @@ public class GeoJsonTest {
                 "      \"properties\": {\n" +
                 "        \"name\": 1,\n" +
                 "        \"description\": \"\\\"foo\\\"\",\n" +
-                "        \"created_at\": \"2021-03-01 12:34:56\"\n" +
+                "        \"created_at\": \"2021-03-01 12:34:56\",\n" +
+                "        \"category\": {\n" +
+                "          \"id\": 1,\n" +
+                "          \"name\": \"Bar\",\n" +
+                "          \"color\": \"#ff00aa\"\n" +
+                "        }\n" +
                 "      },\n" +
                 "      \"geometry\": {\n" +
                 "        \"type\": \"Point\",\n" +
@@ -134,8 +149,8 @@ public class GeoJsonTest {
     public void testMultipleNotes() {
         // Arrange
         List<Note> notes = new ArrayList<>();
-        notes.add(new Note(1, "foo", 1.23f, 4.56f, "2021-03-01 12:34:56", new Category(1, "", "")));
-        notes.add(new Note(2, "\"bar\" with quotes", 2.34f, 5.67f, "2010-12-21 01:23:45", new Category(1, "", "")));
+        notes.add(new Note(1, "foo", 1.23f, 4.56f, "2021-03-01 12:34:56", new Category(1, "#abc123", "One")));
+        notes.add(new Note(2, "\"bar\" with quotes", 2.34f, 5.67f, "2010-12-21 01:23:45", new Category(42, "#aabbcc", "Fourty-Two")));
 
         String expectedResult = "{\n" +
                 "  \"type\": \"FeatureCollection\",\n" +
@@ -145,7 +160,12 @@ public class GeoJsonTest {
                 "      \"properties\": {\n" +
                 "        \"name\": 1,\n" +
                 "        \"description\": \"foo\",\n" +
-                "        \"created_at\": \"2021-03-01 12:34:56\"\n" +
+                "        \"created_at\": \"2021-03-01 12:34:56\",\n" +
+                "        \"category\": {\n" +
+                "          \"id\": 1,\n" +
+                "          \"name\": \"One\",\n" +
+                "          \"color\": \"#abc123\"\n" +
+                "        }\n" +
                 "      },\n" +
                 "      \"geometry\": {\n" +
                 "        \"type\": \"Point\",\n" +
@@ -160,7 +180,12 @@ public class GeoJsonTest {
                 "      \"properties\": {\n" +
                 "        \"name\": 2,\n" +
                 "        \"description\": \"\\\"bar\\\" with quotes\",\n" +
-                "        \"created_at\": \"2010-12-21 01:23:45\"\n" +
+                "        \"created_at\": \"2010-12-21 01:23:45\",\n" +
+                "        \"category\": {\n" +
+                "          \"id\": 42,\n" +
+                "          \"name\": \"Fourty-Two\",\n" +
+                "          \"color\": \"#aabbcc\"\n" +
+                "        }\n" +
                 "      },\n" +
                 "      \"geometry\": {\n" +
                 "        \"type\": \"Point\",\n" +

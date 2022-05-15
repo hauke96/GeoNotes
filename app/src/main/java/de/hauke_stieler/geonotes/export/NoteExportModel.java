@@ -3,6 +3,7 @@ package de.hauke_stieler.geonotes.export;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hauke_stieler.geonotes.categories.Category;
 import de.hauke_stieler.geonotes.notes.Note;
 
 /**
@@ -17,12 +18,16 @@ public class NoteExportModel {
     public NoteExportModel(List<Note> notes) {
         this.features = new ArrayList<>(notes.size());
         for (Note note : notes) {
+            Category category = note.getCategory();
+            CategoryModel categoryModel = new CategoryModel(category.getId(), category.getName(), category.getColorString());
+
             NoteFeatureModel model = new NoteFeatureModel(
                     note.getId(),
                     note.getDescription(),
                     note.getCreationDateTimeString(),
                     note.getLon(),
-                    note.getLat());
+                    note.getLat(),
+                    categoryModel);
             features.add(model);
         }
     }
@@ -33,8 +38,8 @@ class NoteFeatureModel {
     NotePropertiesModel properties;
     GeometryModel geometry;
 
-    NoteFeatureModel(long id, String note, String created_at, double lon, double lat) {
-        this.properties = new NotePropertiesModel(id, note, created_at);
+    NoteFeatureModel(long id, String note, String created_at, double lon, double lat, CategoryModel category) {
+        this.properties = new NotePropertiesModel(id, note, created_at, category);
         this.geometry = new GeometryModel(lon, lat);
     }
 }
@@ -43,11 +48,13 @@ class NotePropertiesModel {
     long name;
     String description;
     String created_at;
+    CategoryModel category;
 
-    NotePropertiesModel(long id, String note, String created_at) {
+    NotePropertiesModel(long id, String note, String created_at, CategoryModel category) {
         this.name = id;
         this.description = note;
         this.created_at = created_at;
+        this.category = category;
     }
 }
 
@@ -58,5 +65,17 @@ class GeometryModel {
     GeometryModel(double lon, double lat) {
         coordinates[0] = lon;
         coordinates[1] = lat;
+    }
+}
+
+class CategoryModel {
+    final long id;
+    final String name;
+    final String color;
+
+    CategoryModel(long id, String name, String color) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
     }
 }

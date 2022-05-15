@@ -14,12 +14,20 @@ public class GpxTest {
     public void testGpxExport()  {
         // Arrange
         ArrayList<Note> notes = new ArrayList<>();
-        notes.add(new Note(123, "foo bar", 1.23, 2.34,"2022-01-30 12:34:56", new Category(1, "", "")));
+        notes.add(new Note(123, "foo bar", 1.23, 2.34,"2022-01-30 12:34:56", new Category(11, "#abc123", "Foo")));
 
         // Act
         String gpxString = Gpx.toGpx(notes);
 
         // Assert
-        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><gpx version=\"1.1\"><wpt lat=\"1.23\" lon=\"2.34\"><time>2022-01-30T11:34:56Z</time><name>123</name><desc>foo bar</desc></wpt></gpx>", gpxString);
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
+                "<gpx version=\"1.1\">\n" +
+                "  <wpt lat=\"1.23\" lon=\"2.34\">\n" +
+                "    <time>2022-01-30T12:34:56Z</time>\n" +
+                "    <name>123</name>\n" +
+                "    <desc>foo bar</desc>\n" +
+                "    <type>11 (Foo)</type>\n" +
+                "  </wpt>\n" +
+                "</gpx>\n", gpxString);
     }
 }
