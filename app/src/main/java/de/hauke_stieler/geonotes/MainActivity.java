@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createMarkerFragment() {
-        MarkerFragment markerFragment = new MarkerFragment();
+        MarkerFragment markerFragment = new MarkerFragment(preferences);
 
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)

@@ -255,8 +255,11 @@ public class Map {
                 // We always have an ID and can therefore update the note
                 database.updateDescription(Long.parseLong(marker.getId()), marker.getSnippet());
                 database.updateCategory(Long.parseLong(marker.getId()), marker.getCategoryId());
-                // TODO store category on note
-                // TODO store category ID in preferences
+
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putLong(context.getString(R.string.pref_last_category_id), marker.getCategoryId());
+                editor.commit();
+
                 setNormalIcon(marker);
                 redraw();
             }
@@ -278,8 +281,7 @@ public class Map {
      * Creates a new note in the database, creates a corresponding marker (s. createMarker()) and also selects this new marker.
      */
     private void initAndSelectMarker(GeoPoint location) {
-        // TODO Read last used category ID from preferences.
-        int categoryId = 1;
+        long categoryId = preferences.getLong(context.getString(R.string.pref_last_category_id), 1);
 
         long id = database.addNote("", location.getLatitude(), location.getLongitude(), categoryId);
 

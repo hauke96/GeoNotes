@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hauke_stieler.geonotes.notes.Note;
+import de.hauke_stieler.geonotes.categories.Category;
 
 import static org.junit.Assert.assertEquals;
 
@@ -31,7 +32,7 @@ public class GeoJsonTest {
     public void testSingleNote() {
         // Arrange
         List<Note> notes = new ArrayList<>();
-        notes.add(new Note(1, "foo", 1.23f, 4.56f, "2021-03-01 12:34:56"));
+        notes.add(new Note(1, "foo", 1.23f, 4.56f, "2021-03-01 12:34:56", new Category(1, "", "")));
 
         String expectedResult = "{\n" +
                 "  \"type\": \"FeatureCollection\",\n" +
@@ -65,7 +66,7 @@ public class GeoJsonTest {
     public void testSingleNote_withLineBreak() {
         // Arrange
         List<Note> notes = new ArrayList<>();
-        notes.add(new Note(1, "foo\nbar", 1.23f, 4.56f, "2021-03-01 12:34:56"));
+        notes.add(new Note(1, "foo\nbar", 1.23f, 4.56f, "2021-03-01 12:34:56", new Category(1, "", "")));
 
         String expectedResult = "{\n" +
                 "  \"type\": \"FeatureCollection\",\n" +
@@ -99,7 +100,7 @@ public class GeoJsonTest {
     public void testSingleNote_withQuotes() {
         // Arrange
         List<Note> notes = new ArrayList<>();
-        notes.add(new Note(1, "\"foo\"", 1.23f, 4.56f, "2021-03-01 12:34:56"));
+        notes.add(new Note(1, "\"foo\"", 1.23f, 4.56f, "2021-03-01 12:34:56", new Category(1, "", "")));
 
         String expectedResult = "{\n" +
                 "  \"type\": \"FeatureCollection\",\n" +
@@ -133,8 +134,8 @@ public class GeoJsonTest {
     public void testMultipleNotes() {
         // Arrange
         List<Note> notes = new ArrayList<>();
-        notes.add(new Note(1, "foo", 1.23f, 4.56f, "2021-03-01 12:34:56"));
-        notes.add(new Note(2, "\"bar\" with quotes", 2.34f, 5.67f, "2010-12-21 01:23:45"));
+        notes.add(new Note(1, "foo", 1.23f, 4.56f, "2021-03-01 12:34:56", new Category(1, "", "")));
+        notes.add(new Note(2, "\"bar\" with quotes", 2.34f, 5.67f, "2010-12-21 01:23:45", new Category(1, "", "")));
 
         String expectedResult = "{\n" +
                 "  \"type\": \"FeatureCollection\",\n" +

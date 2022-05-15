@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 
 import de.hauke_stieler.geonotes.notes.Note;
+import de.hauke_stieler.geonotes.categories.Category;
 
 import static org.junit.Assert.assertEquals;
 
@@ -13,7 +14,7 @@ public class GpxTest {
     public void testGpxExport()  {
         // Arrange
         ArrayList<Note> notes = new ArrayList<>();
-        notes.add(new Note(123, "foo bar", 1.23, 2.34,"2022-01-30 12:34:56"));
+        notes.add(new Note(123, "foo bar", 1.23, 2.34,"2022-01-30 12:34:56", new Category(1, "", "")));
 
         // Act
         String gpxString = Gpx.toGpx(notes);

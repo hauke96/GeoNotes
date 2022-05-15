@@ -20,6 +20,7 @@ import java.util.List;
 
 import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.notes.Note;
+import de.hauke_stieler.geonotes.categories.Category;
 
 import static org.mockito.ArgumentMatchers.any;
 
@@ -57,9 +58,9 @@ public class NoteListAdapterTest {
         Mockito.when(layoutViewMock.findViewById(R.id.note_list_row_text_view)).thenReturn(textViewMock);
 
         notes = new ArrayList<>();
-        notes.add(new Note(123L, "foo", 12, 23, "now"));
-        notes.add(new Note(234L, "bar", 34, 45, "i don't remember"));
-        notes.add(new Note(345L, "", 56, 56, "tomorrow"));
+        notes.add(new Note(123L, "foo", 12, 23, "now", new Category(1, "", "")));
+        notes.add(new Note(234L, "bar", 34, 45, "i don't remember", new Category(1, "", "")));
+        notes.add(new Note(345L, "", 56, 56, "tomorrow", new Category(1, "", "")));
 
         notesWithPhotos = new ArrayList<>();
         notesWithPhotos.add(notes.get(1));

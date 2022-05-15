@@ -2,6 +2,7 @@ package de.hauke_stieler.geonotes.map;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
@@ -32,6 +33,7 @@ import org.osmdroid.views.overlay.Marker;
 
 import java.io.File;
 import java.util.Date;
+import java.util.List;
 
 import de.hauke_stieler.geonotes.Injector;
 import de.hauke_stieler.geonotes.R;
@@ -80,11 +82,13 @@ public class MarkerFragment extends Fragment {
     private CategorySpinnerAdapter categorySpinnerAdapter;
 
     private final Database database;
+    private final SharedPreferences preferences;
 
-    public MarkerFragment() {
+    public MarkerFragment(SharedPreferences preferences) {
         super(R.layout.marker_fragment);
 
         this.database = Injector.get(Database.class);
+        this.preferences = preferences;
     }
 
     public void addEventHandler(MarkerFragmentEventHandler markerEventHandler) {
@@ -134,17 +138,23 @@ public class MarkerFragment extends Fragment {
         });
 
         categorySpinnerAdapter = new CategorySpinnerAdapter(getContext(), R.layout.item_category_spinner);
-        for (Category category : database.getAllCategories()) {
+        long lastUsedCategoryId = preferences.getLong(getString(R.string.pref_last_category_id), 1);
+        int lastUsedCategoryPosition = 0; // Position in the list of categories
+
+        List<Category> allCategories = database.getAllCategories();
+        for (int i = 0; i < allCategories.size(); i++) {
+            Category category = allCategories.get(i);
             categorySpinnerAdapter.add(category);
         }
 
         categorySpinner = view.findViewById(R.id.category_spinner);
         categorySpinner.setAdapter(categorySpinnerAdapter);
-        categorySpinner.setSelection(0);
+        selectCategory(lastUsedCategoryId);
         categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // TODO store selected category in note
+                Category selectedCategory = categorySpinnerAdapter.getItem(position);
+                selectedMarker.setCategoryId(selectedCategory.getId());
             }
 
             @Override
@@ -242,7 +252,7 @@ public class MarkerFragment extends Fragment {
             requestPhotoHandler.onRequestPhoto(Long.parseLong(marker.getId()));
         });
 
-        // TODO Load category from note.
+        selectCategory(marker.getCategoryId());
     }
 
     public GeoNotesMarker getSelectedMarker() {
@@ -322,6 +332,16 @@ public class MarkerFragment extends Fragment {
             case EDITING:
                 // This is the above configured default case, nothing to do here.
                 break;
+        }
+    }
+
+    private void selectCategory(long categoryId) {
+        List<Category> allCategories = database.getAllCategories();
+        for (int i = 0; i < allCategories.size(); i++) {
+            if (allCategories.get(i).getId() == categoryId) {
+                categorySpinner.setSelection(i);
+                return;
+            }
         }
     }
 }
