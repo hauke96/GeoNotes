@@ -79,7 +79,6 @@
                     android:layout_width="50dp"
                     android:layout_height="match_parent"
                     android:padding="5dp"
-                    android:layout_marginLeft="5dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_add_a_photo"
                     app:tint="@color/primary" />
