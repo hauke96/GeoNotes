@@ -4,6 +4,9 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../layout/custom_preview.xml" value="0.20520833333333333" />
+        <entry key="app/src/main/res/drawable/ic_my_location.xml" value="0.327" />
+        <entry key="app/src/main/res/drawable/ic_note_background.xml" value="0.2595" />
+        <entry key="app/src/main/res/drawable/ic_note_bg.xml" value="0.33" />
         <entry key="app/src/main/res/drawable/shape_item_cetagory_spinner.xml" value="0.325" />
         <entry key="app/src/main/res/layout/item_category_spinner.xml" value="0.9" />
         <entry key="app/src/main/res/layout/marker_fragment.xml" value="0.3541666666666667" />

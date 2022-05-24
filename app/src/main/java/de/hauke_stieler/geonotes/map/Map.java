@@ -3,15 +3,22 @@ package de.hauke_stieler.geonotes.map;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.BlendMode;
+import android.graphics.BlendModeColorFilter;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ScaleDrawable;
 import android.os.PowerManager;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
 import androidx.core.content.res.ResourcesCompat;
+import androidx.core.graphics.BlendModeColorFilterCompat;
+import androidx.core.graphics.BlendModeCompat;
 
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
@@ -30,10 +37,12 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 
 import de.hauke_stieler.geonotes.Injector;
 import de.hauke_stieler.geonotes.R;
+import de.hauke_stieler.geonotes.categories.Category;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.notes.Note;
 
@@ -51,7 +60,7 @@ public class Map {
     private final MarkerFragment markerFragment;
     private Marker.OnMarkerClickListener markerClickListener;
 
-    private final Drawable normalIcon;
+    private final java.util.Map<Long, Drawable> categoryToIcon;
     private final Drawable normalWithPhotoIcon;
     private final Drawable selectedIcon;
     private final Drawable selectedWithPhotoIcon;
@@ -84,7 +93,18 @@ public class Map {
 
         Drawable locationIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_location, null);
         Drawable arrowIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_arrow, null);
-        normalIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_note, null);
+
+        categoryToIcon = new HashMap<>();
+        List<Category> allCategories = database.getAllCategories();
+        for (int i = 0; i < allCategories.size(); i++) {
+            Category category = allCategories.get(i);
+
+            Drawable icon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_note_background, null);
+            icon.setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(category.getColor(), BlendModeCompat.SRC_IN));
+
+            categoryToIcon.put(category.getId(), icon);
+        }
+
         normalWithPhotoIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_note_photo, null);
         selectedIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_note_selected, null);
         selectedWithPhotoIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_note_photo_selected, null);
@@ -391,11 +411,11 @@ public class Map {
         }
     }
 
-    private void setNormalIcon(Marker marker) {
+    private void setNormalIcon(GeoNotesMarker marker) {
         if (database.hasPhotos(marker.getId())) {
             marker.setIcon(normalWithPhotoIcon);
         } else {
-            marker.setIcon(normalIcon);
+            marker.setIcon(categoryToIcon.get(marker.getCategoryId()));
         }
     }
 
