@@ -3,14 +3,10 @@ package de.hauke_stieler.geonotes.map;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.BlendMode;
-import android.graphics.BlendModeColorFilter;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ScaleDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.PowerManager;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -60,8 +56,8 @@ public class Map {
     private final MarkerFragment markerFragment;
     private Marker.OnMarkerClickListener markerClickListener;
 
-    private final java.util.Map<Long, Drawable> categoryToIcon;
-    private final Drawable normalWithPhotoIcon;
+    private final java.util.Map<Long, Drawable> categoryToNormalIcon;
+    private final java.util.Map<Long, Drawable> categoryToCameraIcon;
     private final Drawable selectedIcon;
     private final Drawable selectedWithPhotoIcon;
 
@@ -94,18 +90,29 @@ public class Map {
         Drawable locationIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_location, null);
         Drawable arrowIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_arrow, null);
 
-        categoryToIcon = new HashMap<>();
+        categoryToNormalIcon = new HashMap<>();
+        categoryToCameraIcon = new HashMap<>();
+
         List<Category> allCategories = database.getAllCategories();
         for (int i = 0; i < allCategories.size(); i++) {
             Category category = allCategories.get(i);
 
-            Drawable icon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_note_background, null);
-            icon.setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(category.getColor(), BlendModeCompat.SRC_IN));
+            Drawable backgroundIcon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_note_background, null);
+            backgroundIcon.setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(category.getColor(), BlendModeCompat.SRC_IN));
 
-            categoryToIcon.put(category.getId(), icon);
+            Drawable exclamationMarkIcon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_note_exclamation_mark, null);
+            // TODO Color based on brightness of note noteIcon
+
+            Drawable cameraForegroundIcon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_note_camera, null);
+            // TODO Color based on brightness of note noteIcon
+
+            LayerDrawable noteIcon = new LayerDrawable(new Drawable[]{backgroundIcon, exclamationMarkIcon});
+            LayerDrawable noteWithCameraIcon = new LayerDrawable(new Drawable[]{backgroundIcon, cameraForegroundIcon});
+
+            categoryToNormalIcon.put(category.getId(), noteIcon);
+            categoryToCameraIcon.put(category.getId(), noteWithCameraIcon);
         }
 
-        normalWithPhotoIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_note_photo, null);
         selectedIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_note_selected, null);
         selectedWithPhotoIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_note_photo_selected, null);
 
@@ -413,9 +420,9 @@ public class Map {
 
     private void setNormalIcon(GeoNotesMarker marker) {
         if (database.hasPhotos(marker.getId())) {
-            marker.setIcon(normalWithPhotoIcon);
+            marker.setIcon(categoryToCameraIcon.get(marker.getCategoryId()));
         } else {
-            marker.setIcon(categoryToIcon.get(marker.getCategoryId()));
+            marker.setIcon(categoryToNormalIcon.get(marker.getCategoryId()));
         }
     }
 
