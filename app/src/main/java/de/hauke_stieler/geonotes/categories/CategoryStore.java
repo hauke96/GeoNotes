@@ -41,12 +41,10 @@ public class CategoryStore {
         addCategory(db, "#03a9f4", "Light blue");
         addCategory(db, "#009688", "Teal");
         addCategory(db, "#4caf50", "Green");
-        addCategory(db, "#ffeb3b", "Yellow");
+        addCategory(db, "#fdd835", "Yellow");
         addCategory(db, "#ff9800", "Orange");
         addCategory(db, "#795548", "Brown");
         addCategory(db, "#9e9e9e", "Grey");
-        addCategory(db, "#000000", "Black");
-        addCategory(db, "#ffffff", "White");
     }
 
     public long addCategory(SQLiteDatabase db, String color, String name) {

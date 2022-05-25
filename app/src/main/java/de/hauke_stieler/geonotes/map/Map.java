@@ -3,6 +3,10 @@ package de.hauke_stieler.geonotes.map;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -58,8 +62,8 @@ public class Map {
 
     private final java.util.Map<Long, Drawable> categoryToNormalIcon;
     private final java.util.Map<Long, Drawable> categoryToCameraIcon;
-    private final Drawable selectedIcon;
-    private final Drawable selectedWithPhotoIcon;
+    private final java.util.Map<Long, Drawable> categoryToNormalIconSelected;
+    private final java.util.Map<Long, Drawable> categoryToCameraIconSelected;
 
     private boolean snapNoteToGps;
 
@@ -92,6 +96,8 @@ public class Map {
 
         categoryToNormalIcon = new HashMap<>();
         categoryToCameraIcon = new HashMap<>();
+        categoryToNormalIconSelected = new HashMap<>();
+        categoryToCameraIconSelected = new HashMap<>();
 
         List<Category> allCategories = database.getAllCategories();
         for (int i = 0; i < allCategories.size(); i++) {
@@ -99,22 +105,19 @@ public class Map {
 
             Drawable backgroundIcon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_note_background, null);
             backgroundIcon.setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(category.getColor(), BlendModeCompat.SRC_IN));
-
             Drawable exclamationMarkIcon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_note_exclamation_mark, null);
-            // TODO Color based on brightness of note noteIcon
-
             Drawable cameraForegroundIcon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_note_camera, null);
-            // TODO Color based on brightness of note noteIcon
+            Drawable selectionIcon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_note_selection, null);
+            selectionIcon.setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(0xFF000000, BlendModeCompat.SRC_IN));
 
-            LayerDrawable noteIcon = new LayerDrawable(new Drawable[]{backgroundIcon, exclamationMarkIcon});
-            LayerDrawable noteWithCameraIcon = new LayerDrawable(new Drawable[]{backgroundIcon, cameraForegroundIcon});
+            Drawable noteIcon = renderToBitmap(backgroundIcon, exclamationMarkIcon);
+            Drawable noteWithCameraIcon = renderToBitmap(backgroundIcon, cameraForegroundIcon);
 
             categoryToNormalIcon.put(category.getId(), noteIcon);
             categoryToCameraIcon.put(category.getId(), noteWithCameraIcon);
+            categoryToNormalIconSelected.put(category.getId(), renderToBitmap(noteIcon, selectionIcon));
+            categoryToCameraIconSelected.put(category.getId(), renderToBitmap(noteWithCameraIcon, selectionIcon));
         }
-
-        selectedIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_note_selected, null);
-        selectedWithPhotoIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_note_photo_selected, null);
 
         Configuration.getInstance().setUserAgentValue(context.getPackageName());
 
@@ -131,6 +134,15 @@ public class Map {
         createOverlays((BitmapDrawable) locationIcon, (BitmapDrawable) arrowIcon);
 
         reloadAllNotes();
+    }
+
+    private Drawable renderToBitmap(Drawable... drawables) {
+        LayerDrawable layerDrawable = new LayerDrawable(drawables);
+        Bitmap bitmap = Bitmap.createBitmap(layerDrawable.getIntrinsicWidth(), layerDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        layerDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        layerDrawable.draw(canvas);
+        return new BitmapDrawable(context.getResources(), bitmap);
     }
 
     public void reloadAllNotes() {
@@ -391,7 +403,7 @@ public class Map {
      */
     public void addImagesToMarkerWindow() {
         markerFragment.resetImageList();
-        Marker marker = markerFragment.getSelectedMarker();
+        GeoNotesMarker marker = markerFragment.getSelectedMarker();
 
         // It could happen that the user rotates the device (e.g. while taking a photo) and this
         // causes the whole activity to be reset. Therefore we might not have a marker here.
@@ -410,11 +422,11 @@ public class Map {
         redraw();
     }
 
-    private void setSelectedIcon(Marker marker) {
+    private void setSelectedIcon(GeoNotesMarker marker) {
         if (database.hasPhotos(marker.getId())) {
-            marker.setIcon(selectedWithPhotoIcon);
+            marker.setIcon(categoryToCameraIconSelected.get(marker.getCategoryId()));
         } else {
-            marker.setIcon(selectedIcon);
+            marker.setIcon(categoryToNormalIconSelected.get(marker.getCategoryId()));
         }
     }
 
