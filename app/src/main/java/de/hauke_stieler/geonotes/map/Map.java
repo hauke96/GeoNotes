@@ -4,9 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -293,19 +291,28 @@ public class Map {
             public void onSave(GeoNotesMarker marker) {
                 // We always have an ID and can therefore update the note
                 database.updateDescription(Long.parseLong(marker.getId()), marker.getSnippet());
+                onCategoryChanged(marker);
+            }
+
+            @Override
+            public void onMove(GeoNotesMarker marker) {
+                markerToMove = marker;
+                redraw();
+            }
+
+            @Override
+            public void onCategoryChanged(GeoNotesMarker marker) {
                 database.updateCategory(Long.parseLong(marker.getId()), marker.getCategoryId());
 
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putLong(context.getString(R.string.pref_last_category_id), marker.getCategoryId());
                 editor.commit();
 
-                setNormalIcon(marker);
-                redraw();
-            }
-
-            @Override
-            public void onMove(GeoNotesMarker marker) {
-                markerToMove = marker;
+                if (getSelectedMarker() == marker) {
+                    setSelectedIcon(marker);
+                } else {
+                    setNormalIcon(marker);
+                }
                 redraw();
             }
         });
@@ -390,7 +397,7 @@ public class Map {
         markerFragment.selectMarker(markerToSelect, transferEditTextContent);
         zoomToSelectedMarker();
 
-        addImagesToMarkerWindow();
+        addImagesToMarkerFragment();
         redraw();
     }
 
@@ -401,7 +408,7 @@ public class Map {
     /**
      * Loads images of current marker (which contains the note-ID) from database and show them.
      */
-    public void addImagesToMarkerWindow() {
+    public void addImagesToMarkerFragment() {
         markerFragment.resetImageList();
         GeoNotesMarker marker = markerFragment.getSelectedMarker();
 

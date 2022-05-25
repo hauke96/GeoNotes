@@ -52,6 +52,8 @@ public class MarkerFragment extends Fragment {
         void onSave(GeoNotesMarker marker);
 
         void onMove(GeoNotesMarker marker);
+
+        void onCategoryChanged(GeoNotesMarker marker);
     }
 
     public interface RequestPhotoEventHandler {
@@ -139,7 +141,6 @@ public class MarkerFragment extends Fragment {
 
         categorySpinnerAdapter = new CategorySpinnerAdapter(getContext(), R.layout.item_category_spinner);
         long lastUsedCategoryId = preferences.getLong(getString(R.string.pref_last_category_id), 1);
-        int lastUsedCategoryPosition = 0; // Position in the list of categories
 
         List<Category> allCategories = database.getAllCategories();
         for (int i = 0; i < allCategories.size(); i++) {
@@ -155,6 +156,9 @@ public class MarkerFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Category selectedCategory = categorySpinnerAdapter.getItem(position);
                 selectedMarker.setCategoryId(selectedCategory.getId());
+                if (markerEventHandler != null) {
+                    markerEventHandler.onCategoryChanged(selectedMarker);
+                }
             }
 
             @Override
