@@ -13,6 +13,7 @@ import java.util.List;
 
 import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.notes.Note;
+import de.hauke_stieler.geonotes.notes.NoteIconProvider;
 
 public class NoteListAdapter extends BaseAdapter {
     public interface NoteListClickListener {
@@ -20,13 +21,15 @@ public class NoteListAdapter extends BaseAdapter {
     }
 
     private final Context context;
+    private final NoteIconProvider noteIconProvider;
     private final List<Note> notes;
     private final List<Note> notesWithPhoto;
     private final NoteListClickListener clickListener;
     private final LayoutInflater inflater;
 
-    public NoteListAdapter(Context context, List<Note> notes, List<Note> notesWithPhoto, NoteListClickListener clickListener) {
+    public NoteListAdapter(Context context, NoteIconProvider noteIconProvider, List<Note> notes, List<Note> notesWithPhoto, NoteListClickListener clickListener) {
         this.context = context;
+        this.noteIconProvider = noteIconProvider;
         this.notes = notes;
         this.notesWithPhoto = notesWithPhoto;
         this.clickListener = clickListener;
@@ -58,7 +61,7 @@ public class NoteListAdapter extends BaseAdapter {
         boolean noteHasPhotos = notesWithPhoto.contains(note);
 
         ImageView icon = view.findViewById(R.id.note_list_row_icon);
-        fillIconView(noteHasPhotos, icon);
+        fillIconView(noteHasPhotos, note.getCategory().getId(), icon);
 
         TextView text = view.findViewById(R.id.note_list_row_text_view);
         fillTextView(note, noteHasPhotos, text);
@@ -78,11 +81,7 @@ public class NoteListAdapter extends BaseAdapter {
         }
     }
 
-    void fillIconView(boolean noteHasPhotos, ImageView icon) {
-        if (noteHasPhotos) {
-            icon.setImageResource(R.mipmap.ic_note_photo);
-        } else {
-            icon.setImageResource(R.mipmap.ic_note);
-        }
+    void fillIconView(boolean noteHasPhotos, long categoryId, ImageView icon) {
+        icon.setImageDrawable(noteIconProvider.getIcon(categoryId, false, noteHasPhotos));
     }
 }
