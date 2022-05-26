@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -22,12 +24,15 @@ import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.notes.Note;
 import de.hauke_stieler.geonotes.notes.NoteIconProvider;
 
-public class NoteListActivity extends AppCompatActivity {
+public class NoteListActivity extends AppCompatActivity implements FilterDialog.FilterDialogSaveListener {
     public static final String EXTRA_CLICKED_NOTE = "clicked_note";
 
     private SharedPreferences preferences;
     private Database database;
     private NoteIconProvider noteIconProvider;
+
+    private String filterText;
+    private Long filterCategoryId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +94,9 @@ public class NoteListActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.toolbar_btn_filter:
+                new FilterDialog(this, filterText, filterCategoryId).show(getSupportFragmentManager(), FilterDialog.class.getName());
+                return true;
             case R.id.toolbar_btn_delete_all:
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage("Really delete all notes? This is not reversible!");
@@ -105,5 +113,13 @@ public class NoteListActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onSave(String filterText, Long categoryId) {
+        this.filterText = filterText;
+        this.filterCategoryId = categoryId;
+        // TODO update list
+        Log.i(NoteListActivity.class.getName(), "onSave: " + filterText + ", " + categoryId);
     }
 }

@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.categories.Category;
@@ -59,5 +60,9 @@ public class CategorySpinnerAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         return this.getDropDownView(position, convertView, parent);
+    }
+
+    public List<Category> getAllCategories() {
+        return new ArrayList<>(categories);
     }
 }
