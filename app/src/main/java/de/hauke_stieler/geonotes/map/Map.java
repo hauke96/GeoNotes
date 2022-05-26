@@ -43,12 +43,14 @@ import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.categories.Category;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.notes.Note;
+import de.hauke_stieler.geonotes.notes.NoteIconProvider;
 
 public class Map {
     private final Context context;
     private final PowerManager.WakeLock wakeLock;
     private final Database database;
     private final SharedPreferences preferences;
+    private final NoteIconProvider noteIconProvider;
 
     private final MapView map;
     private final IMapController mapController;
@@ -57,11 +59,6 @@ public class Map {
 
     private final MarkerFragment markerFragment;
     private Marker.OnMarkerClickListener markerClickListener;
-
-    private final java.util.Map<Long, Drawable> categoryToNormalIcon;
-    private final java.util.Map<Long, Drawable> categoryToCameraIcon;
-    private final java.util.Map<Long, Drawable> categoryToNormalIconSelected;
-    private final java.util.Map<Long, Drawable> categoryToCameraIconSelected;
 
     private boolean snapNoteToGps;
 
@@ -75,11 +72,13 @@ public class Map {
     public Map(Context context,
                MapView map,
                Database database,
-               SharedPreferences preferences) {
+               SharedPreferences preferences,
+               NoteIconProvider noteIconProvider) {
         this.context = context;
         this.map = map;
         this.database = database;
         this.preferences = preferences;
+        this.noteIconProvider = noteIconProvider;
 
         markerFragment = Injector.get(MarkerFragment.class);
         addMarkerFragmentEventHandler(markerFragment);
@@ -91,31 +90,6 @@ public class Map {
 
         Drawable locationIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_location, null);
         Drawable arrowIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_arrow, null);
-
-        categoryToNormalIcon = new HashMap<>();
-        categoryToCameraIcon = new HashMap<>();
-        categoryToNormalIconSelected = new HashMap<>();
-        categoryToCameraIconSelected = new HashMap<>();
-
-        List<Category> allCategories = database.getAllCategories();
-        for (int i = 0; i < allCategories.size(); i++) {
-            Category category = allCategories.get(i);
-
-            Drawable backgroundIcon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_note_background, null);
-            backgroundIcon.setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(category.getColor(), BlendModeCompat.SRC_IN));
-            Drawable exclamationMarkIcon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_note_exclamation_mark, null);
-            Drawable cameraForegroundIcon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_note_camera, null);
-            Drawable selectionIcon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_note_selection, null);
-            selectionIcon.setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(0xFF000000, BlendModeCompat.SRC_IN));
-
-            Drawable noteIcon = renderToBitmap(backgroundIcon, exclamationMarkIcon);
-            Drawable noteWithCameraIcon = renderToBitmap(backgroundIcon, cameraForegroundIcon);
-
-            categoryToNormalIcon.put(category.getId(), noteIcon);
-            categoryToCameraIcon.put(category.getId(), noteWithCameraIcon);
-            categoryToNormalIconSelected.put(category.getId(), renderToBitmap(noteIcon, selectionIcon));
-            categoryToCameraIconSelected.put(category.getId(), renderToBitmap(noteWithCameraIcon, selectionIcon));
-        }
 
         Configuration.getInstance().setUserAgentValue(context.getPackageName());
 
@@ -132,15 +106,6 @@ public class Map {
         createOverlays((BitmapDrawable) locationIcon, (BitmapDrawable) arrowIcon);
 
         reloadAllNotes();
-    }
-
-    private Drawable renderToBitmap(Drawable... drawables) {
-        LayerDrawable layerDrawable = new LayerDrawable(drawables);
-        Bitmap bitmap = Bitmap.createBitmap(layerDrawable.getIntrinsicWidth(), layerDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        layerDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        layerDrawable.draw(canvas);
-        return new BitmapDrawable(context.getResources(), bitmap);
     }
 
     public void reloadAllNotes() {
@@ -212,7 +177,7 @@ public class Map {
                 // (selecting marker on the map is handles via the separate markerClickListener)
                 if (markerFragment.getSelectedMarker() != null) {
                     // Deselect selected marker:
-                    setNormalIcon(markerFragment.getSelectedMarker());
+                    setIcon(markerFragment.getSelectedMarker(), false);
                 }
 
                 // Create new marker at this location and select it
@@ -280,6 +245,8 @@ public class Map {
         fragment.addEventHandler(new MarkerFragment.MarkerFragmentEventHandler() {
             @Override
             public void onDelete(GeoNotesMarker marker) {
+                markerFragment.reset();
+
                 // We always have an ID and can therefore delete the note
                 database.removeNote(Long.parseLong(marker.getId()));
                 database.removePhotos(Long.parseLong(marker.getId()), context.getExternalFilesDir("GeoNotes"));
@@ -289,6 +256,8 @@ public class Map {
 
             @Override
             public void onSave(GeoNotesMarker marker) {
+                markerFragment.reset();
+
                 // We always have an ID and can therefore update the note
                 database.updateDescription(Long.parseLong(marker.getId()), marker.getSnippet());
                 onCategoryChanged(marker);
@@ -308,11 +277,7 @@ public class Map {
                 editor.putLong(context.getString(R.string.pref_last_category_id), marker.getCategoryId());
                 editor.commit();
 
-                if (getSelectedMarker() == marker) {
-                    setSelectedIcon(marker);
-                } else {
-                    setNormalIcon(marker);
-                }
+                setIcon(marker, getSelectedMarker() == marker);
                 redraw();
             }
         });
@@ -389,11 +354,11 @@ public class Map {
         GeoNotesMarker currentlySelectedMarker = markerFragment.getSelectedMarker();
         if (currentlySelectedMarker != null) {
             // This icon will not be the selected marker after "showInfoWindow", therefore we set the normal icon here.
-            setNormalIcon(currentlySelectedMarker);
+            setIcon(currentlySelectedMarker, false);
             markerFragment.reset();
         }
 
-        setSelectedIcon(markerToSelect);
+        setIcon(markerToSelect, true);
         markerFragment.selectMarker(markerToSelect, transferEditTextContent);
         zoomToSelectedMarker();
 
@@ -425,24 +390,12 @@ public class Map {
             markerFragment.addPhoto(image);
         }
 
-        setSelectedIcon(marker);
+        setIcon(marker, true);
         redraw();
     }
 
-    private void setSelectedIcon(GeoNotesMarker marker) {
-        if (database.hasPhotos(marker.getId())) {
-            marker.setIcon(categoryToCameraIconSelected.get(marker.getCategoryId()));
-        } else {
-            marker.setIcon(categoryToNormalIconSelected.get(marker.getCategoryId()));
-        }
-    }
-
-    private void setNormalIcon(GeoNotesMarker marker) {
-        if (database.hasPhotos(marker.getId())) {
-            marker.setIcon(categoryToCameraIcon.get(marker.getCategoryId()));
-        } else {
-            marker.setIcon(categoryToNormalIcon.get(marker.getCategoryId()));
-        }
+    private void setIcon(GeoNotesMarker marker, boolean isSelected) {
+        marker.setIcon(noteIconProvider.getIcon(marker.getCategoryId(), isSelected, database.hasPhotos(marker.getId())));
     }
 
     public void setZoomButtonVisibility(boolean visible) {
@@ -473,11 +426,8 @@ public class Map {
     private GeoNotesMarker createMarker(String id, String description, GeoPoint p, long categoryId, Marker.OnMarkerClickListener markerClickListener) {
         GeoNotesMarker marker = new GeoNotesMarker(map, id, description, p, categoryId);
         marker.setOnMarkerClickListener(markerClickListener);
-
-        setNormalIcon(marker);
-
+        setIcon(marker, false);
         map.getOverlays().add(marker);
-
         return marker;
     }
 
