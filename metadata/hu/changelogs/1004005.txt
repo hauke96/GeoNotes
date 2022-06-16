@@ -1,0 +1,4 @@
+1.4.5:
+
+Hibajavítások:
+* A GeoNotes SDK 31 vagy újabb verziókra történő telepítési problémájának javítása.

@@ -1,0 +1,10 @@
+1.4.4:
+
+Új funkciók és kompatibilitástörő változtatások:
+* Egy gomb hozzáadása az összes jegyzet törléséhez (az alkalmazás rákérdez a jegyzetek tényleges törlése előtt)
+* Behúzás hozzáadása a GPX exportálásához
+* A jegyzet létrehozási idejének hozzáadása a GPX exportálásába
+
+Egyéb változtatások:
+* Frissített kódfüggőségek
+* A README.md mostantól információkat tartalmaz a projektben való közreműködéssel kapcsolatban
