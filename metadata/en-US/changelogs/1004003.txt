@@ -2,12 +2,12 @@
 
 New features & breaking changes:
 * Redesign of the notes window: This is now a constant area at the bottom of the screen. Creating notes can be done even faster now.
-* Export as GPX (next to the already existing GeoJson export)
+* Export as GPX (next to the already existing GeoJSON export)
 * Clear cache manually (via settings screen)
 
 Bug fixes:
 * Map rotation stays after switching apps
 * Back-button now also saves settings
-* Media-store handling didn't worked (removed functionality of adding photos to the android media store)
-* Use correct MIME type for GeoJson export
+* Media-store handling didn't worked (removed functionality of adding photos to the Android media store)
+* Use correct MIME type for GeoJSON export
 * Fix spelling mistake on feedback-button

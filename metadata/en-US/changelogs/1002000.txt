@@ -2,4 +2,4 @@
 
 * Add photos to a note
 * Icon for the GPS-arrow
-* Change README and link to OSM-wiki
+* Change README.md and link to OSM-wiki
