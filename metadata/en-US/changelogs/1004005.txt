@@ -1,4 +1,4 @@
 1.4.5:
 
-Big fixes:
+Bug fixes:
 * Fix problem installing GeoNotes on SDK 31 or newer.
