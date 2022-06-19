@@ -1,0 +1,4 @@
+1.2.1:
+
+* A nyíl ikon frissítése
+* A GPS helymeghatározáshoz való illesztés hozzáadása

@@ -1,0 +1,8 @@
+1.0.0:
+
+* Jegyzetek létrehozása
+* Jegyzetek kiválasztása
+  * A szöveg szerkesztéséhez
+  * A jegyzet törléséhez
+  * A jegyzet mozgatásához
+* F-Droid alkalmazásbolti előkészítések

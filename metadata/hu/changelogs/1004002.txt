@@ -1,0 +1,4 @@
+1.4.2:
+
+* Lehetőség hozzáadása a térkép elforgatásához (lásd: „Beállítások” → „A térkép elforgatásának engedélyezése”)
+* Néhány kisebb belső kódváltoztatás
