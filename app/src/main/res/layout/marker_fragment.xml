@@ -14,7 +14,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
-            android:text="1. Move the map\n2. Release your finger to save location" />
+            android:text="@string/marker_instructions" />
     </LinearLayout>
 
     <LinearLayout
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginLeft="5dp"
-            android:text="Enter text for a new note:" />
+            android:text="@string/enter_text_for_a_new_note" />
 
         <EditText
             android:id="@+id/note_description"
@@ -103,14 +103,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_move"
-                    android:text="Move" />
+                    android:text="@string/marker_move" />
 
                 <Button
                     android:id="@+id/delete_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_delete"
-                    android:text="Delete" />
+                    android:text="@string/marker_delete" />
 
                 <Space
                     android:layout_width="wrap_content"

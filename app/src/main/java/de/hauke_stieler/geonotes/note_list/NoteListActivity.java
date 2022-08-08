@@ -83,7 +83,7 @@ public class NoteListActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.toolbar_btn_delete_all:
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("Really delete all notes? This is not reversible!");
+                builder.setMessage(R.string.delete_all_notes);
                 builder.setPositiveButton(R.string.dialog_yes, (dialog, id) -> {
                     database.removeAllNotes();
                     load();

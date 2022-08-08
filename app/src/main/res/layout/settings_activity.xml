@@ -27,7 +27,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Show zoom-buttons"
+                android:text="@string/show_zoom_buttons"
                 android:textSize="16dp" />
 
             <Space
@@ -50,7 +50,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Map scaling factor"
+                android:text="@string/map_scaling_factor"
                 android:textSize="16dp" />
 
             <Space
@@ -75,7 +75,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Snap note to GPS location"
+                android:text="@string/snap_note_to_gps_location"
                 android:textSize="16dp" />
 
             <Space
@@ -98,7 +98,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Enable rotating the map"
+                android:text="@string/enable_rotating_the_map"
                 android:textSize="16dp" />
 
             <Space
@@ -121,7 +121,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Background map cache"
+                android:text="@string/background_map_cache"
                 android:textSize="16dp" />
 
             <Space
@@ -141,7 +141,7 @@
                 android:id="@+id/settings_clear_cache"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Clear"/>
+                android:text="@string/clear"/>
         </LinearLayout>
 
         <LinearLayout
@@ -153,7 +153,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tap long to create a note"
+                android:text="@string/tap_long_to_create_a_note"
                 android:textSize="16dp" />
 
             <Space
@@ -182,7 +182,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_marginBottom="24dp"
-                android:text="Feedback" />
+                android:text="@string/feedback" />
         </RelativeLayout>
 
         <TextView
