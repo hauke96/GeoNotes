@@ -52,8 +52,7 @@ public class FilterDialog extends DialogFragment {
         textInput.setText(initialFilterText);
 
         categorySpinnerAdapter = new CategorySpinnerAdapter(getContext(), R.layout.item_category_spinner);
-        // TODO Create NoneCategory as subclass to produce a different view
-        categorySpinnerAdapter.add(new Category(-1, "#ffffff", "NONE"));
+        categorySpinnerAdapter.add(new Category(-1, "#ffffff", "(none)", R.drawable.shape_item_cetagory_spinner_none));
         List<Category> allCategories = database.getAllCategories();
         for (int i = 0; i < allCategories.size(); i++) {
             Category category = allCategories.get(i);

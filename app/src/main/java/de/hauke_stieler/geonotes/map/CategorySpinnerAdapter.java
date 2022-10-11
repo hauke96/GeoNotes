@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,8 +38,17 @@ public class CategorySpinnerAdapter extends BaseAdapter {
         if (view == null) {
             view = layoutInflater.inflate(resource, parent, false);
         }
+        Category category = getItem(position);
+
         View innerLayout = view.findViewById(R.id.item_category_spinner_circle);
-        ((GradientDrawable) innerLayout.getBackground()).setColor(getItem(position).getColor());
+        innerLayout.setBackgroundResource(category.getDrawableId());
+        if (innerLayout.getBackground() instanceof GradientDrawable) {
+            ((GradientDrawable) innerLayout.getBackground()).setColor(category.getColor());
+        }
+
+        View label = view.findViewById(R.id.item_category_label);
+        ((TextView) label).setText(category.getName());
+
         return view;
     }
 

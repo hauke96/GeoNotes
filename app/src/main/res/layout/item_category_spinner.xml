@@ -1,15 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="50dp"
-    android:layout_height="40dp">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <RelativeLayout
-        android:id="@+id/item_category_spinner_circle"
-        android:layout_width="match_parent"
+        android:layout_width="50dp"
+        android:layout_height="40dp">
+
+        <RelativeLayout
+            android:id="@+id/item_category_spinner_circle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/category_circle_margin"
+            android:layout_marginTop="@dimen/category_circle_margin_small"
+            android:layout_marginRight="@dimen/category_circle_margin"
+            android:layout_marginBottom="@dimen/category_circle_margin_small"
+            android:background="@drawable/shape_item_cetagory_spinner" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/item_category_label"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/category_circle_margin"
-        android:layout_marginTop="@dimen/category_circle_margin_small"
-        android:layout_marginRight="@dimen/category_circle_margin"
-        android:layout_marginBottom="@dimen/category_circle_margin_small"
-        android:background="@drawable/shape_item_cetagory_spinner" />
-</RelativeLayout>
+        android:gravity="center" />
+</LinearLayout>

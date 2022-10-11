@@ -2,15 +2,26 @@ package de.hauke_stieler.geonotes.categories;
 
 import android.graphics.Color;
 
+import de.hauke_stieler.geonotes.R;
+
 public class Category {
     private final long id;
     private final String color;
     private final String name;
+    private final int drawableId;
 
     public Category(long id, String color, String name) {
         this.id = id;
         this.color = color;
         this.name = name;
+        this.drawableId = R.drawable.shape_item_cetagory_spinner;
+    }
+
+    public Category(long id, String color, String name, int drawableId) {
+        this.id = id;
+        this.color = color;
+        this.name = name;
+        this.drawableId = drawableId;
     }
 
     public long getId() {
@@ -27,6 +38,10 @@ public class Category {
 
     public String getName() {
         return name;
+    }
+
+    public int getDrawableId() {
+        return drawableId;
     }
 
     @Override
