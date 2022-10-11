@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -20,11 +19,12 @@ import java.util.List;
 
 import de.hauke_stieler.geonotes.Injector;
 import de.hauke_stieler.geonotes.R;
+import de.hauke_stieler.geonotes.categories.Category;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.notes.Note;
 import de.hauke_stieler.geonotes.notes.NoteIconProvider;
 
-public class NoteListActivity extends AppCompatActivity implements FilterDialog.FilterDialogSaveListener {
+public class NoteListActivity extends AppCompatActivity implements FilterDialog.FilterChangedListener {
     public static final String EXTRA_CLICKED_NOTE = "clicked_note";
 
     private SharedPreferences preferences;
@@ -62,6 +62,9 @@ public class NoteListActivity extends AppCompatActivity implements FilterDialog.
             }
         }
 
+        notes = filterNotes(notes);
+        notesWithPhoto = filterNotes(notesWithPhoto);
+
         NoteListAdapter adapter = new NoteListAdapter(
                 this,
                 noteIconProvider,
@@ -77,6 +80,30 @@ public class NoteListActivity extends AppCompatActivity implements FilterDialog.
 
         ListView listView = findViewById(R.id.note_list_view);
         listView.setAdapter(adapter);
+    }
+
+    private List<Note> filterNotes(List<Note> notes) {
+        if (this.filterText != null && !this.filterText.trim().isEmpty()) {
+            List<Note> newNotes = new ArrayList<>();
+            for (Note n : notes) {
+                if (n.getDescription() != null && n.getDescription().contains(this.filterText)) {
+                    newNotes.add(n);
+                }
+            }
+            notes = newNotes;
+        }
+
+        if (this.filterCategoryId != null && this.filterCategoryId != Category.NONE_ID) {
+            List<Note> newNotes = new ArrayList<>();
+            for (Note n : notes) {
+                if (n.getCategory() != null && n.getCategory().getId() == this.filterCategoryId) {
+                    newNotes.add(n);
+                }
+            }
+            notes = newNotes;
+        }
+
+        return notes;
     }
 
     @Override
@@ -116,10 +143,10 @@ public class NoteListActivity extends AppCompatActivity implements FilterDialog.
     }
 
     @Override
-    public void onSave(String filterText, Long categoryId) {
+    public void onFilterChanged(String filterText, Long categoryId) {
         this.filterText = filterText;
         this.filterCategoryId = categoryId;
-        // TODO update list
         Log.i(NoteListActivity.class.getName(), "onSave: " + filterText + ", " + categoryId);
+        this.load();
     }
 }

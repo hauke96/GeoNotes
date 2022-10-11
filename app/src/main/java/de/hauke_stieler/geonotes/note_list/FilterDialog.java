@@ -1,12 +1,14 @@
 package de.hauke_stieler.geonotes.note_list;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
@@ -21,14 +23,14 @@ import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.map.CategorySpinnerAdapter;
 
 public class FilterDialog extends DialogFragment {
-    public interface FilterDialogSaveListener {
-        void onSave(String filterText, Long categoryId);
+    public interface FilterChangedListener {
+        void onFilterChanged(String filterText, Long categoryId);
     }
 
     public static final int NONE_CATEGORY_ITEM_INDEX = 0;
 
     private final Database database;
-    private final FilterDialogSaveListener saveListener;
+    private final FilterChangedListener filterChangedListener;
 
     private final String initialFilterText;
     private final Long initialFilterCategoryId;
@@ -37,8 +39,8 @@ public class FilterDialog extends DialogFragment {
     private Spinner categorySpinner;
     private CategorySpinnerAdapter categorySpinnerAdapter;
 
-    public FilterDialog(FilterDialogSaveListener saveListener, String initialFilterText, Long initialFilterCategoryId) {
-        this.saveListener = saveListener;
+    public FilterDialog(FilterChangedListener filterChangedListener, String initialFilterText, Long initialFilterCategoryId) {
+        this.filterChangedListener = filterChangedListener;
         this.initialFilterText = initialFilterText;
         this.initialFilterCategoryId = initialFilterCategoryId;
         database = Injector.get(Database.class);
@@ -48,11 +50,25 @@ public class FilterDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.note_list_filter_dialog, container);
 
-        EditText textInput = (EditText) view.findViewById(R.id.note_list_filter_textview);
+        EditText textInput = view.findViewById(R.id.note_list_filter_textview);
         textInput.setText(initialFilterText);
+        textInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                fireChangeEvent();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
 
         categorySpinnerAdapter = new CategorySpinnerAdapter(getContext(), R.layout.item_category_spinner);
-        categorySpinnerAdapter.add(new Category(-1, "#ffffff", "(none)", R.drawable.shape_item_cetagory_spinner_none));
+        categorySpinnerAdapter.add(new Category(Category.NONE_ID, "#ffffff", "(none)", R.drawable.shape_item_cetagory_spinner_none));
         List<Category> allCategories = database.getAllCategories();
         for (int i = 0; i < allCategories.size(); i++) {
             Category category = allCategories.get(i);
@@ -66,6 +82,7 @@ public class FilterDialog extends DialogFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedCategory = categorySpinnerAdapter.getItem(position);
+                fireChangeEvent();
                 Log.i(FilterDialog.class.getName(), "onItemSelected: " + position + ", " + selectedCategory.getId());
             }
 
@@ -74,27 +91,32 @@ public class FilterDialog extends DialogFragment {
             }
         });
 
-        ((Button) view.findViewById(R.id.note_list_filter_btn_reset)).setOnClickListener(v -> onResetClicked());
-        ((Button) view.findViewById(R.id.note_list_filter_btn_ok)).setOnClickListener(v -> onOkClicked());
+        view.findViewById(R.id.note_list_filter_btn_reset).setOnClickListener(v -> onResetClicked());
+        view.findViewById(R.id.note_list_filter_btn_ok).setOnClickListener(v -> onOkClicked());
+        getDialog().getWindow().setGravity(Gravity.RIGHT);
 
         return view;
     }
 
     private void onOkClicked() {
-        EditText textInput = (EditText) getView().findViewById(R.id.note_list_filter_textview);
+        dismiss();
+    }
+
+    private void fireChangeEvent() {
+        EditText textInput = getView().findViewById(R.id.note_list_filter_textview);
 
         Long categoryId = null;
         if (selectedCategory != null && selectedCategory.getId() != -1) {
             categoryId = selectedCategory.getId();
         }
 
-        saveListener.onSave(textInput.getText().toString(), categoryId);
-        dismiss();
+        filterChangedListener.onFilterChanged(textInput.getText().toString(), categoryId);
     }
 
     private void onResetClicked() {
         ((EditText) getView().findViewById(R.id.note_list_filter_textview)).setText(null);
         selectCategory(null);
+        fireChangeEvent();
     }
 
     private void selectCategory(Long categoryId) {

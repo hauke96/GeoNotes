@@ -5,6 +5,8 @@ import android.graphics.Color;
 import de.hauke_stieler.geonotes.R;
 
 public class Category {
+    public final static int NONE_ID = -1;
+
     private final long id;
     private final String color;
     private final String name;
