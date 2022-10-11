@@ -20,6 +20,12 @@
         android:title="@string/toolbar_list_of_notes">
     </item>
     <item
+        android:id="@+id/toolbar_btn_categories"
+        android:icon="@drawable/ic_category"
+        app:showAsAction="ifRoom"
+        android:title="@string/toolbar_categories">
+    </item>
+    <item
         android:id="@+id/toolbar_btn_settings"
         android:icon="@drawable/ic_settings"
         app:showAsAction="ifRoom"

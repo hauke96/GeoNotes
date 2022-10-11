@@ -27,7 +27,6 @@ import de.hauke_stieler.geonotes.notes.NoteIconProvider;
 public class NoteListActivity extends AppCompatActivity implements FilterDialog.FilterChangedListener {
     public static final String EXTRA_CLICKED_NOTE = "clicked_note";
 
-    private SharedPreferences preferences;
     private Database database;
     private NoteIconProvider noteIconProvider;
 
@@ -39,13 +38,12 @@ public class NoteListActivity extends AppCompatActivity implements FilterDialog.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_list);
 
-        Toolbar toolbar = findViewById(R.id.toolbar_note_list);
+        Toolbar toolbar = findViewById(R.id.note_list_toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        preferences = Injector.get(SharedPreferences.class);
         database = Injector.get(Database.class);
         noteIconProvider = Injector.get(NoteIconProvider.class);
 

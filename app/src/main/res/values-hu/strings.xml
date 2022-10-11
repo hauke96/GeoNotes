@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">GeoNotes</string>
+
+    <!-- Activity titles -->
     <string name="title_activity_settings">Beállítások</string>
+    <!-- TODO translations needed -->
+    <string name="title_activity_note_list">All notes</string>
+    <string name="title_activity_categories">Category configuration</string>
 
     <!-- Misc strings -->
     <!-- TODO translations needed -->
@@ -16,6 +21,8 @@
     <string name="toolbar_gps_follow_mode">GPS-követő mód</string>
     <string name="toolbar_export">Exportálás</string>
     <string name="toolbar_list_of_notes">Jegyzetek listája</string>
+    <!-- TODO translations needed -->
+    <string name="toolbar_categories">Categories</string>
     <string name="toolbar_settings">Beállítások</string>
     <string name="toolbar_remove_all_notes">Összes jegyzet eltávolítása</string>
 

@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">GeoNotes</string>
+
+    <!-- Activity titles -->
     <string name="title_activity_settings">Einstellungen</string>
+    <string name="title_activity_note_list">Alle Notizen</string>
+    <string name="title_activity_categories">Kategorie Konfiguration</string>
 
     <!-- Misc strings -->
     <string name="ok">OK</string>
@@ -15,6 +19,7 @@
     <string name="toolbar_gps_follow_mode">GPS folgen</string>
     <string name="toolbar_export">Export</string>
     <string name="toolbar_list_of_notes">Notizenliste</string>
+    <string name="toolbar_categories">Kategorien</string>
     <string name="toolbar_settings">Einstellungen</string>
     <string name="toolbar_remove_all_notes">Alle Notizen löschen</string>
 

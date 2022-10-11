@@ -37,6 +37,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import de.hauke_stieler.geonotes.categories.CategoryConfigurationActivity;
 import de.hauke_stieler.geonotes.common.FileHelper;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.export.Exporter;
@@ -179,6 +180,9 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.toolbar_btn_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+            case R.id.toolbar_btn_categories:
+                startActivity(new Intent(this, CategoryConfigurationActivity.class));
                 return true;
             case R.id.toolbar_btn_note_list:
                 startActivityForResult(new Intent(this, NoteListActivity.class), REQUEST_NOTE_LIST_REQUEST_CODE);

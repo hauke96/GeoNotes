@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">GeoNotes</string>
+
+    <!-- Activity titles -->
     <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_note_list">All notes</string>
+    <string name="title_activity_categories">Category configuration</string>
 
     <!-- Preference keys -->
     <string name="pref_file" translatable="false">geonotes_preferences</string>
@@ -30,6 +34,7 @@
     <string name="toolbar_gps_follow_mode">GPS follow mode</string>
     <string name="toolbar_export">Export</string>
     <string name="toolbar_list_of_notes">List of notes</string>
+    <string name="toolbar_categories">Categories</string>
     <string name="toolbar_settings">Settings</string>
     <string name="toolbar_remove_all_notes">Remove all notes</string>
 
