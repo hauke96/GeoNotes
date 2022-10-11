@@ -1,0 +1,4 @@
+1.0.2:
+
+* Az osm.org címre mutató hivatkozás hozzáadása a szerzői jogi megjegyzésben
+* A térképcsempék DPI-függő méretezésének engedélyezése

@@ -1,0 +1,6 @@
+1.1.0:
+
+* GPS-követő mód hozzáadása
+* Beállítások nézet hozzáadása
+* Az utolsó hely mentése és nagyítás arra a helyre az indításkor
+* Kisebb teljesítményjavítások
