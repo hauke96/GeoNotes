@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
@@ -18,14 +19,20 @@ import java.util.List;
 
 import de.hauke_stieler.geonotes.Injector;
 import de.hauke_stieler.geonotes.R;
+import de.hauke_stieler.geonotes.categories.Category;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.notes.Note;
+import de.hauke_stieler.geonotes.notes.NoteIconProvider;
 
-public class NoteListActivity extends AppCompatActivity {
+public class NoteListActivity extends AppCompatActivity implements FilterDialog.FilterChangedListener {
     public static final String EXTRA_CLICKED_NOTE = "clicked_note";
 
     private SharedPreferences preferences;
     private Database database;
+    private NoteIconProvider noteIconProvider;
+
+    private String filterText;
+    private Long filterCategoryId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +47,7 @@ public class NoteListActivity extends AppCompatActivity {
 
         preferences = Injector.get(SharedPreferences.class);
         database = Injector.get(Database.class);
+        noteIconProvider = Injector.get(NoteIconProvider.class);
 
         load();
     }
@@ -54,16 +62,48 @@ public class NoteListActivity extends AppCompatActivity {
             }
         }
 
-        NoteListAdapter adapter = new NoteListAdapter(this, notes, notesWithPhoto, id -> {
-            // Close this activity and send back clicked note id
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra(EXTRA_CLICKED_NOTE, id);
-            setResult(Activity.RESULT_OK, resultIntent);
-            finish();
-        });
+        notes = filterNotes(notes);
+        notesWithPhoto = filterNotes(notesWithPhoto);
+
+        NoteListAdapter adapter = new NoteListAdapter(
+                this,
+                noteIconProvider,
+                notes,
+                notesWithPhoto,
+                id -> {
+                    // Close this activity and send back clicked note id
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra(EXTRA_CLICKED_NOTE, id);
+                    setResult(Activity.RESULT_OK, resultIntent);
+                    finish();
+                });
 
         ListView listView = findViewById(R.id.note_list_view);
         listView.setAdapter(adapter);
+    }
+
+    private List<Note> filterNotes(List<Note> notes) {
+        if (this.filterText != null && !this.filterText.trim().isEmpty()) {
+            List<Note> newNotes = new ArrayList<>();
+            for (Note n : notes) {
+                if (n.getDescription() != null && n.getDescription().contains(this.filterText)) {
+                    newNotes.add(n);
+                }
+            }
+            notes = newNotes;
+        }
+
+        if (this.filterCategoryId != null && this.filterCategoryId != Category.NONE_ID) {
+            List<Note> newNotes = new ArrayList<>();
+            for (Note n : notes) {
+                if (n.getCategory() != null && n.getCategory().getId() == this.filterCategoryId) {
+                    newNotes.add(n);
+                }
+            }
+            notes = newNotes;
+        }
+
+        return notes;
     }
 
     @Override
@@ -81,6 +121,9 @@ public class NoteListActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.toolbar_btn_filter:
+                new FilterDialog(this, filterText, filterCategoryId).show(getSupportFragmentManager(), FilterDialog.class.getName());
+                return true;
             case R.id.toolbar_btn_delete_all:
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage(R.string.delete_all_notes);
@@ -88,7 +131,8 @@ public class NoteListActivity extends AppCompatActivity {
                     database.removeAllNotes();
                     load();
                 });
-                builder.setNegativeButton(R.string.dialog_no, (dialog, id) -> {});
+                builder.setNegativeButton(R.string.dialog_no, (dialog, id) -> {
+                });
                 AlertDialog dialog = builder.create();
                 dialog.show();
 
@@ -96,5 +140,13 @@ public class NoteListActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onFilterChanged(String filterText, Long categoryId) {
+        this.filterText = filterText;
+        this.filterCategoryId = categoryId;
+        Log.i(NoteListActivity.class.getName(), "onSave: " + filterText + ", " + categoryId);
+        this.load();
     }
 }

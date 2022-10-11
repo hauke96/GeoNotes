@@ -1,0 +1,3 @@
+1.0.4:
+
+* A build.gradle javítása, azért hogy az F-Droid frissítés-ellenőrzője újra felismerje a verziókat

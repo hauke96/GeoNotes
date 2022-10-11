@@ -1,0 +1,14 @@
+1.3.0:
+
+* A jegyzetek exportálhatók GeoJSON-fájlba
+* Helyhez illesztés a közeli hely nyilára vagy pontjára történő koppintáskor #24 (engedélyezni kell a beállítások menüben)
+* Egy jegyzet létrehozási dátuma eltárolásra és megjelenítésre kerül
+* A jogosultsághoz való idegesítő kérés javítva lett
+* A legalább egy fényképpel rendelkező jegyzetek eltérő ikont kapnak a térképen
+* Jobb GPS-nyíl ikon
+* Hibajavítás az eszköz forgatásával kapcsolatban
+
+Néhány fejlesztői változtatás:
+
+* Az első JUnit tesztek hozzáadása
+* Több függőség-befecskendezésre váltás, mint például a függőségek kezelésének módja

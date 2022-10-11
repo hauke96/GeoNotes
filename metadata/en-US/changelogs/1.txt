@@ -5,4 +5,4 @@
   * Edit text
   * Delete note
   * Move note
-* FDroid-Store preparations
+* F-Droid store preparations

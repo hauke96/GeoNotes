@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createMarkerFragment() {
-        MarkerFragment markerFragment = new MarkerFragment();
+        MarkerFragment markerFragment = new MarkerFragment(preferences);
 
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
@@ -309,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
             switch (requestCode) {
                 case REQUEST_IMAGE_CAPTURE:
                     addPhotoToDatabase(lastPhotoNoteId, lastPhotoFile);
-                    map.addImagesToMarkerWindow();
+                    map.addImagesToMarkerFragment();
                     break;
                 case REQUEST_NOTE_LIST_REQUEST_CODE:
                     long selectedNoteId = data.getLongExtra(NoteListActivity.EXTRA_CLICKED_NOTE, -1L);

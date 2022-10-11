@@ -20,6 +20,8 @@ import java.util.List;
 
 import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.notes.Note;
+import de.hauke_stieler.geonotes.categories.Category;
+import de.hauke_stieler.geonotes.notes.NoteIconProvider;
 
 import static org.mockito.ArgumentMatchers.any;
 
@@ -28,6 +30,7 @@ public class NoteListAdapterTest {
     private NoteListAdapter adapter;
 
     private Context context;
+    private NoteIconProvider noteIconProvider;
     private Resources resourcesMock;
     private ViewGroup layoutViewMock;
     private ImageView imageViewMock;
@@ -47,6 +50,8 @@ public class NoteListAdapterTest {
         context = Mockito.mock(Context.class);
         Mockito.when(context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).thenReturn(inflater);
 
+        noteIconProvider = Mockito.mock(NoteIconProvider.class);
+
         resourcesMock = Mockito.mock(Resources.class);
         Mockito.when(context.getResources()).thenReturn(resourcesMock);
 
@@ -57,9 +62,9 @@ public class NoteListAdapterTest {
         Mockito.when(layoutViewMock.findViewById(R.id.note_list_row_text_view)).thenReturn(textViewMock);
 
         notes = new ArrayList<>();
-        notes.add(new Note(123L, "foo", 12, 23, "now"));
-        notes.add(new Note(234L, "bar", 34, 45, "i don't remember"));
-        notes.add(new Note(345L, "", 56, 56, "tomorrow"));
+        notes.add(new Note(123L, "foo", 12, 23, "now", new Category(1, "", "")));
+        notes.add(new Note(234L, "bar", 34, 45, "i don't remember", new Category(1, "", "")));
+        notes.add(new Note(345L, "", 56, 56, "tomorrow", new Category(1, "", "")));
 
         notesWithPhotos = new ArrayList<>();
         notesWithPhotos.add(notes.get(1));
@@ -67,7 +72,7 @@ public class NoteListAdapterTest {
 
         clickListenerMock = Mockito.mock(NoteListAdapter.NoteListClickListener.class);
 
-        adapter = new NoteListAdapter(context, notes, notesWithPhotos, clickListenerMock);
+        adapter = new NoteListAdapter(context, noteIconProvider, notes, notesWithPhotos, clickListenerMock);
     }
 
     @Test
@@ -106,7 +111,7 @@ public class NoteListAdapterTest {
 
         // Assert
         Assert.assertEquals(layoutViewMock, view);
-        Mockito.verify(imageViewMock).setImageResource(R.mipmap.ic_note);
+        Mockito.verify(imageViewMock).setImageDrawable(any());
         Mockito.verifyNoMoreInteractions(imageViewMock);
         Mockito.verify(textViewMock).setText(notes.get(0).getDescription());
         Mockito.verify(textViewMock).setOnClickListener(any());
@@ -120,7 +125,7 @@ public class NoteListAdapterTest {
 
         // Assert
         Assert.assertEquals(layoutViewMock, view);
-        Mockito.verify(imageViewMock).setImageResource(R.mipmap.ic_note_photo);
+        Mockito.verify(imageViewMock).setImageDrawable(any());
         Mockito.verifyNoMoreInteractions(imageViewMock);
         Mockito.verify(textViewMock).setText(notes.get(1).getDescription());
         Mockito.verify(textViewMock).setOnClickListener(any());
@@ -138,7 +143,7 @@ public class NoteListAdapterTest {
 
         // Assert
         Assert.assertEquals(layoutViewMock, view);
-        Mockito.verify(imageViewMock).setImageResource(R.mipmap.ic_note_photo);
+        Mockito.verify(imageViewMock).setImageDrawable(any());
         Mockito.verifyNoMoreInteractions(imageViewMock);
         Mockito.verify(textViewMock).setText("(only photo)");
         Mockito.verify(textViewMock).setTypeface(null, Typeface.ITALIC);
