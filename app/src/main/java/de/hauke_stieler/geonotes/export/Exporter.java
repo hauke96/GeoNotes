@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.common.FileHelper;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.notes.Note;
@@ -40,7 +41,7 @@ public class Exporter {
         String gpxString = Gpx.toGpx(notes);
 
         if ("".equals(gpxString)) {
-            Toast.makeText(context, "Exporting GPX file failed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.gpx_export_failed, Toast.LENGTH_SHORT).show();
         }
 
         String fileExtension = ".gpx";

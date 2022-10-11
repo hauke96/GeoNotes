@@ -347,7 +347,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             ThumbnailUtil.writeThumbnail(sizeInPixel, photoFile);
         } catch (IOException e) {
-            Toast.makeText(getApplicationContext(), "Creating thumbnail failed", Toast.LENGTH_SHORT);
+            Toast.makeText(getApplicationContext(), R.string.create_thumbnail_failed, Toast.LENGTH_SHORT);
         }
     }
 

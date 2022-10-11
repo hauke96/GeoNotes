@@ -11,6 +11,6 @@
         android:id="@+id/toolbar_btn_delete_all"
         android:icon="@drawable/ic_delete_white"
         app:showAsAction="ifRoom"
-        android:title="Remove all notes">
+        android:title="@string/toolbar_remove_all_notes">
     </item>
 </menu>

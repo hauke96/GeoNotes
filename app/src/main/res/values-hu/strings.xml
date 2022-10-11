@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">GeoNotes</string>
+    <string name="title_activity_settings">Beállítások</string>
+
+    <!-- Dialog buttons -->
+    <string name="dialog_yes">Igen</string>
+    <string name="dialog_no">Nem</string>
+
+    <!-- Toolbar -->
+    <string name="toolbar_gps_follow_mode">GPS-követő mód</string>
+    <string name="toolbar_export">Exportálás</string>
+    <string name="toolbar_list_of_notes">Jegyzetek listája</string>
+    <string name="toolbar_settings">Beállítások</string>
+    <string name="toolbar_remove_all_notes">Összes jegyzet eltávolítása</string>
+
+    <!-- Settings -->
+    <string name="show_zoom_buttons">Nagyítási gombok megjelenítése</string>
+    <string name="map_scaling_factor">Térképnagyítási tényező</string>
+    <string name="snap_note_to_gps_location">Jegyzet GPS-helyadathoz rögzítése</string>
+    <string name="enable_rotating_the_map">Térkép forgatásának engedélyezáse</string>
+    <string name="background_map_cache">Térképháttér gyorsítótára</string>
+    <string name="clear">Törlés</string>
+    <string name="tap_long_to_create_a_note">Jegyzet létrehozása hosszú érintéssel</string>
+    <string name="feedback">Visszajelzés</string>
+
+    <!-- Marker -->
+    <string name="marker_instructions">1. Mozgassa a térképet\n2. A hely mentéséhez engedje fel az ujját</string>
+    <string name="enter_text_for_a_new_note">Adja meg az új jegyzet szövegét:</string>
+    <string name="marker_move">Áthelyezés</string>
+    <string name="marker_delete">Törlés</string>
+
+    <!-- Exporter -->
+    <string name="gpx_export_failed">A GPX-fájl exportálása sikertelen</string>
+
+    <!-- Note List -->
+    <string name="delete_all_notes">Valóban törli az összes jegyzetet? Ez nem vonható vissza.</string>
+    <string name="create_thumbnail_failed">A bélyegkép létrehozása sikertelen</string>
+</resources>
