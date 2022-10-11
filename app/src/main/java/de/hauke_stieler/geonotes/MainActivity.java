@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Set HTML text of copyright label
         ((TextView) findViewById(R.id.copyright)).setMovementMethod(LinkMovementMethod.getInstance());
-        ((TextView) findViewById(R.id.copyright)).setText(Html.fromHtml("© <a href=\"https://openstreetmap.org/copyright\">OpenStreetMap</a> contributors"));
+        ((TextView) findViewById(R.id.copyright)).setText(Html.fromHtml(getString(R.string.osm_contribution)));
 
         requestPermissionsIfNecessary(new String[]{
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,

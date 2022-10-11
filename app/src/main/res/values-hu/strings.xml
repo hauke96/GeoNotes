@@ -2,6 +2,12 @@
     <string name="app_name">GeoNotes</string>
     <string name="title_activity_settings">Beállítások</string>
 
+    <!-- Misc strings -->
+    <!-- TODO translations needed -->
+    <string name="ok">OK</string>
+    <string name="reset">Reset</string>
+    <string name="osm_contribution">© <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors</string>
+
     <!-- Dialog buttons -->
     <string name="dialog_yes">Igen</string>
     <string name="dialog_no">Nem</string>
@@ -22,6 +28,8 @@
     <string name="clear">Törlés</string>
     <string name="tap_long_to_create_a_note">Jegyzet létrehozása hosszú érintéssel</string>
     <string name="feedback">Visszajelzés</string>
+    <!-- TODO translations needed -->
+    <string name="geonotes_version">GeoNotes version</string>
 
     <!-- Marker -->
     <string name="marker_instructions">1. Mozgassa a térképet\n2. A hely mentéséhez engedje fel az ujját</string>
@@ -35,4 +43,9 @@
     <!-- Note List -->
     <string name="delete_all_notes">Valóban törli az összes jegyzetet? Ez nem vonható vissza.</string>
     <string name="create_thumbnail_failed">A bélyegkép létrehozása sikertelen</string>
+
+    <!-- Filter dialog-->
+    <!-- TODO translations needed -->
+    <string name="filter_dialog_filter_by_note_text">Filter by Note text:</string>
+    <string name="filter_dialog_filter_by_category">Filter by category:</string>
 </resources>

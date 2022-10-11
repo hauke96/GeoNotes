@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Filter by Note text:" />
+        android:text="@string/filter_dialog_filter_by_note_text" />
 
     <EditText
         android:id="@+id/note_list_filter_textview"
@@ -21,7 +21,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Filter by category:" />
+        android:text="@string/filter_dialog_filter_by_category" />
 
     <Spinner
         android:id="@+id/note_list_filter_category_spinner"
@@ -46,12 +46,12 @@
             android:id="@+id/note_list_filter_btn_reset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reset" />
+            android:text="@string/reset" />
 
         <Button
             android:id="@+id/note_list_filter_btn_ok"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ok" />
+            android:text="@string/ok" />
     </LinearLayout>
 </LinearLayout>
