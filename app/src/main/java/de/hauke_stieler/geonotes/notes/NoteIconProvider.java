@@ -39,23 +39,37 @@ public class NoteIconProvider {
         for (int i = 0; i < allCategories.size(); i++) {
             Category category = allCategories.get(i);
 
-            Drawable backgroundIcon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_note_background, null);
-            backgroundIcon.setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(category.getColor(), BlendModeCompat.SRC_IN));
             Drawable exclamationMarkIcon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_note_exclamation_mark, null);
             Drawable cameraForegroundIcon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_note_camera, null);
-            Drawable selectionIcon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_note_selection, null);
-            selectionIcon.setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(0xFF000000, BlendModeCompat.SRC_IN));
 
             // We render the drawables to a single bitmap because OsmDroid (or Android?) has problem
             // with these LayerDrawables. Parts of these layered drawables just disappear after some
             // time o.O This does not happen to a single pre-rendered bitmap.
-            Drawable noteIcon = renderToBitmap(backgroundIcon, exclamationMarkIcon);
-            Drawable noteWithCameraIcon = renderToBitmap(backgroundIcon, cameraForegroundIcon);
+
+            // Normal icons
+            Drawable backgroundOuterNormalIcon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_note_background, null);
+
+            Drawable backgroundInnerIcon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_note_background_inner, null);
+            backgroundInnerIcon.setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(category.getColor(), BlendModeCompat.SRC_IN));
+
+            Drawable noteIcon = renderToBitmap(backgroundOuterNormalIcon, backgroundInnerIcon, exclamationMarkIcon);
+            Drawable noteWithCameraIcon = renderToBitmap(backgroundOuterNormalIcon, backgroundInnerIcon, cameraForegroundIcon);
 
             categoryToNormalIcon.put(category.getId(), noteIcon);
             categoryToCameraIcon.put(category.getId(), noteWithCameraIcon);
-            categoryToNormalIconSelected.put(category.getId(), renderToBitmap(noteIcon, selectionIcon));
-            categoryToCameraIconSelected.put(category.getId(), renderToBitmap(noteWithCameraIcon, selectionIcon));
+
+            // Selection icons
+            Drawable backgroundOuterSelectedIcon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_note_background, null);
+            backgroundOuterSelectedIcon.setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(0xFF000000, BlendModeCompat.SRC_IN));
+
+            Drawable backgroundInnerSmallIcon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_note_background_inner_small, null);
+            backgroundInnerSmallIcon.setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(category.getColor(), BlendModeCompat.SRC_IN));
+
+            Drawable noteSelectedIcon = renderToBitmap(backgroundOuterSelectedIcon, backgroundInnerSmallIcon, exclamationMarkIcon);
+            Drawable noteWithCameraSelectedIcon = renderToBitmap(backgroundOuterSelectedIcon, backgroundInnerSmallIcon, cameraForegroundIcon);
+
+            categoryToNormalIconSelected.put(category.getId(), noteSelectedIcon);
+            categoryToCameraIconSelected.put(category.getId(), noteWithCameraSelectedIcon);
         }
     }
 
