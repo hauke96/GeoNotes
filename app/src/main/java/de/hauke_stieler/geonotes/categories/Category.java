@@ -8,8 +8,8 @@ public class Category {
     public final static int NONE_ID = -1;
 
     private final long id;
-    private final String color;
-    private final String name;
+    private String color;
+    private String name;
     private final int drawableId;
 
     public Category(long id, String color, String name) {
@@ -34,12 +34,20 @@ public class Category {
         return color;
     }
 
+    public void setColorString(String newColor) {
+        this.color = newColor;
+    }
+
     public int getColor() {
         return Color.parseColor(getColorString());
     }
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String newName) {
+        this.name = newName;
     }
 
     public int getDrawableId() {
@@ -51,15 +59,13 @@ public class Category {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Category category = (Category) o;
-        return id == category.id && color.equals(category.color) && name.equals(category.name);
+        return id == category.id;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
         hash = 31 * hash + (int) id;
-        hash = 31 * hash + color.hashCode();
-        hash = 31 * hash + name.hashCode();
         return hash;
     }
 }

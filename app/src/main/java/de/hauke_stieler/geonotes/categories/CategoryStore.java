@@ -77,4 +77,13 @@ public class CategoryStore {
     private Category getCategoryFromCursor(Cursor cursor) {
         return new Category(cursor.getLong(0), cursor.getString(1), cursor.getString(2));
     }
+
+    public void update(SQLiteDatabase db, long id, String newName, String newColor) {
+        ContentValues values = new ContentValues();
+        values.put(CATEGORIES_COL_ID, id);
+        values.put(CATEGORIES_COL_NAME, newName);
+        values.put(CATEGORIES_COL_COLOR, newColor);
+
+        db.update(CATEGORIES_TABLE_NAME, values, CATEGORIES_COL_ID + " = ?", new String[]{"" + id});
+    }
 }

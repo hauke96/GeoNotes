@@ -39,7 +39,10 @@ public class CategoryConfigurationActivity extends AppCompatActivity {
 
         Button saveButton = findViewById(R.id.category_list_save);
         saveButton.setOnClickListener(v -> {
-            // TODO get categories from adapter and save to database
+            for (Category category : adapter.getAllItems()) {
+                database.updateCategory(category.getId(), category.getName(), category.getColorString());
+            }
+            finish();
         });
     }
 

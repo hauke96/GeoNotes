@@ -53,4 +53,5 @@
 
     <!-- Category list -->
     <string name="category_list_save">Speichern</string>
+    <string name="category_list_color_notice">Farbänderung derzeit noch nicht möglich, diese Funktion kommt noch.</string>
 </resources>

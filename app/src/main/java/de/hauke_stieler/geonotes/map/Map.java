@@ -3,20 +3,15 @@ package de.hauke_stieler.geonotes.map;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.os.PowerManager;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
 import androidx.core.content.res.ResourcesCompat;
-import androidx.core.graphics.BlendModeColorFilterCompat;
-import androidx.core.graphics.BlendModeCompat;
 
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
@@ -35,12 +30,10 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
 
 import de.hauke_stieler.geonotes.Injector;
 import de.hauke_stieler.geonotes.R;
-import de.hauke_stieler.geonotes.categories.Category;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.notes.Note;
 import de.hauke_stieler.geonotes.notes.NoteIconProvider;
@@ -229,7 +222,7 @@ public class Map {
                         // If the ID is set, the marker exists in the DB, therefore we store that new location
                         String id = markerToMove.getId();
                         if (id != null) {
-                            database.updateLocation(Long.parseLong(id), markerToMove.getPosition());
+                            database.updateNoteLocation(Long.parseLong(id), markerToMove.getPosition());
                         }
 
                         dragStartMarkerPosition = null;
@@ -259,7 +252,7 @@ public class Map {
                 markerFragment.reset();
 
                 // We always have an ID and can therefore update the note
-                database.updateDescription(Long.parseLong(marker.getId()), marker.getSnippet());
+                database.updateNoteDescription(Long.parseLong(marker.getId()), marker.getSnippet());
                 onCategoryChanged(marker);
             }
 
@@ -271,7 +264,7 @@ public class Map {
 
             @Override
             public void onCategoryChanged(GeoNotesMarker marker) {
-                database.updateCategory(Long.parseLong(marker.getId()), marker.getCategoryId());
+                database.updateNoteCategory(Long.parseLong(marker.getId()), marker.getCategoryId());
 
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putLong(context.getString(R.string.pref_last_category_id), marker.getCategoryId());

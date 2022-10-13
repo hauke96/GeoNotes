@@ -56,16 +56,16 @@ public class Database extends SQLiteOpenHelper {
         return noteStore.addNote(getWritableDatabase(), description, lat, lon, categoryId);
     }
 
-    public void updateDescription(long id, String newDescription) {
-        noteStore.updateDescription(getWritableDatabase(), id, newDescription);
+    public void updateNoteDescription(long noteId, String newDescription) {
+        noteStore.updateDescription(getWritableDatabase(), noteId, newDescription);
     }
 
-    public void updateCategory(long id, long categoryId) {
-        noteStore.updateCategory(getWritableDatabase(), id, categoryId);
+    public void updateNoteCategory(long noteId, long categoryId) {
+        noteStore.updateCategory(getWritableDatabase(), noteId, categoryId);
     }
 
-    public void updateLocation(long id, GeoPoint location) {
-        noteStore.updateLocation(getWritableDatabase(), id, location);
+    public void updateNoteLocation(long noteId, GeoPoint location) {
+        noteStore.updateLocation(getWritableDatabase(), noteId, location);
     }
 
     public void removeNote(long id) {
@@ -125,5 +125,9 @@ public class Database extends SQLiteOpenHelper {
 
     public List<Category> getAllCategories() {
         return categoryStore.getAllCategories(getReadableDatabase());
+    }
+
+    public void updateCategory(long id, String newName, String newColor) {
+        categoryStore.update(getWritableDatabase(), id, newName, newColor);
     }
 }

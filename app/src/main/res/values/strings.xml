@@ -68,4 +68,5 @@
 
     <!-- Category list -->
     <string name="category_list_save">Save</string>
+    <string name="category_list_color_notice">Changing color isn\'t possible yet but will come in the future.</string>
 </resources>

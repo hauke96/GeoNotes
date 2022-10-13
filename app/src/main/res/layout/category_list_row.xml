@@ -8,7 +8,8 @@
 
     <RelativeLayout
         android:layout_width="50dp"
-        android:layout_height="40dp">
+        android:layout_height="40dp"
+        android:id="@+id/category_list_spinner_layout">
 
         <RelativeLayout
             android:id="@+id/category_list_row_spinner_circle"
