@@ -51,7 +51,7 @@ public class NoteStore {
             // Adding foreign key relations into an existing table is not directly possible in
             // SQLite. One could create a new table with foreign key, copy the data and rename the
             // new table. But I'll keep it simple here and just don't add foreign key constrains.
-            db.execSQL(String.format("ALTER TABLE %s ADD COLUMN %s INTEGER NOT NULL DEFAULT 0", NOTES_TABLE_NAME, NOTES_COL_CATEGORY));
+            db.execSQL(String.format("ALTER TABLE %s ADD COLUMN %s INTEGER NOT NULL DEFAULT 7", NOTES_TABLE_NAME, NOTES_COL_CATEGORY));
         }
 
         Log.i("NoteStore", String.format("onUpgrade: from version %d to version %d", oldVersion, newVersion));
