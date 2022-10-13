@@ -12,9 +12,11 @@
         <entry key="app/src/main/res/drawable/ic_note_exclamation_mark.xml" value="0.3555" />
         <entry key="app/src/main/res/drawable/shape_item_cetagory_spinner.xml" value="0.325" />
         <entry key="app/src/main/res/drawable/shape_item_cetagory_spinner_none.xml" value="0.18" />
+        <entry key="app/src/main/res/layout/activity_categories.xml" value="0.3541666666666667" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.18177083333333333" />
         <entry key="app/src/main/res/layout/activity_note_list.xml" value="0.25" />
         <entry key="app/src/main/res/layout/category_activity.xml" value="0.18177083333333333" />
+        <entry key="app/src/main/res/layout/category_list_row.xml" value="0.3541666666666667" />
         <entry key="app/src/main/res/layout/item_category_spinner.xml" value="0.9" />
         <entry key="app/src/main/res/layout/marker_fragment.xml" value="0.3541666666666667" />
         <entry key="app/src/main/res/layout/note_list_filter_dialog.xml" value="0.33" />

@@ -4,6 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
+import android.widget.ListView;
+
+import java.util.List;
 
 import de.hauke_stieler.geonotes.Injector;
 import de.hauke_stieler.geonotes.R;
@@ -25,8 +28,12 @@ public class CategoryConfigurationActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         database = Injector.get(Database.class);
+        List<Category> categories = database.getAllCategories();
 
-//        load();
+        CategoryListAdapter adapter = new CategoryListAdapter(this, categories);
+
+        ListView listView = findViewById(R.id.category_list_view);
+        listView.setAdapter(adapter);
     }
 
     @Override
