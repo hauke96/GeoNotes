@@ -9,6 +9,9 @@
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textColor">@color/dark_grey</item>
     </style>
+    <style name="ToolbarButton" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textColor">@color/white</item>
+    </style>
     <dimen name="ImageButton">50dp</dimen>
     <dimen name="ImageButtonMargin">5dp</dimen>
 </resources>

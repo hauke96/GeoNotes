@@ -4,7 +4,7 @@
     <!-- Activity titles -->
     <string name="title_activity_settings">Einstellungen</string>
     <string name="title_activity_note_list">Alle Notizen</string>
-    <string name="title_activity_categories">Kategorie Konfiguration</string>
+    <string name="title_activity_categories">Kategorien</string>
 
     <!-- Misc strings -->
     <string name="ok">OK</string>
@@ -50,4 +50,7 @@
     <!-- Filter dialog-->
     <string name="filter_dialog_filter_by_note_text">Nach Text filtern:</string>
     <string name="filter_dialog_filter_by_category">Nach Kategorie filtern:</string>
+
+    <!-- Category list -->
+    <string name="category_list_save">Speichern</string>
 </resources>

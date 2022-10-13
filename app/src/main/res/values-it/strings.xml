@@ -5,7 +5,7 @@
     <string name="title_activity_settings">Impostazioni</string>
     <!-- TODO translations needed -->
     <string name="title_activity_note_list">All notes</string>
-    <string name="title_activity_categories">Category configuration</string>
+    <string name="title_activity_categories">Categories</string>
 
     <!-- Misc strings -->
     <!-- TODO translations needed -->
@@ -55,4 +55,8 @@
     <!-- TODO translations needed -->
     <string name="filter_dialog_filter_by_note_text">Filter by Note text:</string>
     <string name="filter_dialog_filter_by_category">Filter by category:</string>
+
+    <!-- Category list -->
+    <!-- TODO translations needed -->
+    <string name="category_list_save">Save</string>
 </resources>

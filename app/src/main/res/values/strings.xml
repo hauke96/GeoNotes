@@ -4,7 +4,7 @@
     <!-- Activity titles -->
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_note_list">All notes</string>
-    <string name="title_activity_categories">Category configuration</string>
+    <string name="title_activity_categories">Categories</string>
 
     <!-- Preference keys -->
     <string name="pref_file" translatable="false">geonotes_preferences</string>
@@ -65,4 +65,7 @@
     <!-- Filter dialog-->
     <string name="filter_dialog_filter_by_note_text">Filter by Note text:</string>
     <string name="filter_dialog_filter_by_category">Filter by category:</string>
+
+    <!-- Category list -->
+    <string name="category_list_save">Save</string>
 </resources>

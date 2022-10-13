@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.List;
@@ -21,7 +23,7 @@ public class CategoryConfigurationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_categories);
 
-        Toolbar toolbar = findViewById(R.id.categories_toolbar);
+        Toolbar toolbar = findViewById(R.id.category_list_toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -34,6 +36,11 @@ public class CategoryConfigurationActivity extends AppCompatActivity {
 
         ListView listView = findViewById(R.id.category_list_view);
         listView.setAdapter(adapter);
+
+        Button saveButton = findViewById(R.id.category_list_save);
+        saveButton.setOnClickListener(v -> {
+            // TODO get categories from adapter and save to database
+        });
     }
 
     @Override
