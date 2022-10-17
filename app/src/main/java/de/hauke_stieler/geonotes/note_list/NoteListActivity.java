@@ -144,7 +144,6 @@ public class NoteListActivity extends AppCompatActivity implements FilterDialog.
     public void onFilterChanged(String filterText, Long categoryId) {
         this.filterText = filterText;
         this.filterCategoryId = categoryId;
-        Log.i(NoteListActivity.class.getName(), "onSave: " + filterText + ", " + categoryId);
         this.load();
     }
 }
