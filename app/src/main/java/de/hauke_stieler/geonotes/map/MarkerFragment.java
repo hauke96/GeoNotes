@@ -115,9 +115,9 @@ public class MarkerFragment extends Fragment {
         descriptionView.setOnFocusChangeListener((v, hasFocus) -> {
             InputMethodManager inputMethodManager = (InputMethodManager) descriptionView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             if (hasFocus) {
-                inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+                inputMethodManager.showSoftInput(descriptionView, 0);
             } else {
-                inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                inputMethodManager.hideSoftInputFromWindow(descriptionView.getWindowToken(), 0);
             }
         });
 
