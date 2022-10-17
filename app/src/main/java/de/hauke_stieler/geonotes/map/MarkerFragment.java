@@ -131,6 +131,7 @@ public class MarkerFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (selectedMarker != null) {
                     selectedMarker.setSnippet(s.toString());
+                    markerEventHandler.onSave(selectedMarker);
                 }
             }
 
