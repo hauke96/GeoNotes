@@ -3,6 +3,7 @@ package de.hauke_stieler.geonotes.map;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -12,6 +13,8 @@ import android.view.MotionEvent;
 import android.widget.Toast;
 
 import androidx.core.content.res.ResourcesCompat;
+import androidx.core.graphics.BlendModeColorFilterCompat;
+import androidx.core.graphics.BlendModeCompat;
 
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
@@ -34,6 +37,7 @@ import java.util.List;
 
 import de.hauke_stieler.geonotes.Injector;
 import de.hauke_stieler.geonotes.R;
+import de.hauke_stieler.geonotes.common.BitmapRenderer;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.notes.Note;
 import de.hauke_stieler.geonotes.notes.NoteIconProvider;
@@ -81,8 +85,19 @@ public class Map {
         wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "geonotes:wakelock");
         wakeLock.acquire();
 
-        Drawable locationIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_location, null);
-        Drawable arrowIcon = ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_arrow, null);
+        Drawable locationIconBackground
+                = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_location_background, null);
+        Drawable locationIconForeground
+                = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_location_foreground, null);
+        locationIconForeground.setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(Color.parseColor("#66bb6a"), BlendModeCompat.SRC_IN));
+        Drawable locationIcon = BitmapRenderer.renderToBitmap(context, locationIconBackground, locationIconForeground);
+
+        Drawable arrowIconBackground
+                = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_arrow_background, null);
+        Drawable arrowIconForeground
+                = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_arrow_foreground, null);
+        arrowIconForeground.setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(Color.parseColor("#66bb6a"), BlendModeCompat.SRC_IN));
+        Drawable arrowIcon = BitmapRenderer.renderToBitmap(context, arrowIconBackground, arrowIconForeground);
 
         Configuration.getInstance().setUserAgentValue(context.getPackageName());
 

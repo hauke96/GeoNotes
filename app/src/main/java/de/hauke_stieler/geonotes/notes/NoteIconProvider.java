@@ -16,6 +16,7 @@ import java.util.List;
 
 import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.categories.Category;
+import de.hauke_stieler.geonotes.common.BitmapRenderer;
 import de.hauke_stieler.geonotes.database.Database;
 
 public class NoteIconProvider {
@@ -52,8 +53,8 @@ public class NoteIconProvider {
             Drawable backgroundInnerIcon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_note_background_inner, null);
             backgroundInnerIcon.setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(category.getColor(), BlendModeCompat.SRC_IN));
 
-            Drawable noteIcon = renderToBitmap(backgroundOuterNormalIcon, backgroundInnerIcon, exclamationMarkIcon);
-            Drawable noteWithCameraIcon = renderToBitmap(backgroundOuterNormalIcon, backgroundInnerIcon, cameraForegroundIcon);
+            Drawable noteIcon = BitmapRenderer.renderToBitmap(context, backgroundOuterNormalIcon, backgroundInnerIcon, exclamationMarkIcon);
+            Drawable noteWithCameraIcon = BitmapRenderer.renderToBitmap(context, backgroundOuterNormalIcon, backgroundInnerIcon, cameraForegroundIcon);
 
             categoryToNormalIcon.put(category.getId(), noteIcon);
             categoryToCameraIcon.put(category.getId(), noteWithCameraIcon);
@@ -65,8 +66,8 @@ public class NoteIconProvider {
             Drawable backgroundInnerSmallIcon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_note_background_inner_small, null);
             backgroundInnerSmallIcon.setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(category.getColor(), BlendModeCompat.SRC_IN));
 
-            Drawable noteSelectedIcon = renderToBitmap(backgroundOuterSelectedIcon, backgroundInnerSmallIcon, exclamationMarkIcon);
-            Drawable noteWithCameraSelectedIcon = renderToBitmap(backgroundOuterSelectedIcon, backgroundInnerSmallIcon, cameraForegroundIcon);
+            Drawable noteSelectedIcon = BitmapRenderer.renderToBitmap(context, backgroundOuterSelectedIcon, backgroundInnerSmallIcon, exclamationMarkIcon);
+            Drawable noteWithCameraSelectedIcon = BitmapRenderer.renderToBitmap(context, backgroundOuterSelectedIcon, backgroundInnerSmallIcon, cameraForegroundIcon);
 
             categoryToNormalIconSelected.put(category.getId(), noteSelectedIcon);
             categoryToCameraIconSelected.put(category.getId(), noteWithCameraSelectedIcon);
@@ -87,14 +88,5 @@ public class NoteIconProvider {
                 return categoryToNormalIcon.get(categoryId);
             }
         }
-    }
-
-    private Drawable renderToBitmap(Drawable... drawables) {
-        LayerDrawable layerDrawable = new LayerDrawable(drawables);
-        Bitmap bitmap = Bitmap.createBitmap(layerDrawable.getIntrinsicWidth(), layerDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        layerDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        layerDrawable.draw(canvas);
-        return new BitmapDrawable(context.getResources(), bitmap);
     }
 }
