@@ -28,7 +28,7 @@ This means you have to **fork and clone this repo** before you can start, so mak
 
 1. Go to `app/src/main/res/values-LANG` (where `LANG` is the language you want to enhance, so e.g. `it` if you want to improve the Italian translation)
 2. Open the `strings.xml` file and improve the translations.
-  * Please make sure that the order of the entries is the same as in the original `values/strings.xml` file:
+    * Please make sure that the order of the entries is the same as in the original `values/strings.xml` file:
 3. Create a commit, push it and open a pull-request on GitHub.
 
 ## Add new language
@@ -37,8 +37,8 @@ This means you have to **fork and clone this repo** before you can start, so mak
 2. Create a folder `values-LANG` (where `LANG` has to be replaced with the language code of the language you want to add, so e.g. `it` for Italian)
 3. Copy the `strings.xml` from the `values` folder. This is the original English file.
 4. Replace each English string by the translated one. 
-  * Example: `<string name="reset">Reset</string>` becomes `<string name="reset">Zurücksetzen</string>` for the German translation:
-  * Please make sure that the order of the entries is the same as in the original `values/strings.xml` file:
+    * Example: `<string name="reset">Reset</string>` becomes `<string name="reset">Zurücksetzen</string>` for the German translation:
+    * Please make sure that the order of the entries is the same as in the original `values/strings.xml` file:
 5. Create a commit, push it and open a pull-request on GitHub.
 
 # Contribute code
