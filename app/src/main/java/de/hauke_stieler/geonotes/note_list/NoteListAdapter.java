@@ -59,6 +59,7 @@ public class NoteListAdapter extends BaseAdapter {
 
         Note note = getItem(index);
         boolean noteHasPhotos = notesWithPhoto.contains(note);
+        view.setOnClickListener(v -> this.clickListener.onClick(note.getId()));
 
         ImageView icon = view.findViewById(R.id.note_list_row_icon);
         fillIconView(noteHasPhotos, note.getCategory().getId(), icon);
@@ -70,8 +71,6 @@ public class NoteListAdapter extends BaseAdapter {
     }
 
     void fillTextView(Note note, boolean noteHasPhotos, TextView text) {
-        text.setOnClickListener(v -> this.clickListener.onClick(note.getId()));
-
         if (noteHasPhotos && note.getDescription().trim().isEmpty()) {
             text.setText("(only photo)");
             text.setTypeface(null, Typeface.ITALIC);
