@@ -54,4 +54,8 @@ public class PhotoStore {
     public void removePhotos(SQLiteDatabase db, long noteId) {
         db.delete(PHOTOS_TABLE_NAME, PHOTOS_COL_NOTE_ID + " = ?", new String[]{"" + noteId});
     }
+
+    public void removeAllPhotos(SQLiteDatabase db) {
+        db.delete(PHOTOS_TABLE_NAME, null, null);
+    }
 }

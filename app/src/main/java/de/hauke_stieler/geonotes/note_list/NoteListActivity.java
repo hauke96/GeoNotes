@@ -126,7 +126,7 @@ public class NoteListActivity extends AppCompatActivity implements FilterDialog.
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage(R.string.delete_all_notes);
                 builder.setPositiveButton(R.string.dialog_yes, (dialog, id) -> {
-                    database.removeAllNotes();
+                    database.removeAllNotes(getExternalFilesDir("GeoNotes"));
                     load();
                 });
                 builder.setNegativeButton(R.string.dialog_no, (dialog, id) -> {

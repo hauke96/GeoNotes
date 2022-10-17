@@ -128,6 +128,10 @@ public class Map {
         }
     }
 
+    public void resetSelectedMarker() {
+        this.markerFragment.reset();
+    }
+
     private void createOverlays(BitmapDrawable locationIcon, BitmapDrawable arrowIcon) {
         // Add location icon
         gpsLocationProvider = new GpsMyLocationProvider(context);
@@ -449,6 +453,7 @@ public class Map {
     }
 
     public void onDestroy() {
+        markerFragment.reset();
         if (wakeLock.isHeld()) {
             wakeLock.release();
         }

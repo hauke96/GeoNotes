@@ -318,6 +318,7 @@ public class MainActivity extends AppCompatActivity {
                 case REQUEST_NOTE_LIST_REQUEST_CODE:
                     long selectedNoteId = data.getLongExtra(NoteListActivity.EXTRA_CLICKED_NOTE, -1L);
                     if (selectedNoteId != -1) {
+                        // Note selected in the note list -> also select on the map
                         map.selectNote(selectedNoteId);
                     }
                     break;
@@ -327,6 +328,7 @@ public class MainActivity extends AppCompatActivity {
         // Maybe some or all notes got deleted via the note list -> reload map
         if (requestCode == REQUEST_NOTE_LIST_REQUEST_CODE) {
             map.reloadAllNotes();
+            map.resetSelectedMarker();
         }
     }
 
