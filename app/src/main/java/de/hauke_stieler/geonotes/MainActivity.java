@@ -308,6 +308,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        // Maybe some or all notes got deleted via the note list -> reload map
+        if (requestCode == REQUEST_NOTE_LIST_REQUEST_CODE) {
+            map.reloadAllNotes();
+        }
+
         // If Intent was successful
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
@@ -323,12 +328,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                     break;
             }
-        }
-
-        // Maybe some or all notes got deleted via the note list -> reload map
-        if (requestCode == REQUEST_NOTE_LIST_REQUEST_CODE) {
-            map.reloadAllNotes();
-            map.resetSelectedMarker();
         }
     }
 

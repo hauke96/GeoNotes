@@ -123,13 +123,14 @@ public class Map {
             }
         }
 
-        for (Note n : this.database.getAllNotes()) {
-            createMarker("" + n.getId(), n.getDescription(), new GeoPoint(n.getLat(), n.getLon()), n.getCategory().getId(), markerClickListener);
+        List<Note> allNotes = this.database.getAllNotes();
+        if (allNotes.isEmpty()) {
+            this.markerFragment.reset();
+        } else {
+            for (Note n : allNotes) {
+                createMarker("" + n.getId(), n.getDescription(), new GeoPoint(n.getLat(), n.getLon()), n.getCategory().getId(), markerClickListener);
+            }
         }
-    }
-
-    public void resetSelectedMarker() {
-        this.markerFragment.reset();
     }
 
     private void createOverlays(BitmapDrawable locationIcon, BitmapDrawable arrowIcon) {
