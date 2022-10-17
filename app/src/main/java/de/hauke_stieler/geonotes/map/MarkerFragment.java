@@ -234,14 +234,12 @@ public class MarkerFragment extends Fragment {
         deleteButton.setOnClickListener(v -> {
             reset();
             markerEventHandler.onDelete(marker);
-            getView().findViewById(R.id.note_description).clearFocus();
         });
 
         Button saveButton = view.findViewById(R.id.save_button);
         saveButton.setOnClickListener(v -> {
             reset();
             markerEventHandler.onSave(marker);
-            getView().findViewById(R.id.note_description).clearFocus();
         });
 
         Button moveButton = view.findViewById(R.id.move_button);
