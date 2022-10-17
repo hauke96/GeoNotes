@@ -27,7 +27,7 @@ public class PhotoStore {
         if (oldVersion < 5) {
             onCreate(db);
         }
-        Log.i("NoteStore", String.format("onUpgrade: from version %d to version %d", oldVersion, newVersion));
+        Log.i("PhotoStore", String.format("onUpgrade: from version %d to version %d", oldVersion, newVersion));
     }
 
     public void addPhoto(SQLiteDatabase db, Long noteId, File photoFile) {
