@@ -86,11 +86,11 @@ public class MarkerFragment extends Fragment {
     private final Database database;
     private final SharedPreferences preferences;
 
-    public MarkerFragment(SharedPreferences preferences) {
+    public MarkerFragment() {
         super(R.layout.marker_fragment);
 
         this.database = Injector.get(Database.class);
-        this.preferences = preferences;
+        this.preferences = Injector.get(SharedPreferences.class);
     }
 
     public void addEventHandler(MarkerFragmentEventHandler markerEventHandler) {
