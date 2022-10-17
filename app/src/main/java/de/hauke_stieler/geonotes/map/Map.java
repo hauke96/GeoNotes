@@ -253,8 +253,6 @@ public class Map {
         fragment.addEventHandler(new MarkerFragment.MarkerFragmentEventHandler() {
             @Override
             public void onDelete(GeoNotesMarker marker) {
-                markerFragment.reset();
-
                 // We always have an ID and can therefore delete the note
                 database.removeNote(Long.parseLong(marker.getId()));
                 database.removePhotos(Long.parseLong(marker.getId()), context.getExternalFilesDir("GeoNotes"));
@@ -264,8 +262,6 @@ public class Map {
 
             @Override
             public void onSave(GeoNotesMarker marker) {
-                markerFragment.reset();
-
                 // We always have an ID and can therefore update the note
                 database.updateNoteDescription(Long.parseLong(marker.getId()), marker.getSnippet());
                 onCategoryChanged(marker);

@@ -247,12 +247,12 @@ public class MarkerFragment extends Fragment {
         moveButton.setOnClickListener(v -> {
             state = State.DRAGGING;
             updatePanelVisibility();
-
             markerEventHandler.onMove(marker);
         });
 
         ImageButton cameraButton = view.findViewById(R.id.camera_button);
         cameraButton.setOnClickListener(v -> {
+            markerEventHandler.onSave(marker);
             requestPhotoHandler.onRequestPhoto(Long.parseLong(marker.getId()));
         });
 
