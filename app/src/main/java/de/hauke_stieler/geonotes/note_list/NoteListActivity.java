@@ -3,6 +3,8 @@ package de.hauke_stieler.geonotes.note_list;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -12,7 +14,9 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.graphics.BlendModeCompat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +33,7 @@ public class NoteListActivity extends AppCompatActivity implements FilterDialog.
 
     private Database database;
     private NoteIconProvider noteIconProvider;
+    private Menu toolbarMenu;
 
     private String filterText;
     private Long filterCategoryId;
@@ -113,6 +118,7 @@ public class NoteListActivity extends AppCompatActivity implements FilterDialog.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_note_list, menu);
+        toolbarMenu = menu;
         return true;
     }
 
@@ -144,6 +150,14 @@ public class NoteListActivity extends AppCompatActivity implements FilterDialog.
     public void onFilterChanged(String filterText, Long categoryId) {
         this.filterText = filterText;
         this.filterCategoryId = categoryId;
+
+        boolean isFilterActive = !"".equals(this.filterText) || this.filterCategoryId != null;
+        if(isFilterActive) {
+            toolbarMenu.findItem(R.id.toolbar_btn_filter).getIcon().setColorFilter(Color.parseColor("#fdd835"), PorterDuff.Mode.SRC_IN);
+        }else {
+            toolbarMenu.findItem(R.id.toolbar_btn_filter).getIcon().clearColorFilter();
+        }
+
         this.load();
     }
 }
