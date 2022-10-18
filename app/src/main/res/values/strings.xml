@@ -63,7 +63,7 @@
     <string name="create_thumbnail_failed">Creating thumbnail failed</string>
     
     <!-- Filter dialog-->
-    <string name="filter_dialog_filter_by_note_text">Filter by Note text:</string>
+    <string name="filter_dialog_filter_by_note_text">Filter by note text:</string>
     <string name="filter_dialog_filter_by_category">Filter by category:</string>
 
     <!-- Category list -->
