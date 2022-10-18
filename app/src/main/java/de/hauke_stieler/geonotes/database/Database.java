@@ -84,6 +84,10 @@ public class Database extends SQLiteOpenHelper {
         return noteStore.getAllNotes(getWritableDatabase());
     }
 
+    public List<Note> getAllNotes(String textFilter, Long categoryIdFilter) {
+        return noteStore.getAllNotes(getWritableDatabase(), textFilter, categoryIdFilter);
+    }
+
     public void addPhoto(Long noteId, File photoFile) {
         photoStore.addPhoto(getWritableDatabase(), noteId, photoFile);
     }

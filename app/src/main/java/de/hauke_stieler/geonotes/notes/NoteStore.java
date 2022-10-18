@@ -8,6 +8,7 @@ import android.util.Log;
 import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -103,6 +104,39 @@ public class NoteStore {
 
     public List<Note> getAllNotes(SQLiteDatabase db) {
         Cursor cursor = db.query(NOTES_TABLE_NAME, new String[]{NOTES_COL_ID, NOTES_COL_DESCRIPTION, NOTES_COL_LAT, NOTES_COL_LON, NOTES_COL_CREATED_AT, NOTES_COL_CATEGORY}, null, null, null, null, null);
+
+        List<Note> notes = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                notes.add(getNoteFromCursor(db, cursor));
+            } while (cursor.moveToNext());
+        }
+
+        return notes;
+    }
+
+    public List<Note> getAllNotes(SQLiteDatabase db, String textFilter, Long categoryIdFilter) {
+        List<String> filter = new ArrayList<>();
+        List<String> filterArgs = new ArrayList<>();
+
+        if (textFilter == null) {
+            textFilter = "";
+        }
+        textFilter = textFilter.replaceAll("%", "\\\\%");
+        filter.add(NOTES_COL_DESCRIPTION + " LIKE ? ESCAPE '\\'");
+        filterArgs.add("%" + textFilter + "%");
+
+        if (categoryIdFilter != null) {
+            filter.add(NOTES_COL_CATEGORY + "=?");
+            filterArgs.add(categoryIdFilter + "");
+        }
+
+        Cursor cursor = db.query(NOTES_TABLE_NAME, new String[]{NOTES_COL_ID, NOTES_COL_DESCRIPTION, NOTES_COL_LAT, NOTES_COL_LON, NOTES_COL_CREATED_AT, NOTES_COL_CATEGORY},
+                String.join(" AND ", filter),
+                filterArgs.toArray(new String[]{}),
+                null,
+                null,
+                null);
 
         List<Note> notes = new ArrayList<>();
         if (cursor.moveToFirst()) {

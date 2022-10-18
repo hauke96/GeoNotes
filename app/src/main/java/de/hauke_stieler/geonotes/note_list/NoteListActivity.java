@@ -56,7 +56,7 @@ public class NoteListActivity extends AppCompatActivity implements FilterDialog.
     }
 
     private void load() {
-        List<Note> notes = database.getAllNotes();
+        List<Note> notes = database.getAllNotes(this.filterText, this.filterCategoryId);
 
         List<Note> notesWithPhoto = new ArrayList<>();
         for (Note note : notes) {
@@ -64,9 +64,6 @@ public class NoteListActivity extends AppCompatActivity implements FilterDialog.
                 notesWithPhoto.add(note);
             }
         }
-
-        notes = filterNotes(notes);
-        notesWithPhoto = filterNotes(notesWithPhoto);
 
         NoteListAdapter adapter = new NoteListAdapter(
                 this,
@@ -83,30 +80,6 @@ public class NoteListActivity extends AppCompatActivity implements FilterDialog.
 
         ListView listView = findViewById(R.id.note_list_view);
         listView.setAdapter(adapter);
-    }
-
-    private List<Note> filterNotes(List<Note> notes) {
-        if (this.filterText != null && !this.filterText.trim().isEmpty()) {
-            List<Note> newNotes = new ArrayList<>();
-            for (Note n : notes) {
-                if (n.getDescription() != null && n.getDescription().contains(this.filterText)) {
-                    newNotes.add(n);
-                }
-            }
-            notes = newNotes;
-        }
-
-        if (this.filterCategoryId != null && this.filterCategoryId != Category.NONE_ID) {
-            List<Note> newNotes = new ArrayList<>();
-            for (Note n : notes) {
-                if (n.getCategory() != null && n.getCategory().getId() == this.filterCategoryId) {
-                    newNotes.add(n);
-                }
-            }
-            notes = newNotes;
-        }
-
-        return notes;
     }
 
     @Override
@@ -152,9 +125,9 @@ public class NoteListActivity extends AppCompatActivity implements FilterDialog.
         this.filterCategoryId = categoryId;
 
         boolean isFilterActive = !"".equals(this.filterText) || this.filterCategoryId != null;
-        if(isFilterActive) {
+        if (isFilterActive) {
             toolbarMenu.findItem(R.id.toolbar_btn_filter).getIcon().setColorFilter(Color.parseColor("#fdd835"), PorterDuff.Mode.SRC_IN);
-        }else {
+        } else {
             toolbarMenu.findItem(R.id.toolbar_btn_filter).getIcon().clearColorFilter();
         }
 
