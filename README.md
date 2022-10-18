@@ -57,5 +57,5 @@ To implement the above goal/idea, the app follows some basic principles:
 * All sorts of features that will only be used by just a few users but require a lot of work to be implemented
 * iOS and other non-android support
 
-Try other apps like [StreetComplete](https://github.com/streetcomplete/StreetComplete) if you want to directly interact with OSM-data and osm.org notes directly.
+Try other apps like [StreetComplete](https://github.com/streetcomplete/StreetComplete) if you want to interact with OSM-data and osm.org notes directly.
 

@@ -52,5 +52,5 @@ Please create an issue before adding code (except it's just a spelling mistake o
 5. Push your changes and open a pull-request on GitHub
 
 Don't be sad if I don't want your feature idea to be in GeoNotes.
-This is my private project and I have a certain idea (s. below) what this app should be and what not.
+This is my private project and I have a certain idea (s. the [README.md](README.md#use-case-and-philosophy) what this app should be and what not.
 But feel free to create a fork and develop your own version of this app :)
