@@ -12,3 +12,4 @@ Hibajavítások:
 * Fordítási támogatás hozzáadása (jelenleg angol, német, magyar és olasz fordítás támogatott). Nyugodtan adjon hozzá új nyelveket :)
 * Kategóriák hozzárendelése egy jegyzethez az azonos témájú jegyzetek csoportosítása érdekében
 * Jegyzetek szűrése a jegyzetlistán szöveg és kategória szerint
+* Új ikonstílusok
