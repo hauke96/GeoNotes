@@ -28,7 +28,7 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.settings_toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -39,7 +39,7 @@ public class SettingsActivity extends AppCompatActivity {
         load();
 
         TextView versionLabel = (TextView) findViewById(R.id.settings_version_label);
-        versionLabel.setText("GeoNotes version: " + BuildConfig.VERSION_NAME);
+        versionLabel.setText(getString(R.string.geonotes_version) + " " + BuildConfig.VERSION_NAME);
 
         Button clearCacheButton = (Button) findViewById(R.id.settings_clear_cache);
         clearCacheButton.setOnClickListener(v -> {

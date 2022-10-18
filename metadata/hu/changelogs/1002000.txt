@@ -1,0 +1,5 @@
+1.2.0:
+
+* Fényképek hozzáadása egy jegyzethez
+* Ikon a GPS-nyílhoz
+* A README.md fájl megváltoztatása és hivatkozás az OSM wikire

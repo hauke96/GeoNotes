@@ -21,7 +21,11 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.GeoNotes">
-        <activity android:name=".note_list.NoteListActivity" />
+        <activity
+            android:name=".categories.CategoryConfigurationActivity"
+            android:label="@string/title_activity_categories" />
+        <activity android:name=".note_list.NoteListActivity"
+            android:label="@string/title_activity_note_list" />
         <activity
             android:name=".settings.SettingsActivity"
             android:label="@string/title_activity_settings" />
@@ -45,4 +49,5 @@
                 android:resource="@xml/file_paths" />
         </provider>
     </application>
+
 </manifest>

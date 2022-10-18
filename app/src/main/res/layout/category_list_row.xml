@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="3dp"
+    android:paddingBottom="3dp">
+
+    <RelativeLayout
+        android:layout_width="50dp"
+        android:layout_height="40dp"
+        android:id="@+id/category_list_spinner_layout">
+
+        <RelativeLayout
+            android:id="@+id/category_list_row_spinner_circle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/category_circle_margin"
+            android:layout_marginTop="@dimen/category_circle_margin_small"
+            android:layout_marginRight="@dimen/category_circle_margin"
+            android:layout_marginBottom="@dimen/category_circle_margin_small"
+            android:background="@drawable/shape_item_cetagory_spinner" />
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/category_list_row_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

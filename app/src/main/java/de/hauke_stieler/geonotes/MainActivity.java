@@ -37,6 +37,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import de.hauke_stieler.geonotes.categories.CategoryConfigurationActivity;
 import de.hauke_stieler.geonotes.common.FileHelper;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.export.Exporter;
@@ -84,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Set HTML text of copyright label
         ((TextView) findViewById(R.id.copyright)).setMovementMethod(LinkMovementMethod.getInstance());
-        ((TextView) findViewById(R.id.copyright)).setText(Html.fromHtml("© <a href=\"https://openstreetmap.org/copyright\">OpenStreetMap</a> contributors"));
+        ((TextView) findViewById(R.id.copyright)).setText(Html.fromHtml(getString(R.string.osm_contribution)));
 
         requestPermissionsIfNecessary(new String[]{
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -179,6 +180,9 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.toolbar_btn_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+            case R.id.toolbar_btn_categories:
+                startActivity(new Intent(this, CategoryConfigurationActivity.class));
                 return true;
             case R.id.toolbar_btn_note_list:
                 startActivityForResult(new Intent(this, NoteListActivity.class), REQUEST_NOTE_LIST_REQUEST_CODE);
@@ -304,25 +308,26 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        // Maybe some or all notes got deleted via the note list -> reload map
+        if (requestCode == REQUEST_NOTE_LIST_REQUEST_CODE) {
+            map.reloadAllNotes();
+        }
+
         // If Intent was successful
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_IMAGE_CAPTURE:
                     addPhotoToDatabase(lastPhotoNoteId, lastPhotoFile);
-                    map.addImagesToMarkerWindow();
+                    map.addImagesToMarkerFragment();
                     break;
                 case REQUEST_NOTE_LIST_REQUEST_CODE:
                     long selectedNoteId = data.getLongExtra(NoteListActivity.EXTRA_CLICKED_NOTE, -1L);
                     if (selectedNoteId != -1) {
+                        // Note selected in the note list -> also select on the map
                         map.selectNote(selectedNoteId);
                     }
                     break;
             }
-        }
-
-        // Maybe some or all notes got deleted via the note list -> reload map
-        if (requestCode == REQUEST_NOTE_LIST_REQUEST_CODE) {
-            map.reloadAllNotes();
         }
     }
 
@@ -347,7 +352,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             ThumbnailUtil.writeThumbnail(sizeInPixel, photoFile);
         } catch (IOException e) {
-            Toast.makeText(getApplicationContext(), "Creating thumbnail failed", Toast.LENGTH_SHORT);
+            Toast.makeText(getApplicationContext(), R.string.create_thumbnail_failed, Toast.LENGTH_SHORT);
         }
     }
 

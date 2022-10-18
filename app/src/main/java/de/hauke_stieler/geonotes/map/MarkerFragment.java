@@ -2,6 +2,7 @@ package de.hauke_stieler.geonotes.map;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
@@ -14,11 +15,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Space;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -30,11 +33,13 @@ import org.osmdroid.views.overlay.Marker;
 
 import java.io.File;
 import java.util.Date;
+import java.util.List;
 
 import de.hauke_stieler.geonotes.Injector;
 import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.common.FileHelper;
 import de.hauke_stieler.geonotes.database.Database;
+import de.hauke_stieler.geonotes.categories.Category;
 import de.hauke_stieler.geonotes.notes.Note;
 import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
 
@@ -42,11 +47,13 @@ public class MarkerFragment extends Fragment {
     private static final String LOGTAG = MarkerFragment.class.getName();
 
     public interface MarkerFragmentEventHandler {
-        void onDelete(Marker marker);
+        void onDelete(GeoNotesMarker marker);
 
-        void onSave(Marker marker);
+        void onSave(GeoNotesMarker marker);
 
-        void onMove(Marker marker);
+        void onMove(GeoNotesMarker marker);
+
+        void onCategoryChanged(GeoNotesMarker marker);
     }
 
     public interface RequestPhotoEventHandler {
@@ -71,15 +78,19 @@ public class MarkerFragment extends Fragment {
 
     private MarkerFragmentEventHandler markerEventHandler;
     private RequestPhotoEventHandler requestPhotoHandler;
-    private Marker selectedMarker;
+    private GeoNotesMarker selectedMarker;
     private State state;
+    private Spinner categorySpinner;
+    private CategorySpinnerAdapter categorySpinnerAdapter;
 
     private final Database database;
+    private final SharedPreferences preferences;
 
     public MarkerFragment() {
         super(R.layout.marker_fragment);
 
         this.database = Injector.get(Database.class);
+        this.preferences = Injector.get(SharedPreferences.class);
     }
 
     public void addEventHandler(MarkerFragmentEventHandler markerEventHandler) {
@@ -104,9 +115,9 @@ public class MarkerFragment extends Fragment {
         descriptionView.setOnFocusChangeListener((v, hasFocus) -> {
             InputMethodManager inputMethodManager = (InputMethodManager) descriptionView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             if (hasFocus) {
-                inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+                inputMethodManager.showSoftInput(descriptionView, 0);
             } else {
-                inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                inputMethodManager.hideSoftInputFromWindow(descriptionView.getWindowToken(), 0);
             }
         });
 
@@ -120,11 +131,39 @@ public class MarkerFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (selectedMarker != null) {
                     selectedMarker.setSnippet(s.toString());
+                    markerEventHandler.onSave(selectedMarker);
                 }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+            }
+        });
+
+        categorySpinnerAdapter = new CategorySpinnerAdapter(getContext(), R.layout.item_category_spinner);
+        long lastUsedCategoryId = preferences.getLong(getString(R.string.pref_last_category_id), 1);
+
+        List<Category> allCategories = database.getAllCategories();
+        for (int i = 0; i < allCategories.size(); i++) {
+            Category category = allCategories.get(i);
+            categorySpinnerAdapter.add(category);
+        }
+
+        categorySpinner = view.findViewById(R.id.category_spinner);
+        categorySpinner.setAdapter(categorySpinnerAdapter);
+        selectCategory(lastUsedCategoryId);
+        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Category selectedCategory = categorySpinnerAdapter.getItem(position);
+                selectedMarker.setCategoryId(selectedCategory.getId());
+                if (markerEventHandler != null) {
+                    markerEventHandler.onCategoryChanged(selectedMarker);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
 
@@ -139,7 +178,7 @@ public class MarkerFragment extends Fragment {
         updatePanelVisibility();
     }
 
-    public void selectMarker(Marker marker, boolean transferEditTextContent) {
+    public void selectMarker(GeoNotesMarker marker, boolean transferEditTextContent) {
         selectedMarker = marker;
         state = State.EDITING;
 
@@ -193,33 +232,33 @@ public class MarkerFragment extends Fragment {
 
         Button deleteButton = view.findViewById(R.id.delete_button);
         deleteButton.setOnClickListener(v -> {
-            markerEventHandler.onDelete(marker);
             reset();
-            ((EditText) getView().findViewById(R.id.note_description)).clearFocus();
+            markerEventHandler.onDelete(marker);
         });
 
         Button saveButton = view.findViewById(R.id.save_button);
         saveButton.setOnClickListener(v -> {
-            markerEventHandler.onSave(marker);
             reset();
-            ((EditText) getView().findViewById(R.id.note_description)).clearFocus();
+            markerEventHandler.onSave(marker);
         });
 
         Button moveButton = view.findViewById(R.id.move_button);
         moveButton.setOnClickListener(v -> {
             state = State.DRAGGING;
             updatePanelVisibility();
-
             markerEventHandler.onMove(marker);
         });
 
         ImageButton cameraButton = view.findViewById(R.id.camera_button);
         cameraButton.setOnClickListener(v -> {
+            markerEventHandler.onSave(marker);
             requestPhotoHandler.onRequestPhoto(Long.parseLong(marker.getId()));
         });
+
+        selectCategory(marker.getCategoryId());
     }
 
-    public Marker getSelectedMarker() {
+    public GeoNotesMarker getSelectedMarker() {
         return selectedMarker;
     }
 
@@ -296,6 +335,16 @@ public class MarkerFragment extends Fragment {
             case EDITING:
                 // This is the above configured default case, nothing to do here.
                 break;
+        }
+    }
+
+    private void selectCategory(long categoryId) {
+        List<Category> allCategories = database.getAllCategories();
+        for (int i = 0; i < allCategories.size(); i++) {
+            if (allCategories.get(i).getId() == categoryId) {
+                categorySpinner.setSelection(i);
+                return;
+            }
         }
     }
 }

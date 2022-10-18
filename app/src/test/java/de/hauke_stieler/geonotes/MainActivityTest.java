@@ -26,6 +26,7 @@ import de.hauke_stieler.geonotes.map.Map;
 import de.hauke_stieler.geonotes.map.MarkerFragment;
 import de.hauke_stieler.geonotes.map.TouchDownListener;
 import de.hauke_stieler.geonotes.notes.Note;
+import de.hauke_stieler.geonotes.categories.Category;
 
 @RunWith(AndroidJUnit4.class)
 @Config(maxSdk = Build.VERSION_CODES.P, minSdk = Build.VERSION_CODES.P) // Value of Build.VERSION_CODES.P is 28
@@ -54,8 +55,8 @@ public class MainActivityTest {
     public void testExportGeoJsonClicked_callsExporter() {
         // Arrange
         List<Note> notes = new ArrayList<>();
-        notes.add(new Note(1, "foo", 1.23f, 4.56f, "2021-03-01 12:34:56"));
-        notes.add(new Note(2, "bar", 2.34f, 5.67f, "2021-03-02 11:11:11"));
+        notes.add(new Note(1, "foo", 1.23f, 4.56f, "2021-03-01 12:34:56", new Category(2, "", "")));
+        notes.add(new Note(2, "bar", 2.34f, 5.67f, "2021-03-02 11:11:11", new Category(2, "", "")));
         Mockito.when(databaseMock.getAllNotes()).thenReturn(notes);
 
         // Act
@@ -69,8 +70,8 @@ public class MainActivityTest {
     public void testExportGpxClicked_callsExporter() {
         // Arrange
         List<Note> notes = new ArrayList<>();
-        notes.add(new Note(1, "foo", 1.23f, 4.56f, "2021-03-01 12:34:56"));
-        notes.add(new Note(2, "bar", 2.34f, 5.67f, "2021-03-02 11:11:11"));
+        notes.add(new Note(1, "foo", 1.23f, 4.56f, "2021-03-01 12:34:56", new Category(1, "", "")));
+        notes.add(new Note(2, "bar", 2.34f, 5.67f, "2021-03-02 11:11:11", new Category(1, "", "")));
         Mockito.when(databaseMock.getAllNotes()).thenReturn(notes);
 
         // Act

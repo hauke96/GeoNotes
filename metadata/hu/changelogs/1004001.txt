@@ -1,0 +1,5 @@
+1.4.1:
+
+* A jelölő mozgatási viselkedésének megváltoztatása: a térkép mozog a jelölő alatt annak újrapozicionálásához
+* Színprobléma javítása az eszköztáron lévő menüben
+* A jelölőablak pozicionálásának javítása

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="category_circle_margin">15dp</dimen>
+    <dimen name="category_circle_margin_small">10dp</dimen>
+</resources>

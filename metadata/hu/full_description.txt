@@ -1,0 +1,10 @@
+Egy egyszerű alkalmazás a térképen földrajzilag elhelyezett jegyzetek (szöveg és fényképek) létrehozásához és kezeléséhez. A cél a jegyzetek nagyon gyors és minden felesleges interakciós többlettevékenység nélkül történő létrehozása. A tipikus felhasználási eset olyan térinformatikai adatok gyűjtése, amelyeket később fel lehet tölteni az OpenStreetMapra.
+
+Jelenleg az alapvető funkciók a következők:
+<ul>
+<li>Jegyzetek létrehozása, mozgatása és törlése a térképen</li>
+<li>Fényképek csatolása egy jegyzethez</li>
+<li>Az összes jegyzet listája</li>
+<li>Az összes jegyzet exportálása GeoJSON vagy GPX formátumba</li>
+<li>Az aktuális hely megjelenítése és követése</li>
+</ul>

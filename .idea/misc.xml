@@ -1,5 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="../../../../../layout/custom_preview.xml" value="0.20520833333333333" />
+        <entry key="app/src/main/res/drawable/ic_arrow.xml" value="0.2075" />
+        <entry key="app/src/main/res/drawable/ic_arrow_background.xml" value="0.2075" />
+        <entry key="app/src/main/res/drawable/ic_category.xml" value="0.2075" />
+        <entry key="app/src/main/res/drawable/ic_filter.xml" value="0.3555" />
+        <entry key="app/src/main/res/drawable/ic_list.xml" value="0.3555" />
+        <entry key="app/src/main/res/drawable/ic_location.xml" value="0.2075" />
+        <entry key="app/src/main/res/drawable/ic_location_background.xml" value="0.19" />
+        <entry key="app/src/main/res/drawable/ic_location_foreground.xml" value="0.19" />
+        <entry key="app/src/main/res/drawable/ic_location_searching.xml" value="0.2075" />
+        <entry key="app/src/main/res/drawable/ic_my_location.xml" value="0.327" />
+        <entry key="app/src/main/res/drawable/ic_note_background.xml" value="0.2595" />
+        <entry key="app/src/main/res/drawable/ic_note_background_inner.xml" value="0.2075" />
+        <entry key="app/src/main/res/drawable/ic_note_background_inner_small.xml" value="0.3555" />
+        <entry key="app/src/main/res/drawable/ic_note_bg.xml" value="0.33" />
+        <entry key="app/src/main/res/drawable/ic_note_camera.xml" value="0.3555" />
+        <entry key="app/src/main/res/drawable/ic_note_exclamation_mark.xml" value="0.3555" />
+        <entry key="app/src/main/res/drawable/ic_note_selection.xml" value="0.2075" />
+        <entry key="app/src/main/res/drawable/shape_item_cetagory_spinner.xml" value="0.325" />
+        <entry key="app/src/main/res/drawable/shape_item_cetagory_spinner_none.xml" value="0.18" />
+        <entry key="app/src/main/res/layout/activity_categories.xml" value="0.3541666666666667" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.18177083333333333" />
+        <entry key="app/src/main/res/layout/activity_note_list.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/category_activity.xml" value="0.18177083333333333" />
+        <entry key="app/src/main/res/layout/category_list_row.xml" value="0.3541666666666667" />
+        <entry key="app/src/main/res/layout/item_category_spinner.xml" value="0.9" />
+        <entry key="app/src/main/res/layout/marker_fragment.xml" value="0.3541666666666667" />
+        <entry key="app/src/main/res/layout/note_list_filter_dialog.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/note_list_row.xml" value="0.1875" />
+        <entry key="app/src/main/res/layout/settings_activity.xml" value="0.18177083333333333" />
+        <entry key="app/src/main/res/menu/toolbar_menu.xml" value="0.18177083333333333" />
+        <entry key="app/src/main/res/menu/toolbar_note_list.xml" value="0.20625" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>

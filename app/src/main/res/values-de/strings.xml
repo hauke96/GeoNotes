@@ -1,0 +1,57 @@
+<resources>
+    <string name="app_name">GeoNotes</string>
+
+    <!-- Activity titles -->
+    <string name="title_activity_settings">Einstellungen</string>
+    <string name="title_activity_note_list">Alle Notizen</string>
+    <string name="title_activity_categories">Kategorien</string>
+
+    <!-- Misc strings -->
+    <string name="ok">OK</string>
+    <string name="reset">Zurücksetzen</string>
+    <string name="osm_contribution">© <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> Mitwirkende</string>
+
+    <!-- Dialog buttons -->
+    <string name="dialog_yes">Ja</string>
+    <string name="dialog_no">Nein</string>
+
+    <!-- Toolbar -->
+    <string name="toolbar_gps_follow_mode">GPS folgen</string>
+    <string name="toolbar_export">Export</string>
+    <string name="toolbar_list_of_notes">Notizenliste</string>
+    <string name="toolbar_categories">Kategorien</string>
+    <string name="toolbar_settings">Einstellungen</string>
+    <string name="toolbar_remove_all_notes">Alle Notizen löschen</string>
+
+    <!-- Settings -->
+    <string name="show_zoom_buttons">Zoom-buttons anzeigen</string>
+    <string name="map_scaling_factor">Skalierungsfaktor Karte</string>
+    <string name="snap_note_to_gps_location">Notiz auf GPS Position einrasten</string>
+    <string name="enable_rotating_the_map">Kartenrotation aktivieren</string>
+    <string name="background_map_cache">Hintergrundkarten-Cache</string>
+    <string name="clear">Leeren</string>
+    <string name="tap_long_to_create_a_note">Lange tippen um Notiz zu erstellen</string>
+    <string name="feedback">Feedback</string>
+    <string name="geonotes_version">GeoNotes Version</string>
+
+    <!-- Marker -->
+    <string name="marker_instructions">1. Karte bewegen\n2. Finger loslassen um Ort zu speichern</string>
+    <string name="enter_text_for_a_new_note">Text für neue Notiz eingeben:</string>
+    <string name="marker_move">Verschieben</string>
+    <string name="marker_delete">Löschen</string>
+
+    <!-- Exporter -->
+    <string name="gpx_export_failed">GPX-Export fehlgeschlagen</string>
+
+    <!-- Note List -->
+    <string name="delete_all_notes">Wirklich alle Notizen löschen? Dies kann nicht rückgängig gemacht werden!</string>
+    <string name="create_thumbnail_failed">Erstellung vom Vorschaubild fehlgeschlagen</string>
+
+    <!-- Filter dialog-->
+    <string name="filter_dialog_filter_by_note_text">Nach Text filtern:</string>
+    <string name="filter_dialog_filter_by_category">Nach Kategorie filtern:</string>
+
+    <!-- Category list -->
+    <string name="category_list_save">Speichern</string>
+    <string name="category_list_color_notice">Farbänderung derzeit noch nicht möglich, diese Funktion kommt noch.</string>
+</resources>

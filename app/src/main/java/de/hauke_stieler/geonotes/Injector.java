@@ -11,6 +11,7 @@ import java.util.Map;
 
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.export.Exporter;
+import de.hauke_stieler.geonotes.notes.NoteIconProvider;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -34,6 +35,7 @@ public class Injector {
         classBuilders.put(Exporter.class, () -> buildExporter());
         classBuilders.put(SharedPreferences.class, () -> buildSharedPreferences());
         classBuilders.put(MapView.class, () -> buildMapView());
+        classBuilders.put(NoteIconProvider.class, () -> buildNoteIconProvider());
         classBuilders.put(de.hauke_stieler.geonotes.map.Map.class, () -> buildMap());
     }
 
@@ -76,8 +78,12 @@ public class Injector {
         return activity.findViewById(R.id.map);
     }
 
+    private static NoteIconProvider buildNoteIconProvider() {
+        return new NoteIconProvider(context, get(Database.class));
+    }
+
     private static de.hauke_stieler.geonotes.map.Map buildMap() {
         MapView mapView = get(MapView.class);
-        return new de.hauke_stieler.geonotes.map.Map(context, mapView, get(Database.class), get(SharedPreferences.class));
+        return new de.hauke_stieler.geonotes.map.Map(context, mapView, get(Database.class), get(SharedPreferences.class), get(NoteIconProvider.class));
     }
 }

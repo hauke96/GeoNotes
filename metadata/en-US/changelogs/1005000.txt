@@ -1,0 +1,15 @@
+1.5.0:
+
+Bug fixes:
+* Zoom buttons zooming twice when pressed long
+* Keyboard show/hide behavior inverted after certain actions
+* Text is gone after rotating the device while taking a photo
+* Images are not deleted after clicking the "delete all" button in the note list
+* Note doesn't have the selected-style on the map when selected via the note list
+* Note deletion and input dialog update behaves strange when the note was selected via the note list
+
+New features:
+* Add translation support (currently English, German, Hungarian and Italian are supported). Feel free to add new languages :)
+* Assign categories to a note to group notes of the same topic
+* Filter notes on the note list by text and category
+* New icons styles

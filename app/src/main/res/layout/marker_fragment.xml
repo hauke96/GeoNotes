@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -14,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
-            android:text="1. Move the map\n2. Release your finger to save location" />
+            android:text="@string/marker_instructions" />
     </LinearLayout>
 
     <LinearLayout
@@ -32,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginLeft="5dp"
-            android:text="Enter text for a new note:" />
+            android:text="@string/enter_text_for_a_new_note" />
 
         <EditText
             android:id="@+id/note_description"
@@ -64,20 +66,26 @@
                 android:layout_height="50dp"
                 android:gravity="left">
 
+                <Spinner android:id="@+id/category_spinner"
+                    android:layout_height="match_parent"
+                    android:layout_width="50dp"
+                    android:background="@null"
+                    tools:listitem="@layout/item_category_spinner">
+                </Spinner>
+
                 <ImageButton
                     android:id="@+id/camera_button"
                     style="@style/Widget.AppCompat.Button.Borderless.Colored"
                     android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_height="match_parent"
                     android:padding="5dp"
-                    android:layout_marginLeft="5dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_add_a_photo"
-                    android:tint="@color/primary" />
+                    app:tint="@color/primary" />
 
                 <HorizontalScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="50dp">
+                    android:layout_height="match_parent">
 
                     <LinearLayout
                         android:id="@+id/note_image_panel"
@@ -103,14 +111,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_move"
-                    android:text="Move" />
+                    android:text="@string/marker_move" />
 
                 <Button
                     android:id="@+id/delete_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_delete"
-                    android:text="Delete" />
+                    android:text="@string/marker_delete" />
 
                 <Space
                     android:layout_width="wrap_content"
@@ -122,7 +130,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_save"
-                    android:text="OK" />
+                    android:text="@string/ok" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

@@ -6,5 +6,5 @@ New features & breaking changes:
 * Add creation time of a note to GPX export
 
 Other changes:
-* Updated code-dependencies
+* Updated code dependencies
 * README.md now contains some information about contributing to this project

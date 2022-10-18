@@ -1,0 +1,13 @@
+1.4.3:
+
+Új funkciók és kompatibilitástörő változtatások:
+* A jegyzetek ablak áttervezése: ez mostantól állandó terület a képernyő alján, így a jegyzetek létrehozása most még gyorsabban végezhető el
+* Exportálás GPX-ként (a már meglévő GeoJSON exportálás mellett)
+* Gyorsítótár kézi törlése (a beállítások képernyőn keresztül)
+
+Hibajavítások:
+* A térkép elforgatása megmarad az alkalmazások váltása után
+* A vissza gomb mostantól a beállításokat is menti
+* A médiatároló kezelése nem működött (az Android médiatárba történő fényképek hozzáadásának funkcionalitása eltávolítva)
+* A helyes MIME-típus használata a GeoJSON exportálásánál
+* Helyesírási hiba javítása a visszajelzés gombon
