@@ -1,0 +1,14 @@
+1.5.0:
+
+Hibajavítások:
+* A nagyítás gombok kétszer nagyítanak, ha hosszan tartják nyomva
+* A billentyűzet megjelenítési/elrejtési viselkedése megfordult bizonyos műveletek után
+* A szöveg eltűnik a készülék elforgatása után egy fénykép készítése közben
+* A képek nem kerültek törlésre a jegyzetlistában lévő „összes törlése” gombra kattintás után
+* A jegyzet nem rendelkezik a kiválasztott stílussal a térképen, ha a jegyzetlistán keresztül lett kiválasztva
+* A jegyzet törlése és a beviteli párbeszédablak frissítése furcsán viselkedik, ha a jegyzet a jegyzetlistán keresztül lett kiválasztva
+
+Új funkciók:
+* Fordítási támogatás hozzáadása (jelenleg angol, német, magyar és olasz fordítás támogatott). Nyugodtan adjon hozzá új nyelveket :)
+* Kategóriák hozzárendelése egy jegyzethez az azonos témájú jegyzetek csoportosítása érdekében
+* Jegyzetek szűrése a jegyzetlistán szöveg és kategória szerint
