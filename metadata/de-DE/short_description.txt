@@ -1,0 +1,1 @@
+Eine einfache App zum Erstellen georeferenzierter Notizen.

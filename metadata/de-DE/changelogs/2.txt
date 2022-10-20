@@ -1,0 +1,4 @@
+1.0.2:
+
+* Ergänze Link zu osm.org in Copyright-Hinweis
+* Ergänze DPI-abhängige Skalierung für die Karte

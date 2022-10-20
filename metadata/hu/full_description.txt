@@ -4,6 +4,7 @@ Jelenleg az alapvető funkciók a következők:
 <ul>
 <li>Jegyzetek létrehozása, mozgatása és törlése a térképen</li>
 <li>Fényképek csatolása egy jegyzethez</li>
+<li>A jegyzetek kategorizálása</li>
 <li>Az összes jegyzet listája</li>
 <li>Az összes jegyzet exportálása GeoJSON vagy GPX formátumba</li>
 <li>Az aktuális hely megjelenítése és követése</li>

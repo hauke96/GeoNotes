@@ -1,0 +1,4 @@
+1.2.1:
+
+* Aktualisiere Pfeil-Symbol
+* Füge einrasten-Modus ("snapping") zu GPS-Position hinzu

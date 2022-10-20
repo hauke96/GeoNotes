@@ -1,0 +1,11 @@
+Eine einfache App zum Erstellen, Verwalten von georeferenzierten Notizen (Text und Foto) auf einer Karte. Das Ziel ist es die Notizen so schnell wie möglich zu erstellen, ohne dabei unnötigen UI-Schnick-Schnack zu haben. Der typische Anwendungsfall ist Geodaten zu sammeln um wie später bei OpenStreetMap einzutragen.
+
+Derzeitige Funktionen:
+<ul>
+<li>Erstelle, verschiebe und lösche Notizen auf einer Karte</li>
+<li>Ergänze Fotos zu einer Notiz</li>
+<li>Kategorisiere Notizen</li>
+<li>Liste mit allen Notizen</li>
+<li>Exportiere Notizen in GeoJSON oder GPX</li>
+<li>Zeige und folge deiner derzeitigen Position</li>
+</ul>

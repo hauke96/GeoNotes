@@ -1,0 +1,5 @@
+1.4.1:
+
+* Passe Interaktion beim Verschieben von Notizen an: Die Karte bewegt sich nun unterhalb der Notiz
+* Korrigiert falsche Farben in Toolbar-Menü
+* Korrigiert Positionierung von Notizen-Fenster

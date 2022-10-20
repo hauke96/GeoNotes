@@ -1,0 +1,5 @@
+1.2.0:
+
+* Füge Fotos zu einer Notiz hinzu
+* Symbol für GPS-Pfeil
+* Passe README.md an und ergänze Link zu OSM-wiki
