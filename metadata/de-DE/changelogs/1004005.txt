@@ -1,0 +1,4 @@
+1.4.5:
+
+Fehlerbehebungen:
+* Behebt Problem beim Installieren von GeoNotes auf SDK 31 und neuer

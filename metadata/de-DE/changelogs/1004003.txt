@@ -1,0 +1,13 @@
+1.4.3:
+
+Neue Funktionen & größere Änderungen:
+* Neues Design vom Notizen-Fenster: Dies ist nun ein Bereich am unteren Bildschirmrand. Das Erstellen von Notizen sollte nun noch schneller gehen.
+* Export als GPX (funktioniert so wie beim GeoJSON-Export)
+* Cache für Hintergrundkarte kann nun geleert werden (siehe Einstellungen)
+
+Fehlerbehebungen:
+* Kartenrotation bleibt nun bestehen, wenn man zwischen Anwendungen wechselt
+* Zurück-Knopf speichert Einstellungen nun ebenfalls
+* Media-Store behandlung hat nicht funktioniert (Funktionalität Fotos in den Media-Store hinzuzufügen wurde daher entfernt)
+* Nurze korrekten MIME-Typ für GeoJSON-Export
+* Korrigiert Rechtschreibfehler beim Feedback-Button

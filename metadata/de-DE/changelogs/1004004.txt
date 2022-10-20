@@ -1,0 +1,10 @@
+1.4.4:
+
+Neue Funktionen & größere Änderungen:
+* Ergänzt Knopf zum Löschen aller Notizen
+* Ergänze Einrückung bei GPX-Export
+* Ergänze Erstelldatum von Notizen in GPX-Export
+
+Weitere Änderungen:
+* Code-Abhängigkeiten aktualisiert
+* README.md enthält nun auch Infos dazu, wie man zu diesem Projekt beitragen kann

@@ -1,0 +1,15 @@
+1.5.0:
+
+Behobene Fehler:
+* Zoom-Buttons zoomen doppelt, wenn man sie lange drückt
+* Anzeige-Verhalten der Tastatur ist nach gewissen Aktionen invertiert
+* Text ist weg, wenn man das Gerät dreht während man ein Foto macht
+* Fotos werden nicht gelöscht, wenn man den "alle löschen" Knopf in der Notizenliste drückt
+* Notiz hat nicht den Ausgewählt-Stil auf der Karte, wenn man sie über die Notizenliste auswählt
+* Verhalten der Dialoge verhält sich nach dem Löschen einer Notiz seltsam, wenn man diese aus der Notizenliste auswählt
+
+Neue Funktionen:
+* Fügt Unterstützung für Übersetzungen hinzu (derzeit werden Englisch, Deutsch, Ungarisch und Italienisch unterstützt). Füge gerne neue Sprachen hinzu :)
+* Weise einer Notiz eine Kategorie zu um Notizen eines Themas zu gruppieren
+* Filter Notizen nach Text und Kategorie
+* Neue Symbol-Stile

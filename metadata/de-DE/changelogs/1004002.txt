@@ -1,0 +1,4 @@
+1.4.2:
+
+* Ermöglicht es die Karte zu rotieren (siehe "Settings" -> "Enable rotating the map")
+* Einige kleinere interne Code-Änderungen

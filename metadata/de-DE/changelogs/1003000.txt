@@ -1,0 +1,14 @@
+1.3.0:
+
+* Notizen können nun als GeoJSON Datei exportiert werden
+* Einrasten auf GPS-Position, wenn man nahe am Positions-Pfeil klickt (muss in den Einstellungen aktiviert werden)
+* Erstellungsdatum von Notizen wird gespeichert und angezeigt
+* Nervige Frage nach Berechtigungen wurde behoben
+* Notizen mit mindestens einem Foto werden nun anders dargestellt
+* Besseres GPS-Pfeil Symbol
+* Fehler bzgl. der Rotation des Gerätes behoben
+
+Einige Änderungen für Entwickler:
+
+* Erste JUnit-Tests erstellt
+* Nutze vermehrt DI (dependency injection)

@@ -1,0 +1,4 @@
+1.3.1:
+
+* Behebe Fehler/Absturz bei Rotation des Gerätes
+* Behebe Fehler bei Zeilenumbrücken in Beschreibungen von Notizen
