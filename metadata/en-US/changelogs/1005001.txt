@@ -1,0 +1,5 @@
+1.5.1:
+
+Bug fixes:
+* Crash on startup
+* Fix F-Droid build error

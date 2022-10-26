@@ -13,7 +13,7 @@ A simple and lightweight app to create and manage georeferenced notes (text and 
 [<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" alt="Get it on IzzyOnDroid" height="60">](https://apt.izzysoft.de/fdroid/index/apk/de.hauke_stieler.geonotes)
 [<img src="https://user-images.githubusercontent.com/663460/26973090-f8fdc986-4d14-11e7-995a-e7c5e79ed925.png" alt="Download APK from GitHub" height="60">](https://github.com/hauke96/geonotes/releases/latest)
 
-GeoNotes runs on Android 4.1 (SDK 16) and newer. There's no version at the Google Play store (yet).
+GeoNotes runs on Android 4.1 (SDK 16) and newer. There's an [F-Droid version](https://f-droid.org/en/packages/de.hauke_stieler.geonotes/) only (no version at the Google Play store yet).
 
 ## Need help?
 
