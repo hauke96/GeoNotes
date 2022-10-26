@@ -1,0 +1,5 @@
+1.5.1:
+
+Behobene Fehler:
+* Absturz der App beim Start
+* F-Droid Build-Fehler behoben

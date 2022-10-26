@@ -83,12 +83,17 @@ public class MarkerFragment extends Fragment {
     private Spinner categorySpinner;
     private CategorySpinnerAdapter categorySpinnerAdapter;
 
-    private final Database database;
-    private final SharedPreferences preferences;
+    private Database database;
+    private SharedPreferences preferences;
 
     public MarkerFragment() {
         super(R.layout.marker_fragment);
+    }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        Log.i("MarkerFragment", "onAttach: ");
         this.database = Injector.get(Database.class);
         this.preferences = Injector.get(SharedPreferences.class);
     }
@@ -303,6 +308,10 @@ public class MarkerFragment extends Fragment {
     }
 
     public void reset() {
+        if (getView() == null) {
+            return;
+        }
+
         // First reset the marker, so that change events fired by input fields do not have any effect
         selectedMarker = null;
 
