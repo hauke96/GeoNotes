@@ -3,15 +3,13 @@
 
     <!-- Activity titles -->
     <string name="title_activity_settings">Impostazioni</string>
-    <!-- TODO translations needed -->
-    <string name="title_activity_note_list">All notes</string>
-    <string name="title_activity_categories">Categories</string>
+    <string name="title_activity_note_list">Tutte le note</string>
+    <string name="title_activity_categories">Categorie</string>
 
     <!-- Misc strings -->
-    <!-- TODO translations needed -->
     <string name="ok">OK</string>
     <string name="reset">Reset</string>
-    <string name="osm_contribution">© <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors</string>
+    <string name="osm_contribution">© <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> collaboratori</string>
 
     <!-- Dialog buttons -->
     <string name="dialog_yes">Sì</string>
@@ -21,8 +19,7 @@
     <string name="toolbar_gps_follow_mode">Modalità segui GPS</string>.
     <string name="toolbar_export">Esporta</string>.
     <string name="toolbar_list_of_notes">Elenco delle note</string>.
-    <!-- TODO translations needed -->
-    <string name="toolbar_categories">Categories</string>
+    <string name="toolbar_categories">Categorie</string>
     <string name="toolbar_settings">Impostazioni</string>.
     <string name="toolbar_remove_all_notes">Rimuovi tutte le note</string>.
 
@@ -35,8 +32,7 @@
     <string name="clear">Cancella</string>
     <string name="tap_long_to_create_a_note">Crea una nota con un tocco lungo</string>.
     <string name="feedback">Feedback</string>
-    <!-- TODO translations needed -->
-    <string name="geonotes_version">GeoNotes version</string>
+    <string name="geonotes_version">Versione GeoNotes</string>
 
     <!-- Marker -->
     <string name="marker_instructions">1. Spostare la mappa\n2. Rilasciare il dito per salvare la posizione</string>.
@@ -52,12 +48,10 @@
     <string name="create_thumbnail_failed">La creazione della miniatura non è riuscita</string>.
 
     <!-- Filter dialog-->
-    <!-- TODO translations needed -->
-    <string name="filter_dialog_filter_by_note_text">Filter by Note text:</string>
-    <string name="filter_dialog_filter_by_category">Filter by category:</string>
+    <string name="filter_dialog_filter_by_note_text">Filtra per testo della nota:</string>
+    <string name="filter_dialog_filter_by_category">Filtra per categoria:</string>
 
     <!-- Category list -->
-    <!-- TODO translations needed -->
-    <string name="category_list_save">Save</string>
-    <string name="category_list_color_notice">Changing color isn\'t possible yet but will come in the future.</string>
+    <string name="category_list_save">Salva</string>
+    <string name="category_list_color_notice">Cambiare colore non è ancora possibile, ma arriverà in futuro.</string>
 </resources>
