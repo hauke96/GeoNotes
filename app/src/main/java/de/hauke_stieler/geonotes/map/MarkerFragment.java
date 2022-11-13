@@ -90,14 +90,6 @@ public class MarkerFragment extends Fragment {
         super(R.layout.marker_fragment);
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        Log.i("MarkerFragment", "onAttach: ");
-        this.database = Injector.get(Database.class);
-        this.preferences = Injector.get(SharedPreferences.class);
-    }
-
     public void addEventHandler(MarkerFragmentEventHandler markerEventHandler) {
         this.markerEventHandler = markerEventHandler;
     }
@@ -109,6 +101,9 @@ public class MarkerFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        this.database = Injector.get(Database.class);
+        this.preferences = Injector.get(SharedPreferences.class);
+
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
         // Resize window when the keyboard popups up
