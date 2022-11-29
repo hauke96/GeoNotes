@@ -5,7 +5,7 @@
         android:id="@+id/toolbar_btn_filter"
         android:icon="@drawable/ic_filter"
         app:showAsAction="ifRoom"
-        android:title="Open Filter dialog">
+        android:title="@string/toolbar_open_filter_dialog">
     </item>
     <item
         android:id="@+id/toolbar_btn_delete_all"

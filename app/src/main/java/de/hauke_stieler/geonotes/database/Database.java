@@ -25,6 +25,7 @@ public class Database extends SQLiteOpenHelper {
     private final NoteStore noteStore;
     private final PhotoStore photoStore;
     private final CategoryStore categoryStore;
+    private final Context context;
 
     public Database(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -32,6 +33,7 @@ public class Database extends SQLiteOpenHelper {
         categoryStore = new CategoryStore();
         noteStore = new NoteStore(categoryStore);
         photoStore = new PhotoStore();
+        this.context = context;
 
         // This will call the onCreate and onUpgrade methods.
         getWritableDatabase();
@@ -41,13 +43,13 @@ public class Database extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         noteStore.onCreate(db);
         photoStore.onCreate(db);
-        categoryStore.onCreate(db);
+        categoryStore.onCreate(db, context);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Ordered by reference relation: Photo references notes, notes references categories.
-        categoryStore.onUpgrade(db, oldVersion, newVersion);
+        categoryStore.onUpgrade(db, oldVersion, newVersion, context);
         noteStore.onUpgrade(db, oldVersion, newVersion);
         photoStore.onUpgrade(db, oldVersion, newVersion);
     }

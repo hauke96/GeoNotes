@@ -23,6 +23,7 @@
     <string name="toolbar_categories">Kategorier</string>
     <string name="toolbar_settings">Inställningar</string>
     <string name="toolbar_remove_all_notes">Ta bort alla anteckningar</string>
+    <string name="toolbar_open_filter_dialog">Öppna filtrering</string>
 
     <!-- Settings -->
     <string name="show_zoom_buttons">Visa zoom-knappar</string>
@@ -55,4 +56,17 @@
     <!-- Category list -->
     <string name="category_list_save">Spara</string>
     <string name="category_list_color_notice">Byta färg är inte möjligt men kommer i framtiden.</string>
+
+    <!-- Initial color names -->
+    <string name="initial_color_red">Röd</string>
+    <string name="initial_color_pink">Rosa</string>
+    <string name="initial_color_purple">Lila</string>
+    <string name="initial_color_blue">Blå</string>
+    <string name="initial_color_light_blue">Ljusblå</string>
+    <string name="initial_color_teal">Blågrön</string>
+    <string name="initial_color_green">Grön</string>
+    <string name="initial_color_yellow">Gul</string>
+    <string name="initial_color_orange">Orange</string>
+    <string name="initial_color_brown">Brun</string>
+    <string name="initial_color_grey">Grå</string>
 </resources>
