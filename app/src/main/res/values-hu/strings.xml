@@ -22,6 +22,8 @@
     <string name="toolbar_categories">Kategóriák</string>
     <string name="toolbar_settings">Beállítások</string>
     <string name="toolbar_remove_all_notes">Összes jegyzet eltávolítása</string>
+    <!--TODO translate-->
+    <string name="toolbar_open_filter_dialog">Open Filter dialog</string>
 
     <!-- Settings -->
     <string name="show_zoom_buttons">Nagyítási gombok megjelenítése</string>
@@ -55,4 +57,18 @@
     <!-- TODO translations needed -->
     <string name="category_list_save">Mentés</string>
     <string name="category_list_color_notice">A szín megváltoztatása még nem lehetséges, de a jövőben lehetséges lesz.</string>
+
+    <!-- Initial color names -->
+    <!-- TODO translation-->
+    <string name="initial_color_red">Red</string>
+    <string name="initial_color_pink">Pink</string>
+    <string name="initial_color_purple">Purple</string>
+    <string name="initial_color_blue">Blue</string>
+    <string name="initial_color_light_blue">Light blue</string>
+    <string name="initial_color_teal">Teal</string>
+    <string name="initial_color_green">Green</string>
+    <string name="initial_color_yellow">Yellow</string>
+    <string name="initial_color_orange">Orange</string>
+    <string name="initial_color_brown">Brown</string>
+    <string name="initial_color_grey">Grey</string>
 </resources>

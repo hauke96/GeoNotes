@@ -6,22 +6,7 @@
     <string name="title_activity_note_list">Alle opmerkingen</string>
     <string name="title_activity_categories">Categorieën</string>
 
-    <!-- Preference keys -->
-    <string name="pref_file" translatable="false">geonotes_preferences</string>
-    <string name="pref_zoom_buttons" translatable="false">PREF_ZOOM_BUTTONS</string>
-    <string name="pref_map_scaling" translatable="false">PREF_MAP_SCALING</string>
-    <string name="pref_snap_note_gps" translatable="false">PREF_SNAP_NOTE_GPS</string>
-    <string name="pref_enable_rotating_map" translatable="false">PREF_ENABLE_ROTATING_MAP</string>
-    <string name="pref_map_rotation" translatable="false">PREF_MAP_ROTATION</string>
-    <string name="pref_last_location_lat" translatable="false">PREF_LAST_LOCATION_LAT</string>
-    <string name="pref_last_location_lon" translatable="false">PREF_LAST_LOCATION_LON</string>
-    <string name="pref_last_location_zoom" translatable="false">PREF_LAST_LOCATION_ZOOM</string>
-    <string name="pref_tap_duration" translatable="false">PREF_TAP_DURATION</string>
-    <string name="pref_last_category_id" translatable="false">PREF_LAST_CATEGORY_ID</string>
-
     <!-- Misc strings -->
-    <string name="feedback_mail_domain" translatable="false">hauke-stieler.de</string>
-    <string name="feedback_mail_local_part" translatable="false">geonotes</string>
     <string name="ok">OK</string>
     <string name="reset">Resetten</string>
     <string name="osm_contribution">:copyright: <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>-bijdragers</string>
@@ -37,6 +22,8 @@
     <string name="toolbar_categories">Categorieën</string>
     <string name="toolbar_settings">Instellingen</string>
     <string name="toolbar_remove_all_notes">Alle opmerkingen verwijderen</string>
+    <!--TODO translate-->
+    <string name="toolbar_open_filter_dialog">Open Filter dialog</string>
 
     <!-- Settings -->
     <string name="show_zoom_buttons">Zoomknoppen tonen</string>
@@ -69,4 +56,18 @@
     <!-- Category list -->
     <string name="category_list_save">Opslaan</string>
     <string name="category_list_color_notice">Van kleur veranderen is nu nog niet mogelijk maar in de toekomst wordt het dat wel.</string>
+
+    <!-- Initial color names -->
+    <!-- TODO translation-->
+    <string name="initial_color_red">Red</string>
+    <string name="initial_color_pink">Pink</string>
+    <string name="initial_color_purple">Purple</string>
+    <string name="initial_color_blue">Blue</string>
+    <string name="initial_color_light_blue">Light blue</string>
+    <string name="initial_color_teal">Teal</string>
+    <string name="initial_color_green">Green</string>
+    <string name="initial_color_yellow">Yellow</string>
+    <string name="initial_color_orange">Orange</string>
+    <string name="initial_color_brown">Brown</string>
+    <string name="initial_color_grey">Grey</string>
 </resources>

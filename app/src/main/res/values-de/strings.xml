@@ -22,6 +22,7 @@
     <string name="toolbar_categories">Kategorien</string>
     <string name="toolbar_settings">Einstellungen</string>
     <string name="toolbar_remove_all_notes">Alle Notizen löschen</string>
+    <string name="toolbar_open_filter_dialog">Filterdialog öffnen</string>
 
     <!-- Settings -->
     <string name="show_zoom_buttons">Zoom-buttons anzeigen</string>
@@ -54,4 +55,17 @@
     <!-- Category list -->
     <string name="category_list_save">Speichern</string>
     <string name="category_list_color_notice">Farbänderung derzeit noch nicht möglich, diese Funktion kommt noch.</string>
+
+    <!-- Initial color names -->
+    <string name="initial_color_red">Rot</string>
+    <string name="initial_color_pink">Pink</string>
+    <string name="initial_color_purple">Lila</string>
+    <string name="initial_color_blue">Blau</string>
+    <string name="initial_color_light_blue">Hellblau</string>
+    <string name="initial_color_teal">Türkis</string>
+    <string name="initial_color_green">Grün</string>
+    <string name="initial_color_yellow">Gelb</string>
+    <string name="initial_color_orange">Orange</string>
+    <string name="initial_color_brown">Braun</string>
+    <string name="initial_color_grey">Grau</string>
 </resources>
