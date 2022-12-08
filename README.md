@@ -30,7 +30,7 @@ See the [OSM Wiki page](https://wiki.openstreetmap.org/wiki/GeoNotes) for detail
 
 ## Contribute to this project
 
-You want to contribute to GeoNotes? Great! Please read the [CONTRIBUTE.md](CONTRIBUTE.md) file for further information.
+You want to contribute to GeoNotes? Great! Please read the [CONTRIBUTING.md](CONTRIBUTING.md) file for further information.
 
 ## Use-case and Philosophy
 
