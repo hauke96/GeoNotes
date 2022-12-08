@@ -29,7 +29,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import org.apache.commons.text.StringEscapeUtils;
-import org.osmdroid.views.overlay.Marker;
 
 import java.io.File;
 import java.util.Date;
@@ -98,6 +97,14 @@ public class MarkerFragment extends Fragment {
         requestPhotoHandler = handler;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        loadCategories();
+        categorySpinnerAdapter.notifyDataSetChanged();
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -143,11 +150,7 @@ public class MarkerFragment extends Fragment {
         categorySpinnerAdapter = new CategorySpinnerAdapter(getContext(), R.layout.item_category_spinner);
         long lastUsedCategoryId = preferences.getLong(getString(R.string.pref_last_category_id), 1);
 
-        List<Category> allCategories = database.getAllCategories();
-        for (int i = 0; i < allCategories.size(); i++) {
-            Category category = allCategories.get(i);
-            categorySpinnerAdapter.add(category);
-        }
+        loadCategories();
 
         categorySpinner = view.findViewById(R.id.category_spinner);
         categorySpinner.setAdapter(categorySpinnerAdapter);
@@ -168,6 +171,10 @@ public class MarkerFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void loadCategories() {
+        categorySpinnerAdapter.setCategories(database.getAllCategories());
     }
 
     @Override
