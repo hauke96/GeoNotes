@@ -147,7 +147,7 @@ public class MarkerFragment extends Fragment {
             }
         });
 
-        categorySpinnerAdapter = new CategorySpinnerAdapter(getContext(), R.layout.item_category_spinner);
+        categorySpinnerAdapter = new CategorySpinnerAdapter(getContext(), R.layout.category_spinner_item);
         long lastUsedCategoryId = preferences.getLong(getString(R.string.pref_last_category_id), 1);
 
         loadCategories();
