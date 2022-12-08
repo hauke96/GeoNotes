@@ -10,11 +10,8 @@ import androidx.annotation.NonNull;
 import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.StringJoiner;
-import java.util.stream.Collectors;
 
 import de.hauke_stieler.geonotes.categories.Category;
 import de.hauke_stieler.geonotes.categories.CategoryStore;
@@ -102,10 +99,6 @@ public class NoteStore {
         db.delete(NOTES_TABLE_NAME, NOTES_COL_ID + " = ?", new String[]{"" + id});
     }
 
-    public void removeAllNotes(SQLiteDatabase db) {
-        db.delete(NOTES_TABLE_NAME, null, null);
-    }
-
     public List<Note> getAllNotes(SQLiteDatabase db) {
         Cursor cursor = db.query(NOTES_TABLE_NAME, new String[]{NOTES_COL_ID, NOTES_COL_DESCRIPTION, NOTES_COL_LAT, NOTES_COL_LON, NOTES_COL_CREATED_AT, NOTES_COL_CATEGORY}, null, null, null, null, null);
 
@@ -120,12 +113,9 @@ public class NoteStore {
     }
 
     public List<Note> getAllNotes(SQLiteDatabase db, String textFilter, Long categoryIdFilter) {
-        String joinedFilterString = getFilterQuery(categoryIdFilter);
-        List<String> filterArgs = getFilterArgs(textFilter, categoryIdFilter);
-
         Cursor cursor = db.query(NOTES_TABLE_NAME, new String[]{NOTES_COL_ID, NOTES_COL_DESCRIPTION, NOTES_COL_LAT, NOTES_COL_LON, NOTES_COL_CREATED_AT, NOTES_COL_CATEGORY},
-                joinedFilterString,
-                filterArgs.toArray(new String[]{}),
+                getFilterQuery(categoryIdFilter != null),
+                getFilterArgs(textFilter, categoryIdFilter),
                 null,
                 null,
                 null);
@@ -141,7 +131,7 @@ public class NoteStore {
     }
 
     @NonNull
-    private List<String> getFilterArgs(String textFilter, Long categoryIdFilter) {
+    private String[] getFilterArgs(String textFilter, Long categoryIdFilter) {
         List<String> filterArgs = new ArrayList<>();
 
         if (textFilter == null) {
@@ -153,15 +143,15 @@ public class NoteStore {
         if (categoryIdFilter != null) {
             filterArgs.add(categoryIdFilter + "");
         }
-        return filterArgs;
+        return filterArgs.toArray(new String[]{});
     }
 
     @NonNull
-    private String getFilterQuery(Long categoryIdFilter) {
+    private String getFilterQuery(boolean withCategoryIdFilter) {
         List<String> filter = new ArrayList<>();
         filter.add(NOTES_COL_DESCRIPTION + " LIKE ? ESCAPE '\\'");
 
-        if (categoryIdFilter != null) {
+        if (withCategoryIdFilter) {
             filter.add(NOTES_COL_CATEGORY + "=?");
         }
 
@@ -169,9 +159,9 @@ public class NoteStore {
         if (!filter.isEmpty()) {
             String separator = " AND ";
             for (int i = 0; i < filter.size() - 1; i++) {
-                joinedFilterString.append(separator).append(filter.get(i));
+                joinedFilterString.append(filter.get(i)).append(separator);
             }
-            joinedFilterString.append(separator).append(filter.get(filter.size() - 1));
+            joinedFilterString.append(filter.get(filter.size() - 1));
         }
         return joinedFilterString.toString();
     }

@@ -22,7 +22,7 @@
     <string name="toolbar_categories">Catégories</string>
     <string name="toolbar_settings">Paramètres</string>
     <string name="toolbar_remove_all_notes">Retirer toutes les notes</string>
-    <!--TODO translate-->
+    <!-- TODO Translate -->
     <string name="toolbar_open_filter_dialog">Open Filter dialog</string>
 
     <!-- Settings -->
@@ -46,7 +46,10 @@
     <string name="gpx_export_failed">Échec de l’exportation du fichier GPX</string>
 
     <!-- Note List -->
+    <!-- TODO Update translation ("all" changed to "ALL" in original text) -->
     <string name="delete_all_notes">Supprimer toutes les notes ? Cette action ne peut pas être annulée !</string>
+    <!-- TODO Translate -->
+    <string name="delete_all_filtered_notes">Really delete FILTERED notes? This is not reversible!</string>
     <string name="create_thumbnail_failed">Échec lors de la création de vignette</string>
     
     <!-- Filter dialog-->
@@ -58,7 +61,7 @@
     <string name="category_list_color_notice">Modifier la couleur n’est pas encore possible, la fonction est en cours de développement.</string>
 
     <!-- Initial color names -->
-    <!-- TODO translation-->
+    <!-- TODO Translate -->
     <string name="initial_color_red">Red</string>
     <string name="initial_color_pink">Pink</string>
     <string name="initial_color_purple">Purple</string>

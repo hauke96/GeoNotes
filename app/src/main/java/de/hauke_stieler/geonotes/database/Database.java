@@ -1,8 +1,6 @@
 package de.hauke_stieler.geonotes.database;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -74,12 +72,13 @@ public class Database extends SQLiteOpenHelper {
         noteStore.removeNote(getWritableDatabase(), id);
     }
 
-    public void removeAllNotes(File storageDir) {
-        for (Note note : getAllNotes()) {
+    public void removeAllNotes(File storageDir, String textFilter, Long categoryIdFilter) {
+        List<Note> notesToRemove = noteStore.getAllNotes(getReadableDatabase(), textFilter, categoryIdFilter);
+
+        for (Note note : notesToRemove) {
             removePhotos(note.getId(), storageDir);
+            noteStore.removeNote(getWritableDatabase(), note.getId());
         }
-        photoStore.removeAllPhotos(getWritableDatabase());
-        noteStore.removeAllNotes(getWritableDatabase());
     }
 
     public List<Note> getAllNotes() {

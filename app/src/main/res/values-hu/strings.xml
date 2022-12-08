@@ -22,7 +22,7 @@
     <string name="toolbar_categories">Kategóriák</string>
     <string name="toolbar_settings">Beállítások</string>
     <string name="toolbar_remove_all_notes">Összes jegyzet eltávolítása</string>
-    <!--TODO translate-->
+    <!-- TODO Translate -->
     <string name="toolbar_open_filter_dialog">Open Filter dialog</string>
 
     <!-- Settings -->
@@ -46,7 +46,10 @@
     <string name="gpx_export_failed">A GPX-fájl exportálása sikertelen</string>
 
     <!-- Note List -->
+    <!-- TODO Update translation ("all" changed to "ALL" in original text) -->
     <string name="delete_all_notes">Valóban törli az összes jegyzetet? Ez nem vonható vissza.</string>
+    <!-- TODO Translate -->
+    <string name="delete_all_filtered_notes">Really delete FILTERED notes? This is not reversible!</string>
     <string name="create_thumbnail_failed">A bélyegkép létrehozása sikertelen</string>
 
     <!-- Filter dialog-->
@@ -54,12 +57,12 @@
     <string name="filter_dialog_filter_by_category">Szűrés kategória szerint:</string>
 
     <!-- Category list -->
-    <!-- TODO translations needed -->
+    <!-- TODO Translate -->
     <string name="category_list_save">Mentés</string>
     <string name="category_list_color_notice">A szín megváltoztatása még nem lehetséges, de a jövőben lehetséges lesz.</string>
 
     <!-- Initial color names -->
-    <!-- TODO translation-->
+    <!-- TODO Translate -->
     <string name="initial_color_red">Red</string>
     <string name="initial_color_pink">Pink</string>
     <string name="initial_color_purple">Purple</string>

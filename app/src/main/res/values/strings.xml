@@ -60,7 +60,8 @@
     <string name="gpx_export_failed">Exporting GPX file failed</string>
 
     <!-- Note List -->
-    <string name="delete_all_notes">Really delete all notes? This is not reversible!</string>
+    <string name="delete_all_notes">Really delete ALL notes? This is not reversible!</string>
+    <string name="delete_all_filtered_notes">Really delete FILTERED notes? This is not reversible!</string>
     <string name="create_thumbnail_failed">Creating thumbnail failed</string>
     
     <!-- Filter dialog-->

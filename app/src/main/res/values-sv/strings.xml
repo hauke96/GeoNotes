@@ -45,7 +45,10 @@
     <string name="gpx_export_failed">Exportering av GPX fil misslyckades</string>
 
     <!-- Note List -->
+    <!-- TODO Update translation ("all" changed to "ALL" in original text) -->
     <string name="delete_all_notes">Vill du verkligen ta bort alla anteckningar? Detta går inte att ångra!</string>
+    <!-- TODO Translate -->
+    <string name="delete_all_filtered_notes">Really delete FILTERED notes? This is not reversible!</string>
     <string name="create_thumbnail_failed">Skapa förhandsgranskning misslyckades</string>
 
     <!-- Filter dialog-->
