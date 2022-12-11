@@ -1,0 +1,11 @@
+1.5.2:
+
+Changes and Bug-fixes:
+
+* Translations were added:
+  * Dutch
+  * French
+  * Swedish
+* "Delete all" action deletes only the notes that are visible through the filters
+* Category list in note view will be updated after change of category
+* Style changes of the category drop down list

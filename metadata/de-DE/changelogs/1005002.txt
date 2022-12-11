@@ -1,0 +1,11 @@
+1.5.2:
+
+Änderungen und Fehlerbehebungen:
+
+* Übersetzungen wurden ergänzt:
+  * Niederländisch
+  * Französisch
+  * Schwedisch
+* "Alle Notizen löschen" Aktion löscht nur die Notizen, die durch die Filter sichtbar sind
+* Kategorieliste in der Notizansicht wird nun nach Änderungen an Kategorien aktualisiert
+* Designänderungen an Kategorieauswahl
