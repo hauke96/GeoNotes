@@ -1,0 +1,74 @@
+<resources>
+    <string name="app_name">GeoNotes</string>
+
+    <!-- Activity titles -->
+    <string name="title_activity_settings">Inställningar</string>
+    <string name="title_activity_note_list">Alla anteckningar</string>
+    <string name="title_activity_categories">Kategorier</string>
+
+    <!-- Misc strings -->
+    <string name="ok">OK</string>
+    <string name="reset">Återställ</string>
+    <string name="osm_contribution">© <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors</string>
+
+    <!-- Dialog buttons -->
+    <string name="dialog_yes">Ja</string>
+    <string name="dialog_no">Nej</string>
+
+    <!-- Toolbar -->
+    <string name="toolbar_gps_follow_mode">GPS följ-läge</string>
+    <string name="toolbar_export">Exportera</string>
+    <string name="toolbar_list_of_notes">Lista anteckningar</string>
+    <string name="toolbar_categories">Kategorier</string>
+    <string name="toolbar_settings">Inställningar</string>
+    <string name="toolbar_remove_all_notes">Ta bort alla anteckningar</string>
+    <string name="toolbar_open_filter_dialog">Öppna filtrering</string>
+
+    <!-- Settings -->
+    <string name="show_zoom_buttons">Visa zoom-knappar</string>
+    <string name="map_scaling_factor">Kartans skalningsfaktor</string>
+    <string name="snap_note_to_gps_location">Snäpp anteckning till GPS-position</string>
+    <string name="enable_rotating_the_map">Tillåt rotering av kartan</string>
+    <string name="background_map_cache">Bakgrundskartans cache</string>
+    <string name="clear">Töm</string>
+    <string name="tap_long_to_create_a_note">Klicka länge för att lägga till anteckning</string>
+    <string name="feedback">Feedback</string>
+    <string name="geonotes_version">GeoNotes version</string>
+
+    <!-- Marker -->
+    <string name="marker_instructions">1. Flytta kartan\n2. Släpp fingret för att spara plats</string>
+    <string name="enter_text_for_a_new_note">Skriv in text för ny anteckning</string>
+    <string name="marker_move">Flytta</string>
+    <string name="marker_delete">Ta bort</string>
+
+    <!-- Exporter -->
+    <string name="gpx_export_failed">Exportering av GPX fil misslyckades</string>
+
+    <!-- Note List -->
+    <!-- TODO Update translation ("all" changed to "ALL" in original text) -->
+    <string name="delete_all_notes">Vill du verkligen ta bort alla anteckningar? Detta går inte att ångra!</string>
+    <!-- TODO Translate -->
+    <string name="delete_all_filtered_notes">Really delete FILTERED notes? This is not reversible!</string>
+    <string name="create_thumbnail_failed">Skapa förhandsgranskning misslyckades</string>
+
+    <!-- Filter dialog-->
+    <string name="filter_dialog_filter_by_note_text">Filtrera på anteckningstext:</string>
+    <string name="filter_dialog_filter_by_category">Filtrera på kategori:</string>
+
+    <!-- Category list -->
+    <string name="category_list_save">Spara</string>
+    <string name="category_list_color_notice">Byta färg är inte möjligt men kommer i framtiden.</string>
+
+    <!-- Initial color names -->
+    <string name="initial_color_red">Röd</string>
+    <string name="initial_color_pink">Rosa</string>
+    <string name="initial_color_purple">Lila</string>
+    <string name="initial_color_blue">Blå</string>
+    <string name="initial_color_light_blue">Ljusblå</string>
+    <string name="initial_color_teal">Blågrön</string>
+    <string name="initial_color_green">Grön</string>
+    <string name="initial_color_yellow">Gul</string>
+    <string name="initial_color_orange">Orange</string>
+    <string name="initial_color_brown">Brun</string>
+    <string name="initial_color_grey">Grå</string>
+</resources>

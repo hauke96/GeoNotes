@@ -21,6 +21,8 @@ Don't be sad if your feature won't make it. This is not my only project and I'm 
 
 # Translate the app
 
+> **Important:** Always work from the latest commit on the `dev` branch.
+
 The translations are within simple XML files, so it's kind of like code.
 This means you have to **fork and clone this repo** before you can start, so make yourself familiar with git, GitHub, forks and pull-requests.
 
@@ -42,6 +44,8 @@ This means you have to **fork and clone this repo** before you can start, so mak
 5. Create a commit, push it and open a pull-request on GitHub.
 
 # Contribute code
+
+> **Important:** Always work from the latest commit on the `dev` branch.
 
 Please create an issue before adding code (except it's just a spelling mistake or something similarly small).
 

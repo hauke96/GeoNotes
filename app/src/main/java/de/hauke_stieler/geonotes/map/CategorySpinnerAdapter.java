@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import de.hauke_stieler.geonotes.R;
@@ -28,8 +29,8 @@ public class CategorySpinnerAdapter extends BaseAdapter {
         this.categories = new ArrayList<>();
     }
 
-    public void add(Category color) {
-        this.categories.add(color);
+    public void add(Category category) {
+        this.categories.add(category);
     }
 
     @Override
@@ -74,5 +75,13 @@ public class CategorySpinnerAdapter extends BaseAdapter {
 
     public List<Category> getAllCategories() {
         return new ArrayList<>(categories);
+    }
+
+    /**
+     * Clears the current list of categories and adds the given ones.
+     */
+    public void setCategories(Collection<Category> newCategories) {
+        categories.clear();
+        categories.addAll(newCategories);
     }
 }

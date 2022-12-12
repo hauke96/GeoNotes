@@ -29,7 +29,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import org.apache.commons.text.StringEscapeUtils;
-import org.osmdroid.views.overlay.Marker;
 
 import java.io.File;
 import java.util.Date;
@@ -90,14 +89,6 @@ public class MarkerFragment extends Fragment {
         super(R.layout.marker_fragment);
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        Log.i("MarkerFragment", "onAttach: ");
-        this.database = Injector.get(Database.class);
-        this.preferences = Injector.get(SharedPreferences.class);
-    }
-
     public void addEventHandler(MarkerFragmentEventHandler markerEventHandler) {
         this.markerEventHandler = markerEventHandler;
     }
@@ -106,9 +97,20 @@ public class MarkerFragment extends Fragment {
         requestPhotoHandler = handler;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        loadCategories();
+        categorySpinnerAdapter.notifyDataSetChanged();
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        this.database = Injector.get(Database.class);
+        this.preferences = Injector.get(SharedPreferences.class);
+
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
         // Resize window when the keyboard popups up
@@ -145,14 +147,10 @@ public class MarkerFragment extends Fragment {
             }
         });
 
-        categorySpinnerAdapter = new CategorySpinnerAdapter(getContext(), R.layout.item_category_spinner);
+        categorySpinnerAdapter = new CategorySpinnerAdapter(getContext(), R.layout.category_spinner_item);
         long lastUsedCategoryId = preferences.getLong(getString(R.string.pref_last_category_id), 1);
 
-        List<Category> allCategories = database.getAllCategories();
-        for (int i = 0; i < allCategories.size(); i++) {
-            Category category = allCategories.get(i);
-            categorySpinnerAdapter.add(category);
-        }
+        loadCategories();
 
         categorySpinner = view.findViewById(R.id.category_spinner);
         categorySpinner.setAdapter(categorySpinnerAdapter);
@@ -173,6 +171,10 @@ public class MarkerFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void loadCategories() {
+        categorySpinnerAdapter.setCategories(database.getAllCategories());
     }
 
     @Override

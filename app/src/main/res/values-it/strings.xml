@@ -3,61 +3,74 @@
 
     <!-- Activity titles -->
     <string name="title_activity_settings">Impostazioni</string>
-    <!-- TODO translations needed -->
-    <string name="title_activity_note_list">All notes</string>
-    <string name="title_activity_categories">Categories</string>
+    <string name="title_activity_note_list">Tutte le note</string>
+    <string name="title_activity_categories">Categorie</string>
 
     <!-- Misc strings -->
-    <!-- TODO translations needed -->
     <string name="ok">OK</string>
     <string name="reset">Reset</string>
-    <string name="osm_contribution">© <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors</string>
+    <string name="osm_contribution">© <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> collaboratori</string>
 
     <!-- Dialog buttons -->
     <string name="dialog_yes">Sì</string>
     <string name="dialog_no" >No</string>
 
     <!-- Toolbar -->
-    <string name="toolbar_gps_follow_mode">Modalità segui GPS</string>.
-    <string name="toolbar_export">Esporta</string>.
-    <string name="toolbar_list_of_notes">Elenco delle note</string>.
-    <!-- TODO translations needed -->
-    <string name="toolbar_categories">Categories</string>
-    <string name="toolbar_settings">Impostazioni</string>.
-    <string name="toolbar_remove_all_notes">Rimuovi tutte le note</string>.
+    <string name="toolbar_gps_follow_mode">Modalità segui GPS</string>
+    <string name="toolbar_export">Esporta</string>
+    <string name="toolbar_list_of_notes">Elenco delle note</string>
+    <string name="toolbar_categories">Categorie</string>
+    <string name="toolbar_settings">Impostazioni</string>
+    <string name="toolbar_remove_all_notes">Rimuovi tutte le note</string>
+    <!-- TODO Translate -->
+    <string name="toolbar_open_filter_dialog">Open Filter dialog</string>
 
     <!-- Settings -->
-    <string name="show_zoom_buttons">Mostra i pulsanti dello zoom</string>.
-    <string name="map_scaling_factor">Fattore di scala della mappa</string>.
-    <string name="snap_note_to_gps_location">Snap della nota alla posizione GPS</string>.
-    <string name="enable_rotating_the_map">Abilita la rotazione della mappa</string>.
-    <string name="background_map_cache">Cache di sfondo della mappa</string>.
+    <string name="show_zoom_buttons">Mostra i pulsanti dello zoom</string>
+    <string name="map_scaling_factor">Fattore di scala della mappa</string>
+    <string name="snap_note_to_gps_location">Snap della nota alla posizione GPS</string>
+    <string name="enable_rotating_the_map">Abilita la rotazione della mappa</string>
+    <string name="background_map_cache">Cache di sfondo della mappa</string>
     <string name="clear">Cancella</string>
-    <string name="tap_long_to_create_a_note">Crea una nota con un tocco lungo</string>.
+    <string name="tap_long_to_create_a_note">Crea una nota con un tocco lungo</string>
     <string name="feedback">Feedback</string>
-    <!-- TODO translations needed -->
-    <string name="geonotes_version">GeoNotes version</string>
+    <string name="geonotes_version">Versione GeoNotes</string>
 
     <!-- Marker -->
-    <string name="marker_instructions">1. Spostare la mappa\n2. Rilasciare il dito per salvare la posizione</string>.
+    <string name="marker_instructions">1. Spostare la mappa\n2. Rilasciare il dito per salvare la posizione</string>
     <string name="enter_text_for_a_new_note">Inserire il testo della nuova nota:</string>
     <string name="marker_move" >Muovi</string>
     <string name="marker_delete" >Elimina</string>
 
     <!-- Exporter -->
-    <string name="gpx_export_failed">Esportazione del file GPX non riuscita</string>.
+    <string name="gpx_export_failed">Esportazione del file GPX non riuscita</string>
 
     <!-- Mote List -->
+    <!-- TODO Update translation ("all" changed to "ALL" in original text) -->
     <string name="delete_all_notes">Eliminare davvero tutte le note? Questo non può essere annullato.</string>
-    <string name="create_thumbnail_failed">La creazione della miniatura non è riuscita</string>.
+    <!-- TODO Translate -->
+    <string name="delete_all_filtered_notes">Really delete FILTERED notes? This is not reversible!</string>
+    <string name="create_thumbnail_failed">La creazione della miniatura non è riuscita</string>
 
     <!-- Filter dialog-->
-    <!-- TODO translations needed -->
-    <string name="filter_dialog_filter_by_note_text">Filter by Note text:</string>
-    <string name="filter_dialog_filter_by_category">Filter by category:</string>
+    <string name="filter_dialog_filter_by_note_text">Filtra per testo della nota:</string>
+    <string name="filter_dialog_filter_by_category">Filtra per categoria:</string>
 
     <!-- Category list -->
-    <!-- TODO translations needed -->
-    <string name="category_list_save">Save</string>
-    <string name="category_list_color_notice">Changing color isn\'t possible yet but will come in the future.</string>
+    <string name="category_list_save">Salva</string>
+    <string name="category_list_color_notice">Cambiare colore non è ancora possibile, ma arriverà in futuro.</string>
+
+    <!-- Initial color names -->
+    <!-- TODO Translate -->
+    <string name="initial_color_red">Red</string>
+    <string name="initial_color_pink">Pink</string>
+    <string name="initial_color_purple">Purple</string>
+    <string name="initial_color_blue">Blue</string>
+    <string name="initial_color_light_blue">Light blue</string>
+    <string name="initial_color_teal">Teal</string>
+    <string name="initial_color_green">Green</string>
+    <string name="initial_color_yellow">Yellow</string>
+    <string name="initial_color_orange">Orange</string>
+    <string name="initial_color_brown">Brown</string>
+    <string name="initial_color_grey">Grey</string>
 </resources>

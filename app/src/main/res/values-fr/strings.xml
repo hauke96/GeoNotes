@@ -1,0 +1,76 @@
+<resources>
+    <string name="app_name">GeoNotes</string>
+
+    <!-- Activity titles -->
+    <string name="title_activity_settings">Paramètres</string>
+    <string name="title_activity_note_list">Toutes les notes</string>
+    <string name="title_activity_categories">Catégories</string>
+
+    <!-- Misc strings -->
+    <string name="ok">OK</string>
+    <string name="reset">Réinitialiser</string>
+    <string name="osm_contribution">© Membres d’<a href="https://openstreetmap.org/copyright">OpenStreetMap</a></string>
+
+    <!-- Dialog buttons -->
+    <string name="dialog_yes">Oui</string>
+    <string name="dialog_no">Non</string>
+
+    <!-- Toolbar -->
+    <string name="toolbar_gps_follow_mode">Mode suivi GPS</string>
+    <string name="toolbar_export">Exporter</string>
+    <string name="toolbar_list_of_notes">Liste des notes</string>
+    <string name="toolbar_categories">Catégories</string>
+    <string name="toolbar_settings">Paramètres</string>
+    <string name="toolbar_remove_all_notes">Retirer toutes les notes</string>
+    <!-- TODO Translate -->
+    <string name="toolbar_open_filter_dialog">Open Filter dialog</string>
+
+    <!-- Settings -->
+    <string name="show_zoom_buttons">Afficher les boutons de zoom</string>
+    <string name="map_scaling_factor">Facteur d’échelle de la carte</string>
+    <string name="snap_note_to_gps_location">Placer la note sur la position GPS</string>
+    <string name="enable_rotating_the_map">Activer la rotation de carte</string>
+    <string name="background_map_cache">Cache de carte en arrière-plan</string>
+    <string name="clear">Effacer</string>
+    <string name="tap_long_to_create_a_note">Un appui long permet de créer une note</string>
+    <string name="feedback">Avis</string>
+    <string name="geonotes_version">GeoNotes version</string>
+
+    <!-- Marker -->
+    <string name="marker_instructions">1. Déplacer la carte\n2. Relâcher votre doigt pour enregistrer la position</string>
+    <string name="enter_text_for_a_new_note">Entrer un texte pour la nouvelle note :</string>
+    <string name="marker_move">Déplacer</string>
+    <string name="marker_delete">Supprimer</string>
+
+    <!-- Exporter -->
+    <string name="gpx_export_failed">Échec de l’exportation du fichier GPX</string>
+
+    <!-- Note List -->
+    <!-- TODO Update translation ("all" changed to "ALL" in original text) -->
+    <string name="delete_all_notes">Supprimer toutes les notes ? Cette action ne peut pas être annulée !</string>
+    <!-- TODO Translate -->
+    <string name="delete_all_filtered_notes">Really delete FILTERED notes? This is not reversible!</string>
+    <string name="create_thumbnail_failed">Échec lors de la création de vignette</string>
+    
+    <!-- Filter dialog-->
+    <string name="filter_dialog_filter_by_note_text">Filtrer par texte de note :</string>
+    <string name="filter_dialog_filter_by_category">Filtrer par catégorie :</string>
+
+    <!-- Category list -->
+    <string name="category_list_save">Enregistrer</string>
+    <string name="category_list_color_notice">Modifier la couleur n’est pas encore possible, la fonction est en cours de développement.</string>
+
+    <!-- Initial color names -->
+    <!-- TODO Translate -->
+    <string name="initial_color_red">Red</string>
+    <string name="initial_color_pink">Pink</string>
+    <string name="initial_color_purple">Purple</string>
+    <string name="initial_color_blue">Blue</string>
+    <string name="initial_color_light_blue">Light blue</string>
+    <string name="initial_color_teal">Teal</string>
+    <string name="initial_color_green">Green</string>
+    <string name="initial_color_yellow">Yellow</string>
+    <string name="initial_color_orange">Orange</string>
+    <string name="initial_color_brown">Brown</string>
+    <string name="initial_color_grey">Grey</string>
+</resources>

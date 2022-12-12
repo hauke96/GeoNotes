@@ -5,10 +5,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -98,10 +99,6 @@ public class NoteStore {
         db.delete(NOTES_TABLE_NAME, NOTES_COL_ID + " = ?", new String[]{"" + id});
     }
 
-    public void removeAllNotes(SQLiteDatabase db) {
-        db.delete(NOTES_TABLE_NAME, null, null);
-    }
-
     public List<Note> getAllNotes(SQLiteDatabase db) {
         Cursor cursor = db.query(NOTES_TABLE_NAME, new String[]{NOTES_COL_ID, NOTES_COL_DESCRIPTION, NOTES_COL_LAT, NOTES_COL_LON, NOTES_COL_CREATED_AT, NOTES_COL_CATEGORY}, null, null, null, null, null);
 
@@ -116,24 +113,9 @@ public class NoteStore {
     }
 
     public List<Note> getAllNotes(SQLiteDatabase db, String textFilter, Long categoryIdFilter) {
-        List<String> filter = new ArrayList<>();
-        List<String> filterArgs = new ArrayList<>();
-
-        if (textFilter == null) {
-            textFilter = "";
-        }
-        textFilter = textFilter.replaceAll("%", "\\\\%");
-        filter.add(NOTES_COL_DESCRIPTION + " LIKE ? ESCAPE '\\'");
-        filterArgs.add("%" + textFilter + "%");
-
-        if (categoryIdFilter != null) {
-            filter.add(NOTES_COL_CATEGORY + "=?");
-            filterArgs.add(categoryIdFilter + "");
-        }
-
         Cursor cursor = db.query(NOTES_TABLE_NAME, new String[]{NOTES_COL_ID, NOTES_COL_DESCRIPTION, NOTES_COL_LAT, NOTES_COL_LON, NOTES_COL_CREATED_AT, NOTES_COL_CATEGORY},
-                String.join(" AND ", filter),
-                filterArgs.toArray(new String[]{}),
+                getFilterQuery(categoryIdFilter != null),
+                getFilterArgs(textFilter, categoryIdFilter),
                 null,
                 null,
                 null);
@@ -146,6 +128,42 @@ public class NoteStore {
         }
 
         return notes;
+    }
+
+    @NonNull
+    private String[] getFilterArgs(String textFilter, Long categoryIdFilter) {
+        List<String> filterArgs = new ArrayList<>();
+
+        if (textFilter == null) {
+            textFilter = "";
+        }
+        textFilter = textFilter.replaceAll("%", "\\\\%");
+        filterArgs.add("%" + textFilter + "%");
+
+        if (categoryIdFilter != null) {
+            filterArgs.add(categoryIdFilter + "");
+        }
+        return filterArgs.toArray(new String[]{});
+    }
+
+    @NonNull
+    private String getFilterQuery(boolean withCategoryIdFilter) {
+        List<String> filter = new ArrayList<>();
+        filter.add(NOTES_COL_DESCRIPTION + " LIKE ? ESCAPE '\\'");
+
+        if (withCategoryIdFilter) {
+            filter.add(NOTES_COL_CATEGORY + "=?");
+        }
+
+        StringBuilder joinedFilterString = new StringBuilder();
+        if (!filter.isEmpty()) {
+            String separator = " AND ";
+            for (int i = 0; i < filter.size() - 1; i++) {
+                joinedFilterString.append(filter.get(i)).append(separator);
+            }
+            joinedFilterString.append(filter.get(filter.size() - 1));
+        }
+        return joinedFilterString.toString();
     }
 
     public Note getNote(SQLiteDatabase db, String noteId) {

@@ -1,8 +1,6 @@
 package de.hauke_stieler.geonotes.database;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -25,6 +23,7 @@ public class Database extends SQLiteOpenHelper {
     private final NoteStore noteStore;
     private final PhotoStore photoStore;
     private final CategoryStore categoryStore;
+    private final Context context;
 
     public Database(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -32,6 +31,7 @@ public class Database extends SQLiteOpenHelper {
         categoryStore = new CategoryStore();
         noteStore = new NoteStore(categoryStore);
         photoStore = new PhotoStore();
+        this.context = context;
 
         // This will call the onCreate and onUpgrade methods.
         getWritableDatabase();
@@ -41,13 +41,13 @@ public class Database extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         noteStore.onCreate(db);
         photoStore.onCreate(db);
-        categoryStore.onCreate(db);
+        categoryStore.onCreate(db, context);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Ordered by reference relation: Photo references notes, notes references categories.
-        categoryStore.onUpgrade(db, oldVersion, newVersion);
+        categoryStore.onUpgrade(db, oldVersion, newVersion, context);
         noteStore.onUpgrade(db, oldVersion, newVersion);
         photoStore.onUpgrade(db, oldVersion, newVersion);
     }
@@ -72,12 +72,13 @@ public class Database extends SQLiteOpenHelper {
         noteStore.removeNote(getWritableDatabase(), id);
     }
 
-    public void removeAllNotes(File storageDir) {
-        for (Note note : getAllNotes()) {
+    public void removeAllNotes(File storageDir, String textFilter, Long categoryIdFilter) {
+        List<Note> notesToRemove = noteStore.getAllNotes(getReadableDatabase(), textFilter, categoryIdFilter);
+
+        for (Note note : notesToRemove) {
             removePhotos(note.getId(), storageDir);
+            noteStore.removeNote(getWritableDatabase(), note.getId());
         }
-        photoStore.removeAllPhotos(getWritableDatabase());
-        noteStore.removeAllNotes(getWritableDatabase());
     }
 
     public List<Note> getAllNotes() {

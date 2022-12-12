@@ -1,5 +1,5 @@
 1.5.1:
 
-Bug fixes:
-* Crash on startup
-* Fix F-Droid build error
+Hibajavítások:
+* Összeomlás indításkor
+* F-Droid összeállítási hiba javítása

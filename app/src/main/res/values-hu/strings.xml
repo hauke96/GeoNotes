@@ -22,12 +22,13 @@
     <string name="toolbar_categories">Kategóriák</string>
     <string name="toolbar_settings">Beállítások</string>
     <string name="toolbar_remove_all_notes">Összes jegyzet eltávolítása</string>
+    <string name="toolbar_open_filter_dialog">Szűrés párbeszédablak megnyitása</string>
 
     <!-- Settings -->
     <string name="show_zoom_buttons">Nagyítási gombok megjelenítése</string>
     <string name="map_scaling_factor">Térképnagyítási tényező</string>
     <string name="snap_note_to_gps_location">Jegyzet GPS-helyadathoz rögzítése</string>
-    <string name="enable_rotating_the_map">Térkép forgatásának engedélyezáse</string>
+    <string name="enable_rotating_the_map">Térkép forgatásának engedélyezése</string>
     <string name="background_map_cache">Térképháttér gyorsítótára</string>
     <string name="clear">Törlés</string>
     <string name="tap_long_to_create_a_note">Jegyzet létrehozása hosszú érintéssel</string>
@@ -44,7 +45,8 @@
     <string name="gpx_export_failed">A GPX-fájl exportálása sikertelen</string>
 
     <!-- Note List -->
-    <string name="delete_all_notes">Valóban törli az összes jegyzetet? Ez nem vonható vissza.</string>
+    <string name="delete_all_notes">Valóban törli az ÖSSZES jegyzetet? Ez nem vonható vissza.</string>
+    <string name="delete_all_filtered_notes">Valóban törli a SZŰRT jegyzeteket? Ez nem vonható vissza.</string>
     <string name="create_thumbnail_failed">A bélyegkép létrehozása sikertelen</string>
 
     <!-- Filter dialog-->
@@ -52,7 +54,19 @@
     <string name="filter_dialog_filter_by_category">Szűrés kategória szerint:</string>
 
     <!-- Category list -->
-    <!-- TODO translations needed -->
     <string name="category_list_save">Mentés</string>
     <string name="category_list_color_notice">A szín megváltoztatása még nem lehetséges, de a jövőben lehetséges lesz.</string>
+
+    <!-- Initial color names -->
+    <string name="initial_color_red">Piros</string>
+    <string name="initial_color_pink">Rózsaszín</string>
+    <string name="initial_color_purple">Lila</string>
+    <string name="initial_color_blue">Kék</string>
+    <string name="initial_color_light_blue">Világoskék</string>
+    <string name="initial_color_teal">Kékeszöld</string>
+    <string name="initial_color_green">Zöld</string>
+    <string name="initial_color_yellow">Sárga</string>
+    <string name="initial_color_orange">Narancssárga</string>
+    <string name="initial_color_brown">Barna</string>
+    <string name="initial_color_grey">Szürke</string>
 </resources>

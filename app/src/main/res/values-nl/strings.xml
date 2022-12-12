@@ -1,0 +1,76 @@
+<resources>
+    <string name="app_name">GeoNotes</string>
+
+    <!-- Activity titles -->
+    <string name="title_activity_settings">Instellingen</string>
+    <string name="title_activity_note_list">Alle opmerkingen</string>
+    <string name="title_activity_categories">Categorieën</string>
+
+    <!-- Misc strings -->
+    <string name="ok">OK</string>
+    <string name="reset">Resetten</string>
+    <string name="osm_contribution">:copyright: <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>-bijdragers</string>
+
+    <!-- Dialog buttons -->
+    <string name="dialog_yes">Ja</string>
+    <string name="dialog_no">Nee</string>
+
+    <!-- Toolbar -->
+    <string name="toolbar_gps_follow_mode">GPS volgen</string>
+    <string name="toolbar_export">Exporteren</string>
+    <string name="toolbar_list_of_notes">Lijst van opmerkingen</string>
+    <string name="toolbar_categories">Categorieën</string>
+    <string name="toolbar_settings">Instellingen</string>
+    <string name="toolbar_remove_all_notes">Alle opmerkingen verwijderen</string>
+    <!-- TODO Translate -->
+    <string name="toolbar_open_filter_dialog">Open Filter dialog</string>
+
+    <!-- Settings -->
+    <string name="show_zoom_buttons">Zoomknoppen tonen</string>
+    <string name="map_scaling_factor">Schaalfactor van de kaart</string>
+    <string name="snap_note_to_gps_location">Opmerking aan GPS-locatie vastmaken</string>
+    <string name="enable_rotating_the_map">Draaien van de kaart inschakelen</string>
+    <string name="background_map_cache">Achtergrondkaart-geheugen</string>
+    <string name="clear">Wissen</string>
+    <string name="tap_long_to_create_a_note">Klik en houd ingedrukt om een opmerking aan te maken</string>
+    <string name="feedback">Feedback</string>
+    <string name="geonotes_version">GeoNotes versie</string>
+
+    <!-- Marker -->
+    <string name="marker_instructions">1. Verplaats de kaart\n2. Laat los om de locatie op te slaan</string>
+    <string name="enter_text_for_a_new_note">Voer tekst in voor een nieuwe opmerking:</string>
+    <string name="marker_move">Verplaatsen</string>
+    <string name="marker_delete">Verwijderen</string>
+
+    <!-- Exporter -->
+    <string name="gpx_export_failed">GPX-bestand exporteren is mislukt</string>
+
+    <!-- Note List -->
+    <!-- TODO Update translation ("all" changed to "ALL" in original text) -->
+    <string name="delete_all_notes">Echt alle opmerkingen verwijderen? Dit is onomkeerbaar!</string>
+    <!-- TODO Translate -->
+    <string name="delete_all_filtered_notes">Really delete FILTERED notes? This is not reversible!</string>
+    <string name="create_thumbnail_failed">Thumbnail aanmaken is mislukt</string>
+    
+    <!-- Filter dialog-->
+    <string name="filter_dialog_filter_by_note_text">Filter op inhoud:</string>
+    <string name="filter_dialog_filter_by_category">Filter op categorie:</string>
+
+    <!-- Category list -->
+    <string name="category_list_save">Opslaan</string>
+    <string name="category_list_color_notice">Van kleur veranderen is nu nog niet mogelijk maar in de toekomst wordt het dat wel.</string>
+
+    <!-- Initial color names -->
+    <!-- TODO Translate -->
+    <string name="initial_color_red">Red</string>
+    <string name="initial_color_pink">Pink</string>
+    <string name="initial_color_purple">Purple</string>
+    <string name="initial_color_blue">Blue</string>
+    <string name="initial_color_light_blue">Light blue</string>
+    <string name="initial_color_teal">Teal</string>
+    <string name="initial_color_green">Green</string>
+    <string name="initial_color_yellow">Yellow</string>
+    <string name="initial_color_orange">Orange</string>
+    <string name="initial_color_brown">Brown</string>
+    <string name="initial_color_grey">Grey</string>
+</resources>

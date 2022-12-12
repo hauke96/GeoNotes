@@ -1,6 +1,7 @@
 package de.hauke_stieler.geonotes.categories;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -8,7 +9,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.hauke_stieler.geonotes.notes.Note;
+import de.hauke_stieler.geonotes.R;
 
 public class CategoryStore {
     private static final String CATEGORIES_TABLE_NAME = "categories";
@@ -16,35 +17,35 @@ public class CategoryStore {
     private static final String CATEGORIES_COL_COLOR = "color";
     private static final String CATEGORIES_COL_NAME = "name";
 
-    public void onCreate(SQLiteDatabase db) {
+    public void onCreate(SQLiteDatabase db, final Context context) {
         db.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s(%s INTEGER PRIMARY KEY, %s VARCHAR NOT NULL, %s VARCHAR NOT NULL);",
                 CATEGORIES_TABLE_NAME,
                 CATEGORIES_COL_ID,
                 CATEGORIES_COL_COLOR,
                 CATEGORIES_COL_NAME));
-        addInitialCategories(db);
+        addInitialCategories(db, context);
     }
 
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion, final Context context) {
         if (oldVersion < 6) {
-            onCreate(db);
+            onCreate(db, context);
         }
 
         Log.i("CategoryStore", String.format("onUpgrade: from version %d to version %d", oldVersion, newVersion));
     }
 
-    private void addInitialCategories(SQLiteDatabase db) {
-        addCategory(db, "#f44336", "Red");
-        addCategory(db, "#e91e63", "Pink");
-        addCategory(db, "#9c27b0", "Purple");
-        addCategory(db, "#3f51b5", "Blue");
-        addCategory(db, "#03a9f4", "Light blue");
-        addCategory(db, "#009688", "Teal");
-        addCategory(db, "#4caf50", "Green");
-        addCategory(db, "#fdd835", "Yellow");
-        addCategory(db, "#ff9800", "Orange");
-        addCategory(db, "#795548", "Brown");
-        addCategory(db, "#9e9e9e", "Grey");
+    private void addInitialCategories(SQLiteDatabase db, final Context context) {
+        addCategory(db, "#f44336", context.getString(R.string.initial_color_red));
+        addCategory(db, "#e91e63", context.getString(R.string.initial_color_pink));
+        addCategory(db, "#9c27b0", context.getString(R.string.initial_color_purple));
+        addCategory(db, "#3f51b5", context.getString(R.string.initial_color_blue));
+        addCategory(db, "#03a9f4", context.getString(R.string.initial_color_light_blue));
+        addCategory(db, "#009688", context.getString(R.string.initial_color_teal));
+        addCategory(db, "#4caf50", context.getString(R.string.initial_color_green));
+        addCategory(db, "#fdd835", context.getString(R.string.initial_color_yellow));
+        addCategory(db, "#ff9800", context.getString(R.string.initial_color_orange));
+        addCategory(db, "#795548", context.getString(R.string.initial_color_brown));
+        addCategory(db, "#9e9e9e", context.getString(R.string.initial_color_grey));
     }
 
     public long addCategory(SQLiteDatabase db, String color, String name) {

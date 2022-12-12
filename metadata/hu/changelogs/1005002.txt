@@ -1,0 +1,11 @@
+1.5.2:
+
+Változtatások és hibajavítások:
+
+* Fordítások hozzáadva:
+  * Holland
+  * Francia
+  * Svéd
+* Az „Összes törlése” művelet csak a szűrőkön keresztül látható jegyzeteket törli
+* A jegyzet nézetben lévő kategórialista frissítésre kerül a kategória megváltoztatása után
+* A kategória legördülő lista stílusváltoztatásai

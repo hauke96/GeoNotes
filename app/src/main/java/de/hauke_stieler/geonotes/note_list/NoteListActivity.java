@@ -2,11 +2,9 @@ package de.hauke_stieler.geonotes.note_list;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
@@ -14,16 +12,13 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.BlendModeCompat;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import de.hauke_stieler.geonotes.Injector;
 import de.hauke_stieler.geonotes.R;
-import de.hauke_stieler.geonotes.categories.Category;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.notes.Note;
 import de.hauke_stieler.geonotes.notes.NoteIconProvider;
@@ -103,9 +98,13 @@ public class NoteListActivity extends AppCompatActivity implements FilterDialog.
                 return true;
             case R.id.toolbar_btn_delete_all:
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage(R.string.delete_all_notes);
+                if ((filterText == null || "".equals(filterText)) && filterCategoryId == null) {
+                    builder.setMessage(getString(R.string.delete_all_notes));
+                } else {
+                    builder.setMessage(R.string.delete_all_filtered_notes);
+                }
                 builder.setPositiveButton(R.string.dialog_yes, (dialog, id) -> {
-                    database.removeAllNotes(getExternalFilesDir("GeoNotes"));
+                    database.removeAllNotes(getExternalFilesDir("GeoNotes"), filterText, filterCategoryId);
                     load();
                 });
                 builder.setNegativeButton(R.string.dialog_no, (dialog, id) -> {

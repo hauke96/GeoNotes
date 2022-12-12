@@ -29,7 +29,7 @@
         android:layout_height="match_parent"
         android:layout_marginBottom="20dp"
         android:background="@null"
-        tools:listitem="@layout/item_category_spinner" />
+        tools:listitem="@layout/category_spinner_item" />
 
     <LinearLayout
         android:layout_width="match_parent"
