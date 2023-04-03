@@ -22,7 +22,7 @@ public class CategoryStore {
     private static final String CATEGORIES_COL_SORT_KEY = "sort_key";
 
     public void onCreate(SQLiteDatabase db, final Context context) {
-        db.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s(%s INTEGER PRIMARY KEY, %s VARCHAR NOT NULL, %s VARCHAR NOT NULL, %s INTEGER PRIMARY);",
+        db.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s(%s INTEGER PRIMARY KEY, %s VARCHAR NOT NULL, %s VARCHAR NOT NULL, %s INTEGER);",
                 CATEGORIES_TABLE_NAME,
                 CATEGORIES_COL_ID,
                 CATEGORIES_COL_COLOR,
