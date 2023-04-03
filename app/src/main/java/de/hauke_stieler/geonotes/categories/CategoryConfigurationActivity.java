@@ -44,6 +44,10 @@ public class CategoryConfigurationActivity extends AppCompatActivity {
     }
 
     private void saveAllCategories(CategoryListAdapter adapter) {
+        for (Category category : adapter.getAllRemovedItems()) {
+            // TODO Update notes or prevent removal of category (if second solution: Somehow disable the delete button before hand)
+            database.removeCategory(category.getId());
+        }
         for (Category category : adapter.getAllItems()) {
             database.updateCategory(category.getId(), category.getName(), category.getColorString(), category.getSortKey());
         }

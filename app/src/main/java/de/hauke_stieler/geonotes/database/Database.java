@@ -139,4 +139,8 @@ public class Database extends SQLiteOpenHelper {
     public void updateCategory(long id, String newName, String newColor, long sortKey) {
         categoryStore.update(getWritableDatabase(), id, newName, newColor, sortKey);
     }
+
+    public void removeCategory(long id) {
+        categoryStore.removeCategory(getWritableDatabase(), id);
+    }
 }

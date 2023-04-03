@@ -21,19 +21,24 @@ import de.hauke_stieler.geonotes.R;
 public class CategoryListAdapter extends BaseAdapter {
 
     private final List<Category> categories;
+    private final List<Category> removedCategories;
     private final LayoutInflater inflater;
     private final Context context;
 
     public CategoryListAdapter(Context context, List<Category> categories) {
         this.context = context;
         this.categories = categories;
+        this.removedCategories = new ArrayList<>();
 
-        this.inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     public List<Category> getAllItems() {
         return new ArrayList<>(categories);
+    }
+
+    public List<Category> getAllRemovedItems() {
+        return new ArrayList<>(removedCategories);
     }
 
     @Override
@@ -78,6 +83,13 @@ public class CategoryListAdapter extends BaseAdapter {
             @Override
             public void afterTextChanged(Editable s) {
             }
+        });
+
+        ImageButton deleteButton = view.findViewById(R.id.category_list_row_delete_button);
+        deleteButton.setOnClickListener(v -> {
+            removedCategories.add(categories.get(index));
+            categories.remove(index);
+            notifyDataSetChanged();
         });
 
         ImageButton upButton = view.findViewById(R.id.category_list_row_up_button);
