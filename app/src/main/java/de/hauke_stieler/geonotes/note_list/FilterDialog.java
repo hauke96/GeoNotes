@@ -70,7 +70,7 @@ public class FilterDialog extends DialogFragment {
         categorySpinnerAdapter = new CategorySpinnerAdapter(getContext(), R.layout.category_spinner_item);
 
         List<Category> allCategories = database.getAllCategories();
-        allCategories.add(NONE_CATEGORY_ITEM_INDEX, new Category(Category.NONE_ID, "#ffffff", "(none)", R.drawable.shape_item_cetagory_spinner_none));
+        allCategories.add(NONE_CATEGORY_ITEM_INDEX, new Category(Category.NONE_ID, "#ffffff", "(none)", R.drawable.shape_item_cetagory_spinner_none, -1));
         categorySpinnerAdapter.setCategories(allCategories);
 
         categorySpinner = view.findViewById(R.id.note_list_filter_category_spinner);

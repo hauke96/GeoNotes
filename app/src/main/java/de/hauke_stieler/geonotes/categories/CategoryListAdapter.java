@@ -9,10 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import de.hauke_stieler.geonotes.R;
@@ -77,6 +78,20 @@ public class CategoryListAdapter extends BaseAdapter {
             @Override
             public void afterTextChanged(Editable s) {
             }
+        });
+
+        ImageButton upButton = view.findViewById(R.id.category_list_row_up_button);
+        upButton.setOnClickListener(v -> {
+            int newIndex = index - 1;
+            if (newIndex == -1) {
+                newIndex = 0;
+            }
+
+            categories.get(index).setSortKey(newIndex);
+            categories.get(newIndex).setSortKey(index);
+
+            Collections.swap(categories, index, newIndex);
+            notifyDataSetChanged();
         });
 
         View colorIcon = view.findViewById(R.id.category_list_spinner_layout);

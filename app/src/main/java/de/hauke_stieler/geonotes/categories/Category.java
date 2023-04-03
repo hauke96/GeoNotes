@@ -10,19 +10,22 @@ public class Category {
     private final long id;
     private String color;
     private String name;
+    private long sortKey;
     private final int drawableId;
 
-    public Category(long id, String color, String name) {
+    public Category(long id, String color, String name, long sortKey) {
         this.id = id;
         this.color = color;
         this.name = name;
+        this.sortKey = sortKey;
         this.drawableId = R.drawable.shape_item_cetagory_spinner;
     }
 
-    public Category(long id, String color, String name, int drawableId) {
+    public Category(long id, String color, String name, int drawableId, long sortKey) {
         this.id = id;
         this.color = color;
         this.name = name;
+        this.sortKey = sortKey;
         this.drawableId = drawableId;
     }
 
@@ -52,6 +55,14 @@ public class Category {
 
     public int getDrawableId() {
         return drawableId;
+    }
+
+    public long getSortKey() {
+        return sortKey;
+    }
+
+    public void setSortKey(int newKey) {
+        this.sortKey = newKey;
     }
 
     @Override

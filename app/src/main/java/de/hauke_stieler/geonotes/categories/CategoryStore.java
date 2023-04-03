@@ -7,28 +7,36 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import de.hauke_stieler.geonotes.R;
+import de.hauke_stieler.geonotes.notes.Note;
 
 public class CategoryStore {
     private static final String CATEGORIES_TABLE_NAME = "categories";
     private static final String CATEGORIES_COL_ID = "id";
     private static final String CATEGORIES_COL_COLOR = "color";
     private static final String CATEGORIES_COL_NAME = "name";
+    private static final String CATEGORIES_COL_SORT_KEY = "sort_key";
 
     public void onCreate(SQLiteDatabase db, final Context context) {
-        db.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s(%s INTEGER PRIMARY KEY, %s VARCHAR NOT NULL, %s VARCHAR NOT NULL);",
+        db.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s(%s INTEGER PRIMARY KEY, %s VARCHAR NOT NULL, %s VARCHAR NOT NULL, %s INTEGER PRIMARY);",
                 CATEGORIES_TABLE_NAME,
                 CATEGORIES_COL_ID,
                 CATEGORIES_COL_COLOR,
-                CATEGORIES_COL_NAME));
+                CATEGORIES_COL_NAME,
+                CATEGORIES_COL_SORT_KEY));
         addInitialCategories(db, context);
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion, final Context context) {
         if (oldVersion < 6) {
             onCreate(db, context);
+        }
+        if (oldVersion < 7) {
+            db.execSQL(String.format("ALTER TABLE %s ADD COLUMN %s INTEGER NOT NULL DEFAULT 0", CATEGORIES_TABLE_NAME, CATEGORIES_COL_SORT_KEY));
         }
 
         Log.i("CategoryStore", String.format("onUpgrade: from version %d to version %d", oldVersion, newVersion));
@@ -57,13 +65,13 @@ public class CategoryStore {
     }
 
     public Category getCategory(SQLiteDatabase db, String id) {
-        Cursor cursor = db.query(CATEGORIES_TABLE_NAME, new String[]{CATEGORIES_COL_ID, CATEGORIES_COL_COLOR, CATEGORIES_COL_NAME}, CATEGORIES_COL_ID + "=?", new String[]{id}, null, null, null);
+        Cursor cursor = db.query(CATEGORIES_TABLE_NAME, new String[]{CATEGORIES_COL_ID, CATEGORIES_COL_COLOR, CATEGORIES_COL_NAME, CATEGORIES_COL_SORT_KEY}, CATEGORIES_COL_ID + "=?", new String[]{id}, null, null, null);
         cursor.moveToFirst();
         return getCategoryFromCursor(cursor);
     }
 
     public List<Category> getAllCategories(SQLiteDatabase db) {
-        Cursor cursor = db.query(CATEGORIES_TABLE_NAME, new String[]{CATEGORIES_COL_ID, CATEGORIES_COL_COLOR, CATEGORIES_COL_NAME}, null, null, null, null, null);
+        Cursor cursor = db.query(CATEGORIES_TABLE_NAME, new String[]{CATEGORIES_COL_ID, CATEGORIES_COL_COLOR, CATEGORIES_COL_NAME, CATEGORIES_COL_SORT_KEY}, null, null, null, null, null);
 
         List<Category> categories = new ArrayList<>();
         if (cursor.moveToFirst()) {
@@ -72,18 +80,20 @@ public class CategoryStore {
             } while (cursor.moveToNext());
         }
 
+        Collections.sort(categories, (c1, c2) -> (int) (c1.getSortKey() - c2.getSortKey()));
         return categories;
     }
 
     private Category getCategoryFromCursor(Cursor cursor) {
-        return new Category(cursor.getLong(0), cursor.getString(1), cursor.getString(2));
+        return new Category(cursor.getLong(0), cursor.getString(1), cursor.getString(2), cursor.getLong(3));
     }
 
-    public void update(SQLiteDatabase db, long id, String newName, String newColor) {
+    public void update(SQLiteDatabase db, long id, String newName, String newColor, long sortKey) {
         ContentValues values = new ContentValues();
         values.put(CATEGORIES_COL_ID, id);
         values.put(CATEGORIES_COL_NAME, newName);
         values.put(CATEGORIES_COL_COLOR, newColor);
+        values.put(CATEGORIES_COL_SORT_KEY, sortKey);
 
         db.update(CATEGORIES_TABLE_NAME, values, CATEGORIES_COL_ID + " = ?", new String[]{"" + id});
     }

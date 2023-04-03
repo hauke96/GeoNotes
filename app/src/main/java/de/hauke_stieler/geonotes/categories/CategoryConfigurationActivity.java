@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -39,11 +38,15 @@ public class CategoryConfigurationActivity extends AppCompatActivity {
 
         Button saveButton = findViewById(R.id.category_list_save);
         saveButton.setOnClickListener(v -> {
-            for (Category category : adapter.getAllItems()) {
-                database.updateCategory(category.getId(), category.getName(), category.getColorString());
-            }
+            saveAllCategories(adapter);
             finish();
         });
+    }
+
+    private void saveAllCategories(CategoryListAdapter adapter) {
+        for (Category category : adapter.getAllItems()) {
+            database.updateCategory(category.getId(), category.getName(), category.getColorString(), category.getSortKey());
+        }
     }
 
     @Override
