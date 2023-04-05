@@ -14,7 +14,7 @@ public class GpxTest {
     public void testGpxExport()  {
         // Arrange
         ArrayList<Note> notes = new ArrayList<>();
-        notes.add(new Note(123, "foo bar", 1.23, 2.34,"2022-01-30 12:34:56", new Category(11, "#abc123", "Foo")));
+        notes.add(new Note(123, "foo bar", 1.23, 2.34,"2022-01-30 12:34:56", new Category(11, "#abc123", "Foo", 1)));
 
         // Act
         String gpxString = Gpx.toGpx(notes);
