@@ -8,10 +8,12 @@ public class Category {
     public final static int NONE_ID = -1;
 
     private final long id;
+    private final int drawableId;
+
     private String color;
     private String name;
     private long sortKey;
-    private final int drawableId;
+    private boolean hasNotes;
 
     public Category(long id, String color, String name, long sortKey) {
         this.id = id;
@@ -63,6 +65,14 @@ public class Category {
 
     public void setSortKey(int newKey) {
         this.sortKey = newKey;
+    }
+
+    public boolean hasNotes() {
+        return hasNotes;
+    }
+
+    public void setHasNotes(boolean hasNotes) {
+        this.hasNotes = hasNotes;
     }
 
     @Override

@@ -1,6 +1,9 @@
 package de.hauke_stieler.geonotes.categories;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -11,6 +14,9 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -87,10 +93,19 @@ public class CategoryListAdapter extends BaseAdapter {
 
         ImageButton deleteButton = view.findViewById(R.id.category_list_row_delete_button);
         deleteButton.setOnClickListener(v -> {
-            removedCategories.add(categories.get(index));
-            categories.remove(index);
-            notifyDataSetChanged();
+            if (category.hasNotes()) {
+                Toast.makeText(context, R.string.cannot_delete_with_notes, Toast.LENGTH_SHORT).show();
+            } else {
+                removedCategories.add(category);
+                categories.remove(index);
+                notifyDataSetChanged();
+            }
         });
+        if (category.hasNotes()) {
+            deleteButton.getDrawable().mutate().setColorFilter(context.getResources().getColor(R.color.grey), PorterDuff.Mode.SRC_IN);
+        } else {
+            deleteButton.getDrawable().mutate().setColorFilter(context.getResources().getColor(R.color.dark_grey), PorterDuff.Mode.SRC_IN);
+        }
 
         ImageButton upButton = view.findViewById(R.id.category_list_row_up_button);
         upButton.setOnClickListener(v -> {
@@ -99,7 +114,7 @@ public class CategoryListAdapter extends BaseAdapter {
                 newIndex = 0;
             }
 
-            categories.get(index).setSortKey(newIndex);
+            category.setSortKey(newIndex);
             categories.get(newIndex).setSortKey(index);
 
             Collections.swap(categories, index, newIndex);

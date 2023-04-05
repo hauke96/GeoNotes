@@ -133,7 +133,18 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public List<Category> getAllCategories() {
-        return categoryStore.getAllCategories(getReadableDatabase());
+        List<Category> categories = categoryStore.getAllCategories(getReadableDatabase());
+        List<Note> allNotes = getAllNotes();
+        for (Note note : allNotes) {
+            for (Category category : categories) {
+                // These are actually different instanced of the category, so we can't reuse the
+                // category instances from the notes.
+                if (category.getId() == note.getCategory().getId()) {
+                    category.setHasNotes(true);
+                }
+            }
+        }
+        return categories;
     }
 
     public void updateCategory(long id, String newName, String newColor, long sortKey) {

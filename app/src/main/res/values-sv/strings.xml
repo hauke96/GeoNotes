@@ -58,6 +58,8 @@
     <!-- Category list -->
     <string name="category_list_save">Spara</string>
     <string name="category_list_color_notice">Byta färg är inte möjligt men kommer i framtiden.</string>
+    <!-- TODO Translate -->
+    <string name="cannot_delete_with_notes">There are notes with this category, you can\'t delete it.</string>
 
     <!-- Initial color names -->
     <string name="initial_color_red">Röd</string>
