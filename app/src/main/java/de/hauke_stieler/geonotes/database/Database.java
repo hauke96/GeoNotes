@@ -124,8 +124,8 @@ public class Database extends SQLiteOpenHelper {
     }
 
 
-    public long addCategory(String color, String name) {
-        return categoryStore.addCategory(getWritableDatabase(), color, name);
+    public long addCategory(String color, String name, long sortKey) {
+        return categoryStore.addCategory(getWritableDatabase(), color, name, sortKey);
     }
 
     public Category getCategory(String id) {

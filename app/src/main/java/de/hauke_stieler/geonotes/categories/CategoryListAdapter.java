@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 import de.hauke_stieler.geonotes.R;
+import de.hauke_stieler.geonotes.map.GeoNotesMarker;
 
 public class CategoryListAdapter extends BaseAdapter {
 
@@ -125,5 +126,11 @@ public class CategoryListAdapter extends BaseAdapter {
         colorIcon.setOnClickListener(v -> Toast.makeText(this.context, R.string.category_list_color_notice, Toast.LENGTH_SHORT).show());
 
         return view;
+    }
+
+    public void addCategory(String color, String name, int sortKey) {
+        this.categories.add(new Category(color, name, sortKey));
+        Collections.sort(categories, (c1, c2) -> (int) (c1.getSortKey() - c2.getSortKey()));
+        notifyDataSetChanged();
     }
 }

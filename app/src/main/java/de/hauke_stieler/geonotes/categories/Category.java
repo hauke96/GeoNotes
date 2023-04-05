@@ -5,7 +5,8 @@ import android.graphics.Color;
 import de.hauke_stieler.geonotes.R;
 
 public class Category {
-    public final static int NONE_ID = -1;
+    public final static int NONE_ID = -1;    // ID of a dummy category
+    public final static int UNKNOWN_ID = -2; // ID of a new unsaved category.
 
     private final long id;
     private final int drawableId;
@@ -14,6 +15,14 @@ public class Category {
     private String name;
     private long sortKey;
     private boolean hasNotes;
+
+    public Category(String color, String name, long sortKey) {
+        this.id = UNKNOWN_ID;
+        this.color = color;
+        this.name = name;
+        this.sortKey = sortKey;
+        this.drawableId = R.drawable.shape_item_cetagory_spinner;
+    }
 
     public Category(long id, String color, String name, long sortKey) {
         this.id = id;

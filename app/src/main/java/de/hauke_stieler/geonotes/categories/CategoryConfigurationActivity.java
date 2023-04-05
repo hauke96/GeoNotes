@@ -44,7 +44,7 @@ public class CategoryConfigurationActivity extends AppCompatActivity {
 
         Button newButton = findViewById(R.id.category_new_button);
         newButton.setOnClickListener(v -> {
-            // TODO
+            adapter.addCategory("#505050", "", adapter.getCount() + 1);
         });
     }
 
@@ -53,7 +53,11 @@ public class CategoryConfigurationActivity extends AppCompatActivity {
             database.removeCategory(category.getId());
         }
         for (Category category : adapter.getAllItems()) {
-            database.updateCategory(category.getId(), category.getName(), category.getColorString(), category.getSortKey());
+            if (category.getId() == Category.UNKNOWN_ID) {
+                database.addCategory(category.getColorString(), category.getName(), category.getSortKey());
+            } else {
+                database.updateCategory(category.getId(), category.getName(), category.getColorString(), category.getSortKey());
+            }
         }
     }
 

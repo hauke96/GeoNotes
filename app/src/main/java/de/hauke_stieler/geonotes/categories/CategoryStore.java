@@ -43,23 +43,24 @@ public class CategoryStore {
     }
 
     private void addInitialCategories(SQLiteDatabase db, final Context context) {
-        addCategory(db, "#f44336", context.getString(R.string.initial_color_red));
-        addCategory(db, "#e91e63", context.getString(R.string.initial_color_pink));
-        addCategory(db, "#9c27b0", context.getString(R.string.initial_color_purple));
-        addCategory(db, "#3f51b5", context.getString(R.string.initial_color_blue));
-        addCategory(db, "#03a9f4", context.getString(R.string.initial_color_light_blue));
-        addCategory(db, "#009688", context.getString(R.string.initial_color_teal));
-        addCategory(db, "#4caf50", context.getString(R.string.initial_color_green));
-        addCategory(db, "#fdd835", context.getString(R.string.initial_color_yellow));
-        addCategory(db, "#ff9800", context.getString(R.string.initial_color_orange));
-        addCategory(db, "#795548", context.getString(R.string.initial_color_brown));
-        addCategory(db, "#9e9e9e", context.getString(R.string.initial_color_grey));
+        addCategory(db, "#f44336", context.getString(R.string.initial_color_red), 0);
+        addCategory(db, "#e91e63", context.getString(R.string.initial_color_pink), 1);
+        addCategory(db, "#9c27b0", context.getString(R.string.initial_color_purple), 2);
+        addCategory(db, "#3f51b5", context.getString(R.string.initial_color_blue), 3);
+        addCategory(db, "#03a9f4", context.getString(R.string.initial_color_light_blue), 4);
+        addCategory(db, "#009688", context.getString(R.string.initial_color_teal), 5);
+        addCategory(db, "#4caf50", context.getString(R.string.initial_color_green), 6);
+        addCategory(db, "#fdd835", context.getString(R.string.initial_color_yellow), 7);
+        addCategory(db, "#ff9800", context.getString(R.string.initial_color_orange), 8);
+        addCategory(db, "#795548", context.getString(R.string.initial_color_brown), 9);
+        addCategory(db, "#9e9e9e", context.getString(R.string.initial_color_grey), 10);
     }
 
-    public long addCategory(SQLiteDatabase db, String color, String name) {
+    public long addCategory(SQLiteDatabase db, String color, String name, long sortKey) {
         ContentValues values = new ContentValues();
         values.put(CATEGORIES_COL_COLOR, color);
         values.put(CATEGORIES_COL_NAME, name);
+        values.put(CATEGORIES_COL_SORT_KEY, sortKey);
 
         return db.insert(CATEGORIES_TABLE_NAME, null, values);
     }
