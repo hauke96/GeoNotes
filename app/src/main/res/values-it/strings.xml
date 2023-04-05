@@ -60,7 +60,8 @@
     <string name="category_list_save">Salva</string>
     <string name="category_list_color_notice">Cambiare colore non è ancora possibile, ma arriverà in futuro.</string>
     <!-- TODO Translate -->
-    <string name="cannot_delete_with_notes">There are notes with this category, you can\'t delete it.</string>
+    <string name="category_cannot_delete_with_notes">There are notes with this category, you can\'t delete it.</string>
+    <string name="category_new">+ New</string>
 
     <!-- Initial color names -->
     <!-- TODO Translate -->

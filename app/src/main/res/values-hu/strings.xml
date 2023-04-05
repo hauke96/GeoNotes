@@ -57,7 +57,8 @@
     <string name="category_list_save">Mentés</string>
     <string name="category_list_color_notice">A szín megváltoztatása még nem lehetséges, de a jövőben lehetséges lesz.</string>
     <!-- TODO Translate -->
-    <string name="cannot_delete_with_notes">There are notes with this category, you can\'t delete it.</string>
+    <string name="category_cannot_delete_with_notes">There are notes with this category, you can\'t delete it.</string>
+    <string name="category_new">+ New</string>
 
     <!-- Initial color names -->
     <string name="initial_color_red">Piros</string>

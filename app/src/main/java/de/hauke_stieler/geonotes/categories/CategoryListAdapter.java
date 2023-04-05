@@ -94,7 +94,7 @@ public class CategoryListAdapter extends BaseAdapter {
         ImageButton deleteButton = view.findViewById(R.id.category_list_row_delete_button);
         deleteButton.setOnClickListener(v -> {
             if (category.hasNotes()) {
-                Toast.makeText(context, R.string.cannot_delete_with_notes, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.category_cannot_delete_with_notes, Toast.LENGTH_SHORT).show();
             } else {
                 removedCategories.add(category);
                 categories.remove(index);

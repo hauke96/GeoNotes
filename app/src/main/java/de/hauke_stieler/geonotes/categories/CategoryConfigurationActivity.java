@@ -41,6 +41,11 @@ public class CategoryConfigurationActivity extends AppCompatActivity {
             saveAllCategories(adapter);
             finish();
         });
+
+        Button newButton = findViewById(R.id.category_new_button);
+        newButton.setOnClickListener(v -> {
+            // TODO
+        });
     }
 
     private void saveAllCategories(CategoryListAdapter adapter) {

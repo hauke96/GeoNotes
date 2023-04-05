@@ -56,7 +56,8 @@
     <!-- Category list -->
     <string name="category_list_save">Speichern</string>
     <string name="category_list_color_notice">Farbänderung derzeit noch nicht möglich, diese Funktion kommt noch.</string>
-    <string name="cannot_delete_with_notes">Es gibt noch Notizen mit dieser Kategorie, du kannst sie daher nicht löschen.</string>
+    <string name="category_cannot_delete_with_notes">Es gibt noch Notizen mit dieser Kategorie, du kannst sie daher nicht löschen.</string>
+    <string name="category_new">+ Neu</string>
 
     <!-- Initial color names -->
     <string name="initial_color_red">Rot</string>
