@@ -2,6 +2,8 @@ package de.hauke_stieler.geonotes.categories;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,6 +42,8 @@ public class CategoryConfigurationActivity extends AppCompatActivity {
         listView.setLayoutManager(manager);
         listView.setHasFixedSize(true);
         listView.setAdapter(adapter);
+        DividerItemDecoration divider = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        listView.addItemDecoration(divider);
 
         Button saveButton = findViewById(R.id.category_list_save);
         saveButton.setOnClickListener(v -> {

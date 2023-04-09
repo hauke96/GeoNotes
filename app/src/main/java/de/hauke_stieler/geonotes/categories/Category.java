@@ -48,8 +48,8 @@ public class Category {
         return color;
     }
 
-    public void setColorString(String newColor) {
-        this.color = newColor;
+    public void setColor(int newColor) {
+        this.color = String.format("#%06X", (0xFFFFFF & newColor));
     }
 
     public int getColor() {
