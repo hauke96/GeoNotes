@@ -6,12 +6,21 @@
     android:padding="10dp">
 
     <ImageView
+        android:id="@+id/category_color_dialog_icon_map_preview"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/map_preview"/>
+
+    <ImageView
         android:id="@+id/category_color_dialog_icon_preview"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="70dp"/>
 
     <LinearLayout
         android:layout_below="@+id/category_color_dialog_icon_preview"

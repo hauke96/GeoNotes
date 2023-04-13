@@ -31,7 +31,7 @@ public class CategoryColorDialog extends DialogFragment {
     private SeekBar colorSliderHue;
     private SeekBar colorSliderSaturation;
     private SeekBar colorSliderValue;
-    private View iconPreview;
+    private ImageView iconPreview;
 
     public CategoryColorDialog(CategoryColorChangedListener categoryColorChangedListener, Category category) {
         this.categoryColorChangedListener = categoryColorChangedListener;
@@ -71,13 +71,7 @@ public class CategoryColorDialog extends DialogFragment {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 updateSliderSaturationGradient();
                 updateSliderValueGradient();
-                // TODO Update preview drawable
                 updateIconPreview();
-//                if (innerLayout.getBackground() instanceof GradientDrawable) {
-//                    GradientDrawable background = (GradientDrawable) innerLayout.getBackground();
-//                    background.mutate();
-//                    background.setColor(currentColor);
-//                }
             }
 
             @Override
@@ -96,7 +90,6 @@ public class CategoryColorDialog extends DialogFragment {
         colorSliderSaturation.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                // TODO Update preview drawable
                 updateIconPreview();
             }
 
@@ -116,7 +109,6 @@ public class CategoryColorDialog extends DialogFragment {
         colorSliderValue.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                // TODO Update preview drawable
                 updateIconPreview();
             }
 
