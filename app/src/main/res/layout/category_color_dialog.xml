@@ -11,12 +11,28 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatSeekBar
-            android:id="@+id/category_color_dialog_color_slider"
+            android:id="@+id/category_color_dialog_color_slider_hue"
             android:layout_width="match_parent"
             android:layout_height="15dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="20dp"
             android:max="360" />
+
+        <androidx.appcompat.widget.AppCompatSeekBar
+            android:id="@+id/category_color_dialog_color_slider_sat"
+            android:layout_width="match_parent"
+            android:layout_height="15dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="20dp"
+            android:max="100" />
+
+        <androidx.appcompat.widget.AppCompatSeekBar
+            android:id="@+id/category_color_dialog_color_slider_val"
+            android:layout_width="match_parent"
+            android:layout_height="15dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="20dp"
+            android:max="100" />
 
         <LinearLayout
             android:layout_width="match_parent"

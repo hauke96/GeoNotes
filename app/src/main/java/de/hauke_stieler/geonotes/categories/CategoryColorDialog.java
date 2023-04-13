@@ -1,6 +1,7 @@
 package de.hauke_stieler.geonotes.categories;
 
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -24,8 +25,9 @@ public class CategoryColorDialog extends DialogFragment {
     private final CategoryColorChangedListener categoryColorChangedListener;
     private final Category category;
 
-    private SeekBar colorSlider;
-    private int currentColor;
+    private SeekBar colorSliderHue;
+    private SeekBar colorSliderSaturation;
+    private SeekBar colorSliderValue;
 
     public CategoryColorDialog(CategoryColorChangedListener categoryColorChangedListener, Category category) {
         this.categoryColorChangedListener = categoryColorChangedListener;
@@ -39,25 +41,30 @@ public class CategoryColorDialog extends DialogFragment {
 
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        GradientDrawable rainbowDrawable = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,
-                new int[]{
-                        hueToColor(0),
-                        hueToColor(60),
-                        hueToColor(120),
-                        hueToColor(180),
-                        hueToColor(240),
-                        hueToColor(300),
-                        hueToColor(360)});
-        rainbowDrawable.setSize(-1, 2);
+        initSliderHue(view);
+        initSliderSaturation(view);
+        initSliderValue(view);
 
-        colorSlider = view.findViewById(R.id.category_color_dialog_color_slider);
         resetSlider();
-        colorSlider.setProgressDrawable(rainbowDrawable);
-        colorSlider.setThumb(ResourcesCompat.getDrawable(view.getResources(), R.drawable.ic_vertical_line, null));
-        colorSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+        setSliderHueGradient();
+        updateSliderSaturationGradient();
+        updateSliderValueGradient();
+
+        view.findViewById(R.id.category_color_dialog_btn_reset).setOnClickListener(v -> onResetClicked());
+        view.findViewById(R.id.category_color_dialog_btn_ok).setOnClickListener(v -> onOkClicked());
+
+        return view;
+    }
+
+    private void initSliderHue(View view) {
+        colorSliderHue = view.findViewById(R.id.category_color_dialog_color_slider_hue);
+        colorSliderHue.setThumb(ResourcesCompat.getDrawable(view.getResources(), R.drawable.ic_vertical_line, null));
+        colorSliderHue.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                currentColor = hueToColor(progress);
+                updateSliderSaturationGradient();
+                updateSliderValueGradient();
                 // TODO Update preview drawable
 //                if (innerLayout.getBackground() instanceof GradientDrawable) {
 //                    GradientDrawable background = (GradientDrawable) innerLayout.getBackground();
@@ -74,11 +81,90 @@ public class CategoryColorDialog extends DialogFragment {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
+    }
 
-        view.findViewById(R.id.category_color_dialog_btn_reset).setOnClickListener(v -> onResetClicked());
-        view.findViewById(R.id.category_color_dialog_btn_ok).setOnClickListener(v -> onOkClicked());
+    private void initSliderSaturation(View view) {
+        colorSliderSaturation = view.findViewById(R.id.category_color_dialog_color_slider_sat);
+        colorSliderSaturation.setThumb(ResourcesCompat.getDrawable(view.getResources(), R.drawable.ic_vertical_line, null));
+        colorSliderSaturation.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                // TODO Update preview drawable
+            }
 
-        return view;
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+    }
+
+    private void initSliderValue(View view) {
+        colorSliderValue = view.findViewById(R.id.category_color_dialog_color_slider_val);
+        colorSliderValue.setThumb(ResourcesCompat.getDrawable(view.getResources(), R.drawable.ic_vertical_line, null));
+        colorSliderValue.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                // TODO Update preview drawable
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+    }
+
+    private void setSliderHueGradient() {
+        GradientDrawable rainbowDrawable = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,
+                new int[]{
+                        hsvToColor(0, 1, 1),
+                        hsvToColor(60, 1, 1),
+                        hsvToColor(120, 1, 1),
+                        hsvToColor(180, 1, 1),
+                        hsvToColor(240, 1, 1),
+                        hsvToColor(300, 1, 1),
+                        hsvToColor(360, 1, 1)
+                });
+        rainbowDrawable.setSize(-1, 2);
+        colorSliderHue.setProgressDrawable(rainbowDrawable);
+    }
+
+    private void updateSliderSaturationGradient() {
+        updateSimpleGradient(colorSliderSaturation,
+                hsvToColor(colorSliderHue.getProgress(), 0, colorSliderValue.getProgress()),
+                hsvToColor(colorSliderHue.getProgress(), 1, colorSliderValue.getProgress())
+        );
+    }
+
+    private void updateSliderValueGradient() {
+        updateSimpleGradient(colorSliderValue,
+                hsvToColor(colorSliderHue.getProgress(), colorSliderSaturation.getProgress(), 0),
+                hsvToColor(colorSliderHue.getProgress(), colorSliderSaturation.getProgress(), 1)
+        );
+    }
+
+    private void updateSimpleGradient(SeekBar seekBar, int colorA, int colorB) {
+        int[] colors = {
+                colorA,
+                colorB
+        };
+        Drawable progressDrawable = seekBar.getProgressDrawable();
+
+        if (progressDrawable instanceof GradientDrawable) {
+            GradientDrawable gradientDrawable = (GradientDrawable) progressDrawable;
+            gradientDrawable.setColors(colors);
+        } else {
+            GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, colors);
+            gradientDrawable.setSize(-1, 2);
+            seekBar.setProgressDrawable(gradientDrawable);
+        }
     }
 
     private void onOkClicked() {
@@ -86,27 +172,35 @@ public class CategoryColorDialog extends DialogFragment {
         dismiss();
     }
 
-    private void fireChangeEvent() {
-        categoryColorChangedListener.onColorChanged(currentColor);
-    }
-
     private void onResetClicked() {
         resetSlider();
         fireChangeEvent();
     }
 
-    private void resetSlider() {
-        float[] colorToHSV = new float[3];
-        Color.colorToHSV(category.getColor(), colorToHSV);
-        colorSlider.setProgress((int) colorToHSV[0]);
+    private void fireChangeEvent() {
+        int color = hsvToColor(colorSliderHue.getProgress(), colorSliderSaturation.getProgress() / 100.0f, colorSliderValue.getProgress() / 100.0f);
+        categoryColorChangedListener.onColorChanged(color);
     }
 
-    private int hueToColor(int progress) {
+    private void resetSlider() {
+        float[] hsv = colorToHsv(category.getColor());
+        colorSliderHue.setProgress((int) hsv[0]);
+        colorSliderSaturation.setProgress((int) (hsv[1] * 100));
+        colorSliderValue.setProgress((int) (hsv[2] * 100));
+    }
+
+    @NonNull
+    private float[] colorToHsv(int color) {
         float[] hsv = new float[3];
-        hsv[0] = progress;
-        hsv[1] = 0.8f;
-        hsv[2] = 0.95f;
-        int color = Color.HSVToColor(hsv);
-        return color;
+        Color.colorToHSV(color, hsv);
+        return hsv;
+    }
+
+    private int hsvToColor(float hue, float saturation, float value) {
+        float[] hsv = new float[3];
+        hsv[0] = hue;
+        hsv[1] = saturation;
+        hsv[2] = value;
+        return Color.HSVToColor(hsv);
     }
 }
