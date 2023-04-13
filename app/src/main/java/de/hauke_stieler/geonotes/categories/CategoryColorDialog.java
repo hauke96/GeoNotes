@@ -13,11 +13,15 @@ import android.widget.SeekBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.core.graphics.BlendModeColorFilterCompat;
+import androidx.core.graphics.BlendModeCompat;
 import androidx.fragment.app.DialogFragment;
 
 import de.hauke_stieler.geonotes.R;
+import de.hauke_stieler.geonotes.common.BitmapRenderer;
 
 public class CategoryColorDialog extends DialogFragment {
+
     public interface CategoryColorChangedListener {
         void onColorChanged(int color);
     }
@@ -28,6 +32,7 @@ public class CategoryColorDialog extends DialogFragment {
     private SeekBar colorSliderHue;
     private SeekBar colorSliderSaturation;
     private SeekBar colorSliderValue;
+    private View iconPreview;
 
     public CategoryColorDialog(CategoryColorChangedListener categoryColorChangedListener, Category category) {
         this.categoryColorChangedListener = categoryColorChangedListener;
@@ -40,6 +45,8 @@ public class CategoryColorDialog extends DialogFragment {
         View view = inflater.inflate(R.layout.category_color_dialog, container);
 
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        iconPreview = view.findViewById(R.id.category_color_dialog_icon_preview);
 
         initSliderHue(view);
         initSliderSaturation(view);
@@ -66,6 +73,7 @@ public class CategoryColorDialog extends DialogFragment {
                 updateSliderSaturationGradient();
                 updateSliderValueGradient();
                 // TODO Update preview drawable
+                updateIconPreview();
 //                if (innerLayout.getBackground() instanceof GradientDrawable) {
 //                    GradientDrawable background = (GradientDrawable) innerLayout.getBackground();
 //                    background.mutate();
@@ -90,6 +98,7 @@ public class CategoryColorDialog extends DialogFragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO Update preview drawable
+                updateIconPreview();
             }
 
             @Override
@@ -109,6 +118,7 @@ public class CategoryColorDialog extends DialogFragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO Update preview drawable
+                updateIconPreview();
             }
 
             @Override
@@ -167,6 +177,19 @@ public class CategoryColorDialog extends DialogFragment {
         }
     }
 
+    private void updateIconPreview() {
+        // TODO extract this rendering into separate class and reuse it for the real notes.
+        Drawable exclamationMarkIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_note_exclamation_mark, null);
+        Drawable backgroundOuterNormalIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_note_background, null);
+
+        Drawable backgroundInnerIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_note_background_inner, null);
+        backgroundInnerIcon.setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(getCurrentColor(), BlendModeCompat.SRC_IN));
+
+        Drawable noteIcon = BitmapRenderer.renderToBitmap(getContext(), backgroundOuterNormalIcon, backgroundInnerIcon, exclamationMarkIcon);
+
+        iconPreview.setBackground(noteIcon);
+    }
+
     private void onOkClicked() {
         fireChangeEvent();
         dismiss();
@@ -178,8 +201,11 @@ public class CategoryColorDialog extends DialogFragment {
     }
 
     private void fireChangeEvent() {
-        int color = hsvToColor(colorSliderHue.getProgress(), colorSliderSaturation.getProgress() / 100.0f, colorSliderValue.getProgress() / 100.0f);
-        categoryColorChangedListener.onColorChanged(color);
+        categoryColorChangedListener.onColorChanged(getCurrentColor());
+    }
+
+    private int getCurrentColor() {
+        return hsvToColor(colorSliderHue.getProgress(), colorSliderSaturation.getProgress() / 100.0f, colorSliderValue.getProgress() / 100.0f);
     }
 
     private void resetSlider() {
