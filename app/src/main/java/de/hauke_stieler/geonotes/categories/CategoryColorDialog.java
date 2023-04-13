@@ -8,17 +8,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.core.graphics.BlendModeColorFilterCompat;
-import androidx.core.graphics.BlendModeCompat;
 import androidx.fragment.app.DialogFragment;
 
 import de.hauke_stieler.geonotes.R;
-import de.hauke_stieler.geonotes.common.BitmapRenderer;
+import de.hauke_stieler.geonotes.common.NoteIconRenderer;
 
 public class CategoryColorDialog extends DialogFragment {
 
@@ -178,16 +177,8 @@ public class CategoryColorDialog extends DialogFragment {
     }
 
     private void updateIconPreview() {
-        // TODO extract this rendering into separate class and reuse it for the real notes.
-        Drawable exclamationMarkIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_note_exclamation_mark, null);
-        Drawable backgroundOuterNormalIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_note_background, null);
-
-        Drawable backgroundInnerIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_note_background_inner, null);
-        backgroundInnerIcon.setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(getCurrentColor(), BlendModeCompat.SRC_IN));
-
-        Drawable noteIcon = BitmapRenderer.renderToBitmap(getContext(), backgroundOuterNormalIcon, backgroundInnerIcon, exclamationMarkIcon);
-
-        iconPreview.setBackground(noteIcon);
+        Drawable noteIcon = NoteIconRenderer.render(getContext(), getCurrentColor(), R.drawable.ic_note_exclamation_mark, false);
+        iconPreview.setImageDrawable(noteIcon);
     }
 
     private void onOkClicked() {
