@@ -1,7 +1,6 @@
 package de.hauke_stieler.geonotes.categories;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
 import android.text.Editable;
@@ -12,11 +11,10 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.res.ResourcesCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -33,7 +31,6 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
         public EditText nameInput;
         public ImageButton deleteButton;
         public ImageButton sortButton;
-        public SeekBar colorSlider;
 
         public CategoryViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -46,7 +43,6 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
             nameInput = itemView.findViewById(R.id.category_list_row_input);
             deleteButton = itemView.findViewById(R.id.category_list_row_delete_button);
             sortButton = itemView.findViewById(R.id.category_list_row_up_button);
-            colorSlider = itemView.findViewById(R.id.category_list_row_color_slider);
         }
     }
 
@@ -89,6 +85,19 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
         if (innerLayout.getBackground() instanceof GradientDrawable) {
             ((GradientDrawable) innerLayout.getBackground()).setColor(category.getColor());
         }
+
+        CategoryColorDialog.CategoryColorChangedListener categoryColorChangedListener = (newColor) -> {
+            category.setColor(newColor);
+            if (innerLayout.getBackground() instanceof GradientDrawable) {
+                GradientDrawable background = (GradientDrawable) innerLayout.getBackground();
+                background.mutate();
+                background.setColor(newColor);
+            }
+        };
+        viewHolder.outerColorChooserLayout.setOnClickListener(v -> {
+            CategoryColorDialog categoryColorDialog = new CategoryColorDialog(categoryColorChangedListener, category);
+            categoryColorDialog.show(((AppCompatActivity) context).getSupportFragmentManager(), CategoryColorDialog.class.getName());
+        });
 
         EditText editField = viewHolder.nameInput;
         editField.setText(category.getName());
@@ -139,56 +148,11 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
 
             notifyDataSetChanged();
         });
-
-        float[] colorToHSV = new float[3];
-        Color.colorToHSV(category.getColor(), colorToHSV);
-        GradientDrawable rainbowDrawable = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,
-                new int[]{
-                        hueToColor(0),
-                        hueToColor(60),
-                        hueToColor(120),
-                        hueToColor(180),
-                        hueToColor(240),
-                        hueToColor(300),
-                        hueToColor(360)});
-        rainbowDrawable.setSize(-1, 2);
-        viewHolder.colorSlider.setProgressDrawable(rainbowDrawable);
-        viewHolder.colorSlider.setProgress((int) colorToHSV[0]);
-        viewHolder.colorSlider.setThumb(ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_vertical_line, null));
-        viewHolder.colorSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (innerLayout.getBackground() instanceof GradientDrawable) {
-                    int color = hueToColor(progress);
-                    GradientDrawable background = (GradientDrawable) innerLayout.getBackground();
-                    background.mutate();
-                    background.setColor(color);
-                    category.setColor(color);
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
     }
 
     public void addCategory(String color) {
         Category newCategory = new Category(color, "", this.categories.size());
         this.categories.add(newCategory);
         notifyDataSetChanged();
-    }
-
-    private int hueToColor(int progress) {
-        float[] hsv = new float[3];
-        hsv[0] = progress;
-        hsv[1] = 0.8f;
-        hsv[2] = 0.95f;
-        int color = Color.HSVToColor(hsv);
-        return color;
     }
 }

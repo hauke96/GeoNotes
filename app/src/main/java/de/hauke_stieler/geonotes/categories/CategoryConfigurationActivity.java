@@ -16,6 +16,7 @@ import java.util.List;
 import de.hauke_stieler.geonotes.Injector;
 import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.database.Database;
+import de.hauke_stieler.geonotes.note_list.FilterDialog;
 
 public class CategoryConfigurationActivity extends AppCompatActivity {
 

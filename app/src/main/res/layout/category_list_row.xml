@@ -52,12 +52,4 @@
             android:src="@drawable/ic_arrow_up"
             app:tint="@color/dark_grey" />
     </LinearLayout>
-
-    <androidx.appcompat.widget.AppCompatSeekBar
-        android:id="@+id/category_list_row_color_slider"
-        android:layout_width="match_parent"
-        android:layout_height="15dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="20dp"
-        android:max="360" />
 </LinearLayout>
