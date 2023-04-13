@@ -8,11 +8,9 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import de.hauke_stieler.geonotes.R;
-import de.hauke_stieler.geonotes.notes.Note;
 
 public class CategoryStore {
     private static final String CATEGORIES_TABLE_NAME = "categories";

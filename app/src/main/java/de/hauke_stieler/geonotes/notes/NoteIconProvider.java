@@ -1,22 +1,13 @@
 package de.hauke_stieler.geonotes.notes;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
-
-import androidx.core.content.res.ResourcesCompat;
-import androidx.core.graphics.BlendModeColorFilterCompat;
-import androidx.core.graphics.BlendModeCompat;
 
 import java.util.HashMap;
 import java.util.List;
 
 import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.categories.Category;
-import de.hauke_stieler.geonotes.common.BitmapRenderer;
 import de.hauke_stieler.geonotes.common.NoteIconRenderer;
 import de.hauke_stieler.geonotes.database.Database;
 

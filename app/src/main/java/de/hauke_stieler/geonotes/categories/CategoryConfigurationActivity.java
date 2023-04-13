@@ -2,13 +2,11 @@ package de.hauke_stieler.geonotes.categories;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 
 import java.util.List;
@@ -16,7 +14,6 @@ import java.util.List;
 import de.hauke_stieler.geonotes.Injector;
 import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.database.Database;
-import de.hauke_stieler.geonotes.note_list.FilterDialog;
 
 public class CategoryConfigurationActivity extends AppCompatActivity {
 
