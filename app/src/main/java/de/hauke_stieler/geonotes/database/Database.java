@@ -1,6 +1,7 @@
 package de.hauke_stieler.geonotes.database;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -9,6 +10,7 @@ import org.osmdroid.util.GeoPoint;
 import java.io.File;
 import java.util.List;
 
+import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.categories.Category;
 import de.hauke_stieler.geonotes.categories.CategoryStore;
 import de.hauke_stieler.geonotes.notes.Note;
@@ -151,7 +153,15 @@ public class Database extends SQLiteOpenHelper {
         categoryStore.update(getWritableDatabase(), id, newName, newColor, sortKey);
     }
 
-    public void removeCategory(long id) {
+    public void removeCategory(SharedPreferences preferences, long id) {
         categoryStore.removeCategory(getWritableDatabase(), id);
+
+        String preferenceKey = this.context.getString(R.string.pref_last_category_id);
+        if(preferences.contains(preferenceKey) && preferences.getLong(preferenceKey, -1) == id) {
+            // The currently stored category has been removed from the database.
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putLong(preferenceKey, getAllCategories().get(0).getId());
+            editor.commit();
+        }
     }
 }

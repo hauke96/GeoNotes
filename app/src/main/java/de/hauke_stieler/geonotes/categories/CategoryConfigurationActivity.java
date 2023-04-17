@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 
@@ -18,6 +19,7 @@ import de.hauke_stieler.geonotes.database.Database;
 public class CategoryConfigurationActivity extends AppCompatActivity {
 
     private Database database;
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,8 @@ public class CategoryConfigurationActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        preferences = Injector.get(SharedPreferences.class);
 
         database = Injector.get(Database.class);
         List<Category> categories = database.getAllCategories();
@@ -55,8 +59,9 @@ public class CategoryConfigurationActivity extends AppCompatActivity {
 
     private void saveAllCategories(CategoryListAdapter adapter) {
         for (Category category : adapter.getAllRemovedItems()) {
-            database.removeCategory(category.getId());
+            database.removeCategory(preferences, category.getId());
         }
+
         for (Category category : adapter.getAllItems()) {
             if (category.getId() == Category.UNKNOWN_ID) {
                 database.addCategory(category.getColorString(), category.getName(), category.getSortKey());
