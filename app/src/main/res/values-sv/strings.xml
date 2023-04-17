@@ -34,6 +34,10 @@
     <string name="tap_long_to_create_a_note">Klicka länge för att lägga till anteckning</string>
     <string name="feedback">Feedback</string>
     <string name="geonotes_version">GeoNotes version</string>
+    <!-- TODO Translate -->
+    <string name="no_mail_client_found">No mail client found</string>
+    <string name="cache_cleared">Cache cleared</string>
+    <string name="cache_cleared_error">Error clearing cache!</string>
 
     <!-- Marker -->
     <string name="marker_instructions">1. Flytta kartan\n2. Släpp fingret för att spara plats</string>

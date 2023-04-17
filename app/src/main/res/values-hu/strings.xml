@@ -34,6 +34,10 @@
     <string name="tap_long_to_create_a_note">Jegyzet létrehozása hosszú érintéssel</string>
     <string name="feedback">Visszajelzés</string>
     <string name="geonotes_version">GeoNotes verziója</string>
+    <!-- TODO Translate -->
+    <string name="no_mail_client_found">No mail client found</string>
+    <string name="cache_cleared">Cache cleared</string>
+    <string name="cache_cleared_error">Error clearing cache!</string>
 
     <!-- Marker -->
     <string name="marker_instructions">1. Mozgassa a térképet\n2. A hely mentéséhez engedje fel az ujját</string>

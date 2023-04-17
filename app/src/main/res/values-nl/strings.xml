@@ -35,6 +35,10 @@
     <string name="tap_long_to_create_a_note">Klik en houd ingedrukt om een opmerking aan te maken</string>
     <string name="feedback">Feedback</string>
     <string name="geonotes_version">GeoNotes versie</string>
+    <!-- TODO Translate -->
+    <string name="no_mail_client_found">No mail client found</string>
+    <string name="cache_cleared">Cache cleared</string>
+    <string name="cache_cleared_error">Error clearing cache!</string>
 
     <!-- Marker -->
     <string name="marker_instructions">1. Verplaats de kaart\n2. Laat los om de locatie op te slaan</string>

@@ -35,6 +35,10 @@
     <string name="tap_long_to_create_a_note">Crea una nota con un tocco lungo</string>
     <string name="feedback">Feedback</string>
     <string name="geonotes_version">Versione GeoNotes</string>
+    <!-- TODO Translate -->
+    <string name="no_mail_client_found">No mail client found</string>
+    <string name="cache_cleared">Cache cleared</string>
+    <string name="cache_cleared_error">Error clearing cache!</string>
 
     <!-- Marker -->
     <string name="marker_instructions">1. Spostare la mappa\n2. Rilasciare il dito per salvare la posizione</string>

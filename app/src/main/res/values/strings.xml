@@ -49,6 +49,9 @@
     <string name="tap_long_to_create_a_note">Tap long to create a note</string>
     <string name="feedback">Feedback</string>
     <string name="geonotes_version">GeoNotes version</string>
+    <string name="no_mail_client_found">No mail client found</string>
+    <string name="cache_cleared">Cache cleared</string>
+    <string name="cache_cleared_error">Error clearing cache!</string>
 
     <!-- Marker -->
     <string name="marker_instructions">1. Move the map\n2. Release your finger to save location</string>

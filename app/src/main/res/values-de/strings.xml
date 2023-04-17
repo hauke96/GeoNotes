@@ -34,6 +34,9 @@
     <string name="tap_long_to_create_a_note">Lange tippen um Notiz zu erstellen</string>
     <string name="feedback">Feedback</string>
     <string name="geonotes_version">GeoNotes Version</string>
+    <string name="no_mail_client_found">Keine E-Mail App gefunden!</string>
+    <string name="cache_cleared">Cache geleert</string>
+    <string name="cache_cleared_error">Fehler beim Cache leeren!</string>
 
     <!-- Marker -->
     <string name="marker_instructions">1. Karte bewegen\n2. Finger loslassen um Ort zu speichern</string>
