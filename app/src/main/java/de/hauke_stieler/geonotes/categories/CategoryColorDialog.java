@@ -90,6 +90,7 @@ public class CategoryColorDialog extends DialogFragment {
         colorSliderSaturation.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                updateSliderValueGradient();
                 updateIconPreview();
             }
 
@@ -139,15 +140,15 @@ public class CategoryColorDialog extends DialogFragment {
 
     private void updateSliderSaturationGradient() {
         updateSimpleGradient(colorSliderSaturation,
-                hsvToColor(colorSliderHue.getProgress(), 0, colorSliderValue.getProgress()),
-                hsvToColor(colorSliderHue.getProgress(), 1, colorSliderValue.getProgress())
+                hsvToColor(colorSliderHue.getProgress(), 0, 1),
+                hsvToColor(colorSliderHue.getProgress(), 1, 1)
         );
     }
 
     private void updateSliderValueGradient() {
         updateSimpleGradient(colorSliderValue,
-                hsvToColor(colorSliderHue.getProgress(), colorSliderSaturation.getProgress(), 0),
-                hsvToColor(colorSliderHue.getProgress(), colorSliderSaturation.getProgress(), 1)
+                hsvToColor(colorSliderHue.getProgress(), colorSliderSaturation.getProgress() / 100.0f, 0),
+                hsvToColor(colorSliderHue.getProgress(), colorSliderSaturation.getProgress() / 100.0f, 1)
         );
     }
 
