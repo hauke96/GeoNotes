@@ -18,6 +18,7 @@ import java.util.HashMap;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.export.Exporter;
 import de.hauke_stieler.geonotes.map.Map;
+import de.hauke_stieler.geonotes.notes.NoteIconProvider;
 
 public class GeoNotesTestRule extends Injector implements TestRule {
 
@@ -26,6 +27,7 @@ public class GeoNotesTestRule extends Injector implements TestRule {
         classBuilders.put(Exporter.class, () -> add(Exporter.class));
         classBuilders.put(SharedPreferences.class, () -> add(SharedPreferences.class));
         classBuilders.put(de.hauke_stieler.geonotes.map.Map.class, () -> add(Map.class));
+        classBuilders.put(NoteIconProvider.class, () -> add(NoteIconProvider.class));
     }
 
     @Override

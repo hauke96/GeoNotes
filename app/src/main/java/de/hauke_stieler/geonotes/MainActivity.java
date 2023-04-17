@@ -51,11 +51,11 @@ import de.hauke_stieler.geonotes.settings.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int REQUEST_CATEGORIES_REQUEST_CODE = 5;
-    private static final int REQUEST_NOTE_LIST_REQUEST_CODE = 4;
-    private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 3;
-    private static final int REQUEST_CAMERA_PERMISSIONS_REQUEST_CODE = 2;
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    static final int REQUEST_CATEGORIES_REQUEST_CODE = 5;
+    static final int REQUEST_NOTE_LIST_REQUEST_CODE = 4;
+    static final int REQUEST_PERMISSIONS_REQUEST_CODE = 3;
+    static final int REQUEST_CAMERA_PERMISSIONS_REQUEST_CODE = 2;
+    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private Map map;
     private SharedPreferences preferences;

@@ -26,7 +26,7 @@ public class GpxTest {
                 "    <time>2022-01-30T12:34:56Z</time>\n" +
                 "    <name>123</name>\n" +
                 "    <desc>foo bar</desc>\n" +
-                "    <type>11 (Foo)</type>\n" +
+                "    <type>11;#abc123;Foo</type>\n" +
                 "  </wpt>\n" +
                 "</gpx>\n", gpxString);
     }
