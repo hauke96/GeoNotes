@@ -3,8 +3,11 @@ package de.hauke_stieler.geonotes.notes;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 
+import androidx.annotation.NonNull;
+
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.categories.Category;
@@ -13,22 +16,27 @@ import de.hauke_stieler.geonotes.database.Database;
 
 public class NoteIconProvider {
 
-    private final Context context;
+    private java.util.Map<Long, Drawable> categoryToNormalIcon;
+    private java.util.Map<Long, Drawable> categoryToCameraIcon;
+    private java.util.Map<Long, Drawable> categoryToNormalIconSelected;
+    private java.util.Map<Long, Drawable> categoryToCameraIconSelected;
 
-    private final java.util.Map<Long, Drawable> categoryToNormalIcon;
-    private final java.util.Map<Long, Drawable> categoryToCameraIcon;
-    private final java.util.Map<Long, Drawable> categoryToNormalIconSelected;
-    private final java.util.Map<Long, Drawable> categoryToCameraIconSelected;
+    private final Context context;
+    private final Database database;
 
     public NoteIconProvider(Context context, Database database) {
         this.context = context;
+        this.database = database;
+        updateIcons();
+    }
 
+    public void updateIcons() {
         categoryToNormalIcon = new HashMap<>();
         categoryToCameraIcon = new HashMap<>();
         categoryToNormalIconSelected = new HashMap<>();
         categoryToCameraIconSelected = new HashMap<>();
 
-        List<Category> allCategories = database.getAllCategories();
+        List<Category> allCategories = this.database.getAllCategories();
         for (int i = 0; i < allCategories.size(); i++) {
             Category category = allCategories.get(i);
 

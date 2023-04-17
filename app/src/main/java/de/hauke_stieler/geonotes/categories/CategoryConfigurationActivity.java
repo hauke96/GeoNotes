@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
@@ -50,6 +51,7 @@ public class CategoryConfigurationActivity extends AppCompatActivity {
         Button saveButton = findViewById(R.id.category_list_save);
         saveButton.setOnClickListener(v -> {
             saveAllCategories(adapter);
+            setResult(Activity.RESULT_OK);
             finish();
         });
 
