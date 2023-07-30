@@ -1,6 +1,7 @@
 package de.hauke_stieler.geonotes.database;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -9,6 +10,7 @@ import org.osmdroid.util.GeoPoint;
 import java.io.File;
 import java.util.List;
 
+import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.categories.Category;
 import de.hauke_stieler.geonotes.categories.CategoryStore;
 import de.hauke_stieler.geonotes.notes.Note;
@@ -17,7 +19,7 @@ import de.hauke_stieler.geonotes.photo.PhotoStore;
 import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
 
 public class Database extends SQLiteOpenHelper {
-    private static final int DB_VERSION = 6;
+    private static final int DB_VERSION = 7;
     private static final String DB_NAME = "geonotes";
 
     private final NoteStore noteStore;
@@ -124,8 +126,8 @@ public class Database extends SQLiteOpenHelper {
     }
 
 
-    public long addCategory(String color, String name) {
-        return categoryStore.addCategory(getWritableDatabase(), color, name);
+    public long addCategory(String color, String name, long sortKey) {
+        return categoryStore.addCategory(getWritableDatabase(), color, name, sortKey);
     }
 
     public Category getCategory(String id) {
@@ -133,10 +135,33 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public List<Category> getAllCategories() {
-        return categoryStore.getAllCategories(getReadableDatabase());
+        List<Category> categories = categoryStore.getAllCategories(getReadableDatabase());
+        List<Note> allNotes = getAllNotes();
+        for (Note note : allNotes) {
+            for (Category category : categories) {
+                // These are actually different instanced of the category, so we can't reuse the
+                // category instances from the notes.
+                if (category.getId() == note.getCategory().getId()) {
+                    category.setHasNotes(true);
+                }
+            }
+        }
+        return categories;
     }
 
-    public void updateCategory(long id, String newName, String newColor) {
-        categoryStore.update(getWritableDatabase(), id, newName, newColor);
+    public void updateCategory(long id, String newName, String newColor, long sortKey) {
+        categoryStore.update(getWritableDatabase(), id, newName, newColor, sortKey);
+    }
+
+    public void removeCategory(SharedPreferences preferences, long id) {
+        categoryStore.removeCategory(getWritableDatabase(), id);
+
+        String preferenceKey = this.context.getString(R.string.pref_last_category_id);
+        if(preferences.contains(preferenceKey) && preferences.getLong(preferenceKey, -1) == id) {
+            // The currently stored category has been removed from the database.
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putLong(preferenceKey, getAllCategories().get(0).getId());
+            editor.commit();
+        }
     }
 }

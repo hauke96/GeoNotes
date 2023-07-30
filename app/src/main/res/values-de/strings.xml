@@ -34,6 +34,9 @@
     <string name="tap_long_to_create_a_note">Lange tippen um Notiz zu erstellen</string>
     <string name="feedback">Feedback</string>
     <string name="geonotes_version">GeoNotes Version</string>
+    <string name="no_mail_client_found">Keine E-Mail App gefunden!</string>
+    <string name="cache_cleared">Cache geleert</string>
+    <string name="cache_cleared_error">Fehler beim Cache leeren!</string>
 
     <!-- Marker -->
     <string name="marker_instructions">1. Karte bewegen\n2. Finger loslassen um Ort zu speichern</string>
@@ -45,9 +48,10 @@
     <string name="gpx_export_failed">GPX-Export fehlgeschlagen</string>
 
     <!-- Note List -->
-    <string name="delete_all_notes">Wirklich ALLE Notizen löschen? Dies kann nicht rückgängig gemacht werden!</string>
-    <string name="delete_all_filtered_notes">Alle GEFILTERTEN Notizen löschen? Dies kann nicht rückgängig gemacht werden!</string>
-    <string name="create_thumbnail_failed">Erstellung vom Vorschaubild fehlgeschlagen</string>
+    <string name="note_list_delete_all_notes">Wirklich ALLE Notizen löschen? Dies kann nicht rückgängig gemacht werden!</string>
+    <string name="note_list_delete_all_filtered_notes">Alle GEFILTERTEN Notizen löschen? Dies kann nicht rückgängig gemacht werden!</string>
+    <string name="note_list_create_thumbnail_failed">Erstellung vom Vorschaubild fehlgeschlagen</string>
+    <string name="note_list_only_photo">"(nur Foto)"</string>
 
     <!-- Filter dialog-->
     <string name="filter_dialog_filter_by_note_text">Nach Text filtern:</string>
@@ -56,6 +60,8 @@
     <!-- Category list -->
     <string name="category_list_save">Speichern</string>
     <string name="category_list_color_notice">Farbänderung derzeit noch nicht möglich, diese Funktion kommt noch.</string>
+    <string name="category_cannot_delete_with_notes">Es gibt noch Notizen mit dieser Kategorie, du kannst sie daher nicht löschen.</string>
+    <string name="category_new">+ Neu</string>
 
     <!-- Initial color names -->
     <string name="initial_color_red">Rot</string>

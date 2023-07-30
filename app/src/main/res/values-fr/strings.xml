@@ -35,10 +35,14 @@
     <string name="tap_long_to_create_a_note">Un appui long permet de créer une note</string>
     <string name="feedback">Avis</string>
     <string name="geonotes_version">GeoNotes version</string>
+    <!-- TODO Translate -->
+    <string name="no_mail_client_found">No mail client found</string>
+    <string name="cache_cleared">Cache cleared</string>
+    <string name="cache_cleared_error">Error clearing cache!</string>
 
     <!-- Marker -->
     <string name="marker_instructions">1. Déplacer la carte\n2. Relâcher votre doigt pour enregistrer la position</string>
-    <string name="enter_text_for_a_new_note">Entrer un texte pour la nouvelle note :</string>
+    <string name="enter_text_for_a_new_note">Entrer un texte pour la nouvelle note :</string>
     <string name="marker_move">Déplacer</string>
     <string name="marker_delete">Supprimer</string>
 
@@ -47,18 +51,22 @@
 
     <!-- Note List -->
     <!-- TODO Update translation ("all" changed to "ALL" in original text) -->
-    <string name="delete_all_notes">Supprimer toutes les notes ? Cette action ne peut pas être annulée !</string>
+    <string name="note_list_delete_all_notes">Supprimer toutes les notes? Cette action ne peut pas être annulée!</string>
     <!-- TODO Translate -->
-    <string name="delete_all_filtered_notes">Really delete FILTERED notes? This is not reversible!</string>
-    <string name="create_thumbnail_failed">Échec lors de la création de vignette</string>
+    <string name="note_list_delete_all_filtered_notes">Really delete FILTERED notes? This is not reversible!</string>
+    <string name="note_list_create_thumbnail_failed">Échec lors de la création de vignette</string>
+    <string name="note_list_only_photo">"(only photo)"</string>
     
     <!-- Filter dialog-->
-    <string name="filter_dialog_filter_by_note_text">Filtrer par texte de note :</string>
-    <string name="filter_dialog_filter_by_category">Filtrer par catégorie :</string>
+    <string name="filter_dialog_filter_by_note_text">Filtrer par texte de note:</string>
+    <string name="filter_dialog_filter_by_category">Filtrer par catégorie:</string>
 
     <!-- Category list -->
     <string name="category_list_save">Enregistrer</string>
     <string name="category_list_color_notice">Modifier la couleur n’est pas encore possible, la fonction est en cours de développement.</string>
+    <!-- TODO Translate -->
+    <string name="category_cannot_delete_with_notes">There are notes with this category, you can\'t delete it.</string>
+    <string name="category_new">+ New</string>
 
     <!-- Initial color names -->
     <!-- TODO Translate -->

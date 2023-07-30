@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -50,6 +51,9 @@ public class FilterDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.note_list_filter_dialog, container);
 
+        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getDialog().getWindow().setGravity(Gravity.END);
+
         EditText textInput = view.findViewById(R.id.note_list_filter_textview);
         textInput.setText(initialFilterText);
         textInput.addTextChangedListener(new TextWatcher() {
@@ -70,7 +74,7 @@ public class FilterDialog extends DialogFragment {
         categorySpinnerAdapter = new CategorySpinnerAdapter(getContext(), R.layout.category_spinner_item);
 
         List<Category> allCategories = database.getAllCategories();
-        allCategories.add(NONE_CATEGORY_ITEM_INDEX, new Category(Category.NONE_ID, "#ffffff", "(none)", R.drawable.shape_item_cetagory_spinner_none));
+        allCategories.add(NONE_CATEGORY_ITEM_INDEX, new Category(Category.NONE_ID, "#ffffff", "(none)", R.drawable.shape_item_cetagory_spinner_none, -1));
         categorySpinnerAdapter.setCategories(allCategories);
 
         categorySpinner = view.findViewById(R.id.note_list_filter_category_spinner);
@@ -91,7 +95,6 @@ public class FilterDialog extends DialogFragment {
 
         view.findViewById(R.id.note_list_filter_btn_reset).setOnClickListener(v -> onResetClicked());
         view.findViewById(R.id.note_list_filter_btn_ok).setOnClickListener(v -> onOkClicked());
-        getDialog().getWindow().setGravity(Gravity.RIGHT);
 
         return view;
     }

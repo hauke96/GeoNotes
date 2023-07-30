@@ -72,7 +72,7 @@ public class NoteListAdapter extends BaseAdapter {
 
     void fillTextView(Note note, boolean noteHasPhotos, TextView text) {
         if (noteHasPhotos && note.getDescription().trim().isEmpty()) {
-            text.setText("(only photo)");
+            text.setText(context.getString(R.string.note_list_only_photo));
             text.setTypeface(null, Typeface.ITALIC);
             text.setTextColor(context.getResources().getColor(R.color.grey));
         } else {

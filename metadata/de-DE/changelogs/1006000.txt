@@ -1,0 +1,7 @@
+1.6.0:
+
+Änderungen und Fehlerbehebungen:
+
+* Hinzufügen, entfernen und umsortieren von Kategorien
+* Farbe der Kategorien ändern
+* Kategorien sind in Exporten vorhanden

@@ -55,9 +55,9 @@ public class SettingsActivity extends AppCompatActivity {
                     clearCacheButton.setEnabled(true);
 
                     if (cacheCleared) {
-                        Toast.makeText(this, "Cache cleared", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.cache_cleared), Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(this, "Error clearing cache", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, R.string.cache_cleared_error, Toast.LENGTH_SHORT).show();
                     }
                 });
             }).start();
@@ -81,7 +81,7 @@ public class SettingsActivity extends AppCompatActivity {
             try {
                 startActivity(Intent.createChooser(i, "Choose E-Mail client"));
             } catch (android.content.ActivityNotFoundException ex) {
-                Toast.makeText(this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.no_mail_client_found), Toast.LENGTH_SHORT).show();
             }
         });
     }

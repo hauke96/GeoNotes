@@ -14,7 +14,7 @@ public class GpxTest {
     public void testGpxExport()  {
         // Arrange
         ArrayList<Note> notes = new ArrayList<>();
-        notes.add(new Note(123, "foo bar", 1.23, 2.34,"2022-01-30 12:34:56", new Category(11, "#abc123", "Foo")));
+        notes.add(new Note(123, "foo bar", 1.23, 2.34,"2022-01-30 12:34:56", new Category(11, "#abc123", "Foo", 1)));
 
         // Act
         String gpxString = Gpx.toGpx(notes);
@@ -26,7 +26,7 @@ public class GpxTest {
                 "    <time>2022-01-30T12:34:56Z</time>\n" +
                 "    <name>123</name>\n" +
                 "    <desc>foo bar</desc>\n" +
-                "    <type>11 (Foo)</type>\n" +
+                "    <type>11;#abc123;Foo</type>\n" +
                 "  </wpt>\n" +
                 "</gpx>\n", gpxString);
     }

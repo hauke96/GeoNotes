@@ -23,7 +23,7 @@ public class Gpx {
                 waypoint.setName(note.getId() + "");
                 waypoint.setTime(note.getCreationDateTime().getTime());
                 waypoint.setDescription(note.getDescription());
-                waypoint.setType(note.getCategory().getId() + " (" + note.getCategory().getName() + ")");
+                waypoint.setType(note.getCategory().getId() + ";" + note.getCategory().getColorString() + ";" + note.getCategory().getName());
                 gpx.addWaypoint(waypoint);
             }
 

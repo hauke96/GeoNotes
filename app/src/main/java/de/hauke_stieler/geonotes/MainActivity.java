@@ -45,21 +45,24 @@ import de.hauke_stieler.geonotes.map.Map;
 import de.hauke_stieler.geonotes.map.MarkerFragment;
 import de.hauke_stieler.geonotes.map.TouchDownListener;
 import de.hauke_stieler.geonotes.note_list.NoteListActivity;
+import de.hauke_stieler.geonotes.notes.NoteIconProvider;
 import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
 import de.hauke_stieler.geonotes.settings.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int REQUEST_NOTE_LIST_REQUEST_CODE = 4;
-    private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 3;
-    private static final int REQUEST_CAMERA_PERMISSIONS_REQUEST_CODE = 2;
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    static final int REQUEST_CATEGORIES_REQUEST_CODE = 5;
+    static final int REQUEST_NOTE_LIST_REQUEST_CODE = 4;
+    static final int REQUEST_PERMISSIONS_REQUEST_CODE = 3;
+    static final int REQUEST_CAMERA_PERMISSIONS_REQUEST_CODE = 2;
+    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private Map map;
     private SharedPreferences preferences;
     private Database database;
     private Exporter exporter;
     private Toolbar toolbar;
+    private NoteIconProvider noteIconProvider;
 
     // These fields exist to remember the photo data when the photo Intent is started. This is
     // because the Intent doesn't return anything and works asynchronously. In the result handler
@@ -79,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         database = Injector.get(Database.class);
         preferences = Injector.get(SharedPreferences.class);
         exporter = Injector.get(Exporter.class);
+        noteIconProvider = Injector.get(NoteIconProvider.class);
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -182,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             case R.id.toolbar_btn_categories:
-                startActivity(new Intent(this, CategoryConfigurationActivity.class));
+                startActivityForResult(new Intent(this, CategoryConfigurationActivity.class), REQUEST_CATEGORIES_REQUEST_CODE);
                 return true;
             case R.id.toolbar_btn_note_list:
                 startActivityForResult(new Intent(this, NoteListActivity.class), REQUEST_NOTE_LIST_REQUEST_CODE);
@@ -327,6 +331,9 @@ public class MainActivity extends AppCompatActivity {
                         map.selectNote(selectedNoteId);
                     }
                     break;
+                case REQUEST_CATEGORIES_REQUEST_CODE:
+                    noteIconProvider.updateIcons();
+                    break;
             }
         }
     }
@@ -352,7 +359,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             ThumbnailUtil.writeThumbnail(sizeInPixel, photoFile);
         } catch (IOException e) {
-            Toast.makeText(getApplicationContext(), R.string.create_thumbnail_failed, Toast.LENGTH_SHORT);
+            Toast.makeText(getApplicationContext(), R.string.note_list_create_thumbnail_failed, Toast.LENGTH_SHORT);
         }
     }
 

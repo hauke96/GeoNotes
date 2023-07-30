@@ -35,6 +35,10 @@
     <string name="tap_long_to_create_a_note">Crea una nota con un tocco lungo</string>
     <string name="feedback">Feedback</string>
     <string name="geonotes_version">Versione GeoNotes</string>
+    <!-- TODO Translate -->
+    <string name="no_mail_client_found">No mail client found</string>
+    <string name="cache_cleared">Cache cleared</string>
+    <string name="cache_cleared_error">Error clearing cache!</string>
 
     <!-- Marker -->
     <string name="marker_instructions">1. Spostare la mappa\n2. Rilasciare il dito per salvare la posizione</string>
@@ -45,12 +49,13 @@
     <!-- Exporter -->
     <string name="gpx_export_failed">Esportazione del file GPX non riuscita</string>
 
-    <!-- Mote List -->
+    <!-- Note List -->
     <!-- TODO Update translation ("all" changed to "ALL" in original text) -->
-    <string name="delete_all_notes">Eliminare davvero tutte le note? Questo non può essere annullato.</string>
+    <string name="note_list_delete_all_notes">Eliminare davvero tutte le note? Questo non può essere annullato.</string>
     <!-- TODO Translate -->
-    <string name="delete_all_filtered_notes">Really delete FILTERED notes? This is not reversible!</string>
-    <string name="create_thumbnail_failed">La creazione della miniatura non è riuscita</string>
+    <string name="note_list_delete_all_filtered_notes">Really delete FILTERED notes? This is not reversible!</string>
+    <string name="note_list_create_thumbnail_failed">La creazione della miniatura non è riuscita</string>
+    <string name="note_list_only_photo">"(only photo)"</string>
 
     <!-- Filter dialog-->
     <string name="filter_dialog_filter_by_note_text">Filtra per testo della nota:</string>
@@ -59,6 +64,9 @@
     <!-- Category list -->
     <string name="category_list_save">Salva</string>
     <string name="category_list_color_notice">Cambiare colore non è ancora possibile, ma arriverà in futuro.</string>
+    <!-- TODO Translate -->
+    <string name="category_cannot_delete_with_notes">There are notes with this category, you can\'t delete it.</string>
+    <string name="category_new">+ New</string>
 
     <!-- Initial color names -->
     <!-- TODO Translate -->

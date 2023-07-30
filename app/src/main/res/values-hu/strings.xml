@@ -34,6 +34,9 @@
     <string name="tap_long_to_create_a_note">Jegyzet létrehozása hosszú érintéssel</string>
     <string name="feedback">Visszajelzés</string>
     <string name="geonotes_version">GeoNotes verziója</string>
+    <string name="no_mail_client_found">Nem található levelezőprogram</string>
+    <string name="cache_cleared">Gyorsítótár törölve</string>
+    <string name="cache_cleared_error">Hiba a gyorsítótár törlésekor!</string>
 
     <!-- Marker -->
     <string name="marker_instructions">1. Mozgassa a térképet\n2. A hely mentéséhez engedje fel az ujját</string>
@@ -45,9 +48,10 @@
     <string name="gpx_export_failed">A GPX-fájl exportálása sikertelen</string>
 
     <!-- Note List -->
-    <string name="delete_all_notes">Valóban törli az ÖSSZES jegyzetet? Ez nem vonható vissza.</string>
-    <string name="delete_all_filtered_notes">Valóban törli a SZŰRT jegyzeteket? Ez nem vonható vissza.</string>
-    <string name="create_thumbnail_failed">A bélyegkép létrehozása sikertelen</string>
+    <string name="note_list_delete_all_notes">Valóban törli az ÖSSZES jegyzetet? Ez nem vonható vissza.</string>
+    <string name="note_list_delete_all_filtered_notes">Valóban törli a SZŰRT jegyzeteket? Ez nem vonható vissza.</string>
+    <string name="note_list_create_thumbnail_failed">A bélyegkép létrehozása sikertelen</string>
+    <string name="note_list_only_photo">"(csak fénykép)"</string>
 
     <!-- Filter dialog-->
     <string name="filter_dialog_filter_by_note_text">Szűrés a jegyzet szövege szerint:</string>
@@ -56,6 +60,8 @@
     <!-- Category list -->
     <string name="category_list_save">Mentés</string>
     <string name="category_list_color_notice">A szín megváltoztatása még nem lehetséges, de a jövőben lehetséges lesz.</string>
+    <string name="category_cannot_delete_with_notes">Vannak ezzel a kategóriával rendelkező jegyzetek, nem törölheti.</string>
+    <string name="category_new">+ Új</string>
 
     <!-- Initial color names -->
     <string name="initial_color_red">Piros</string>

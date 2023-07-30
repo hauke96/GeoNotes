@@ -1,0 +1,7 @@
+1.6.0:
+
+Changes and Bug-fixes:
+
+* Adding, removing and reordering categories
+* Changing colors of categories
+* Notes in export contain the new category information

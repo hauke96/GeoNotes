@@ -62,9 +62,9 @@ public class NoteListAdapterTest {
         Mockito.when(layoutViewMock.findViewById(R.id.note_list_row_text_view)).thenReturn(textViewMock);
 
         notes = new ArrayList<>();
-        notes.add(new Note(123L, "foo", 12, 23, "now", new Category(1, "", "")));
-        notes.add(new Note(234L, "bar", 34, 45, "i don't remember", new Category(1, "", "")));
-        notes.add(new Note(345L, "", 56, 56, "tomorrow", new Category(1, "", "")));
+        notes.add(new Note(123L, "foo", 12, 23, "now", new Category(1, "", "", 1)));
+        notes.add(new Note(234L, "bar", 34, 45, "i don't remember", new Category(1, "", "", 1)));
+        notes.add(new Note(345L, "", 56, 56, "tomorrow", new Category(1, "", "", 1)));
 
         notesWithPhotos = new ArrayList<>();
         notesWithPhotos.add(notes.get(1));
@@ -114,7 +114,7 @@ public class NoteListAdapterTest {
         Mockito.verify(imageViewMock).setImageDrawable(any());
         Mockito.verifyNoMoreInteractions(imageViewMock);
         Mockito.verify(textViewMock).setText(notes.get(0).getDescription());
-        Mockito.verify(textViewMock).setOnClickListener(any());
+        Mockito.verify(layoutViewMock).setOnClickListener(any());
         Mockito.verifyNoMoreInteractions(textViewMock);
     }
 
@@ -128,7 +128,7 @@ public class NoteListAdapterTest {
         Mockito.verify(imageViewMock).setImageDrawable(any());
         Mockito.verifyNoMoreInteractions(imageViewMock);
         Mockito.verify(textViewMock).setText(notes.get(1).getDescription());
-        Mockito.verify(textViewMock).setOnClickListener(any());
+        Mockito.verify(layoutViewMock).setOnClickListener(any());
         Mockito.verifyNoMoreInteractions(textViewMock);
     }
 
@@ -145,10 +145,10 @@ public class NoteListAdapterTest {
         Assert.assertEquals(layoutViewMock, view);
         Mockito.verify(imageViewMock).setImageDrawable(any());
         Mockito.verifyNoMoreInteractions(imageViewMock);
-        Mockito.verify(textViewMock).setText("(only photo)");
+        Mockito.verify(textViewMock).setText(context.getString(R.string.note_list_only_photo));
         Mockito.verify(textViewMock).setTypeface(null, Typeface.ITALIC);
         Mockito.verify(textViewMock).setTextColor(colorCode);
-        Mockito.verify(textViewMock).setOnClickListener(any());
+        Mockito.verify(layoutViewMock).setOnClickListener(any());
         Mockito.verifyNoMoreInteractions(textViewMock);
     }
 
@@ -159,7 +159,7 @@ public class NoteListAdapterTest {
         adapter.getView(noteIndex, null, null);
 
         ArgumentCaptor<View.OnClickListener> clickListenerArgumentCaptor = ArgumentCaptor.forClass(View.OnClickListener.class);
-        Mockito.verify(textViewMock).setOnClickListener(clickListenerArgumentCaptor.capture());
+        Mockito.verify(layoutViewMock).setOnClickListener(clickListenerArgumentCaptor.capture());
 
         // Act
         clickListenerArgumentCaptor.getValue().onClick(textViewMock); // simulate the click by manually executing event listener

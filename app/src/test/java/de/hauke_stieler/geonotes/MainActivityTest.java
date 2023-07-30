@@ -1,5 +1,8 @@
 package de.hauke_stieler.geonotes;
 
+import static android.app.Activity.RESULT_OK;
+import static de.hauke_stieler.geonotes.MainActivity.REQUEST_CATEGORIES_REQUEST_CODE;
+
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.view.MenuItem;
@@ -27,6 +30,7 @@ import de.hauke_stieler.geonotes.map.MarkerFragment;
 import de.hauke_stieler.geonotes.map.TouchDownListener;
 import de.hauke_stieler.geonotes.notes.Note;
 import de.hauke_stieler.geonotes.categories.Category;
+import de.hauke_stieler.geonotes.notes.NoteIconProvider;
 
 @RunWith(AndroidJUnit4.class)
 @Config(maxSdk = Build.VERSION_CODES.P, minSdk = Build.VERSION_CODES.P) // Value of Build.VERSION_CODES.P is 28
@@ -42,6 +46,7 @@ public class MainActivityTest {
     private Exporter exporterMock;
     private SharedPreferences sharedPreferencesMock;
     private Map mapMock;
+    private NoteIconProvider noteIconProviderMock;
 
     @Before
     public void setup() {
@@ -49,14 +54,15 @@ public class MainActivityTest {
         exporterMock = testRule.get(Exporter.class);
         sharedPreferencesMock = testRule.get(SharedPreferences.class);
         mapMock = testRule.get(Map.class);
+        noteIconProviderMock = testRule.get(NoteIconProvider.class);
     }
 
 //    @Test
     public void testExportGeoJsonClicked_callsExporter() {
         // Arrange
         List<Note> notes = new ArrayList<>();
-        notes.add(new Note(1, "foo", 1.23f, 4.56f, "2021-03-01 12:34:56", new Category(2, "", "")));
-        notes.add(new Note(2, "bar", 2.34f, 5.67f, "2021-03-02 11:11:11", new Category(2, "", "")));
+        notes.add(new Note(1, "foo", 1.23f, 4.56f, "2021-03-01 12:34:56", new Category(2, "", "", 1)));
+        notes.add(new Note(2, "bar", 2.34f, 5.67f, "2021-03-02 11:11:11", new Category(2, "", "", 2)));
         Mockito.when(databaseMock.getAllNotes()).thenReturn(notes);
 
         // Act
@@ -70,8 +76,8 @@ public class MainActivityTest {
     public void testExportGpxClicked_callsExporter() {
         // Arrange
         List<Note> notes = new ArrayList<>();
-        notes.add(new Note(1, "foo", 1.23f, 4.56f, "2021-03-01 12:34:56", new Category(1, "", "")));
-        notes.add(new Note(2, "bar", 2.34f, 5.67f, "2021-03-02 11:11:11", new Category(1, "", "")));
+        notes.add(new Note(1, "foo", 1.23f, 4.56f, "2021-03-01 12:34:56", new Category(1, "", "", 1)));
+        notes.add(new Note(2, "bar", 2.34f, 5.67f, "2021-03-02 11:11:11", new Category(1, "", "", 2)));
         Mockito.when(databaseMock.getAllNotes()).thenReturn(notes);
 
         // Act
@@ -105,6 +111,15 @@ public class MainActivityTest {
     public void testloadPreferences_setsPhotoListener() {
         // Act & Assert
         Mockito.verify(mapMock).addRequestPhotoHandler(Mockito.any(MarkerFragment.RequestPhotoEventHandler.class));
+    }
+
+    @Test
+    public void testCategoryChange_updatesNoteIcons() {
+        // Act
+        activityRule.getScenario().onActivity(activity -> activity.onActivityResult(REQUEST_CATEGORIES_REQUEST_CODE, RESULT_OK, null));
+
+        // Assert
+        Mockito.verify(noteIconProviderMock).updateIcons();
     }
 
     private MenuItem getMenuItem(int id) {

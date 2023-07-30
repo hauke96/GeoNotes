@@ -106,6 +106,8 @@ public class Map {
         map.setTilesScaledToDpi(true);
 
         // Initial location and zoom
+        Configuration.getInstance().setAnimationSpeedShort(250);
+        Configuration.getInstance().setAnimationSpeedDefault(250);
         mapController = map.getController();
         mapController.setZoom(17.0);
         GeoPoint startPoint = new GeoPoint(53.563, 9.9866);

@@ -35,6 +35,10 @@
     <string name="tap_long_to_create_a_note">Klik en houd ingedrukt om een opmerking aan te maken</string>
     <string name="feedback">Feedback</string>
     <string name="geonotes_version">GeoNotes versie</string>
+    <!-- TODO Translate -->
+    <string name="no_mail_client_found">No mail client found</string>
+    <string name="cache_cleared">Cache cleared</string>
+    <string name="cache_cleared_error">Error clearing cache!</string>
 
     <!-- Marker -->
     <string name="marker_instructions">1. Verplaats de kaart\n2. Laat los om de locatie op te slaan</string>
@@ -47,10 +51,11 @@
 
     <!-- Note List -->
     <!-- TODO Update translation ("all" changed to "ALL" in original text) -->
-    <string name="delete_all_notes">Echt alle opmerkingen verwijderen? Dit is onomkeerbaar!</string>
+    <string name="note_list_delete_all_notes">Echt alle opmerkingen verwijderen? Dit is onomkeerbaar!</string>
     <!-- TODO Translate -->
-    <string name="delete_all_filtered_notes">Really delete FILTERED notes? This is not reversible!</string>
-    <string name="create_thumbnail_failed">Thumbnail aanmaken is mislukt</string>
+    <string name="note_list_delete_all_filtered_notes">Really delete FILTERED notes? This is not reversible!</string>
+    <string name="note_list_create_thumbnail_failed">Thumbnail aanmaken is mislukt</string>
+    <string name="note_list_only_photo">"(only photo)"</string>
     
     <!-- Filter dialog-->
     <string name="filter_dialog_filter_by_note_text">Filter op inhoud:</string>
@@ -59,6 +64,9 @@
     <!-- Category list -->
     <string name="category_list_save">Opslaan</string>
     <string name="category_list_color_notice">Van kleur veranderen is nu nog niet mogelijk maar in de toekomst wordt het dat wel.</string>
+    <!-- TODO Translate -->
+    <string name="category_cannot_delete_with_notes">There are notes with this category, you can\'t delete it.</string>
+    <string name="category_new">+ New</string>
 
     <!-- Initial color names -->
     <!-- TODO Translate -->
