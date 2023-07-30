@@ -51,7 +51,7 @@
     <string name="note_list_delete_all_notes">Valóban törli az ÖSSZES jegyzetet? Ez nem vonható vissza.</string>
     <string name="note_list_delete_all_filtered_notes">Valóban törli a SZŰRT jegyzeteket? Ez nem vonható vissza.</string>
     <string name="note_list_create_thumbnail_failed">A bélyegkép létrehozása sikertelen</string>
-    <string name="note_list_only_photo">"(only photo)"</string>
+    <string name="note_list_only_photo">"(csak fénykép)"</string>
 
     <!-- Filter dialog-->
     <string name="filter_dialog_filter_by_note_text">Szűrés a jegyzet szövege szerint:</string>
