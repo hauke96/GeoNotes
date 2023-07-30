@@ -145,7 +145,7 @@ public class NoteListAdapterTest {
         Assert.assertEquals(layoutViewMock, view);
         Mockito.verify(imageViewMock).setImageDrawable(any());
         Mockito.verifyNoMoreInteractions(imageViewMock);
-        Mockito.verify(textViewMock).setText("(only photo)");
+        Mockito.verify(textViewMock).setText(context.getString(R.string.note_list_only_photo));
         Mockito.verify(textViewMock).setTypeface(null, Typeface.ITALIC);
         Mockito.verify(textViewMock).setTextColor(colorCode);
         Mockito.verify(layoutViewMock).setOnClickListener(any());

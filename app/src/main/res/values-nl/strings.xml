@@ -51,10 +51,11 @@
 
     <!-- Note List -->
     <!-- TODO Update translation ("all" changed to "ALL" in original text) -->
-    <string name="delete_all_notes">Echt alle opmerkingen verwijderen? Dit is onomkeerbaar!</string>
+    <string name="note_list_delete_all_notes">Echt alle opmerkingen verwijderen? Dit is onomkeerbaar!</string>
     <!-- TODO Translate -->
-    <string name="delete_all_filtered_notes">Really delete FILTERED notes? This is not reversible!</string>
-    <string name="create_thumbnail_failed">Thumbnail aanmaken is mislukt</string>
+    <string name="note_list_delete_all_filtered_notes">Really delete FILTERED notes? This is not reversible!</string>
+    <string name="note_list_create_thumbnail_failed">Thumbnail aanmaken is mislukt</string>
+    <string name="note_list_only_photo">"(only photo)"</string>
     
     <!-- Filter dialog-->
     <string name="filter_dialog_filter_by_note_text">Filter op inhoud:</string>

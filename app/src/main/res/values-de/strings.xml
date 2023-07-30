@@ -48,9 +48,10 @@
     <string name="gpx_export_failed">GPX-Export fehlgeschlagen</string>
 
     <!-- Note List -->
-    <string name="delete_all_notes">Wirklich ALLE Notizen löschen? Dies kann nicht rückgängig gemacht werden!</string>
-    <string name="delete_all_filtered_notes">Alle GEFILTERTEN Notizen löschen? Dies kann nicht rückgängig gemacht werden!</string>
-    <string name="create_thumbnail_failed">Erstellung vom Vorschaubild fehlgeschlagen</string>
+    <string name="note_list_delete_all_notes">Wirklich ALLE Notizen löschen? Dies kann nicht rückgängig gemacht werden!</string>
+    <string name="note_list_delete_all_filtered_notes">Alle GEFILTERTEN Notizen löschen? Dies kann nicht rückgängig gemacht werden!</string>
+    <string name="note_list_create_thumbnail_failed">Erstellung vom Vorschaubild fehlgeschlagen</string>
+    <string name="note_list_only_photo">"(nur Foto)"</string>
 
     <!-- Filter dialog-->
     <string name="filter_dialog_filter_by_note_text">Nach Text filtern:</string>

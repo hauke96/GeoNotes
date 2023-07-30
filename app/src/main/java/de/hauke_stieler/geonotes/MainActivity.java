@@ -359,7 +359,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             ThumbnailUtil.writeThumbnail(sizeInPixel, photoFile);
         } catch (IOException e) {
-            Toast.makeText(getApplicationContext(), R.string.create_thumbnail_failed, Toast.LENGTH_SHORT);
+            Toast.makeText(getApplicationContext(), R.string.note_list_create_thumbnail_failed, Toast.LENGTH_SHORT);
         }
     }
 
