@@ -136,10 +136,6 @@ public class MarkerFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (selectedMarker != null) {
-                    selectedMarker.setSnippet(s.toString());
-                    markerEventHandler.onSave(selectedMarker);
-                }
             }
 
             @Override
@@ -310,6 +306,11 @@ public class MarkerFragment extends Fragment {
     }
 
     public void reset() {
+        if (selectedMarker != null) {
+            selectedMarker.setSnippet(((EditText) getView().findViewById(R.id.note_description)).getText().toString());
+            markerEventHandler.onSave(selectedMarker);
+        }
+
         if (getView() == null) {
             return;
         }
