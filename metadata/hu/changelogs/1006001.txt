@@ -1,0 +1,5 @@
+1.6.1:
+
+Changes and Bug-fixes:
+
+* Teljesítménynövelés a jegyzet szövegének írásakor.
