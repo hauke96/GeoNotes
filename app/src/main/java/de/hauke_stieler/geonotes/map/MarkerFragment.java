@@ -128,21 +128,6 @@ public class MarkerFragment extends Fragment {
             }
         });
 
-        // React to changed text and update the content of the marker
-        descriptionView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-
         categorySpinnerAdapter = new CategorySpinnerAdapter(getContext(), R.layout.category_spinner_item);
         long lastUsedCategoryId = preferences.getLong(getString(R.string.pref_last_category_id), 1);
 
@@ -305,6 +290,10 @@ public class MarkerFragment extends Fragment {
         photoLayout.addView(space);
     }
 
+    /**
+     * Resets the fragment but not the selected marker. The content and icon of the marker stays
+     * unchanged even though it's not selected anymore!
+     */
     public void reset() {
         if (selectedMarker != null) {
             selectedMarker.setSnippet(((EditText) getView().findViewById(R.id.note_description)).getText().toString());

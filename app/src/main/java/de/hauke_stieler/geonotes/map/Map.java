@@ -271,7 +271,6 @@ public class Map {
             public void onSave(GeoNotesMarker marker) {
                 // We always have an ID and can therefore update the note
                 database.updateNoteDescription(Long.parseLong(marker.getId()), marker.getSnippet());
-                onCategoryChanged(marker);
             }
 
             @Override
@@ -288,7 +287,9 @@ public class Map {
                 editor.putLong(context.getString(R.string.pref_last_category_id), marker.getCategoryId());
                 editor.commit();
 
+                // Update Icon with the new color
                 setIcon(marker, getSelectedMarker() == marker);
+
                 redraw();
             }
         });
