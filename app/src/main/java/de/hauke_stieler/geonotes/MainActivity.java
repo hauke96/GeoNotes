@@ -2,10 +2,11 @@ package de.hauke_stieler.geonotes;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Html;
@@ -13,6 +14,7 @@ import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,8 +24,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
+import androidx.camera.core.CameraSelector;
+import androidx.camera.core.ImageCapture;
+import androidx.camera.core.ImageCaptureException;
+import androidx.camera.core.Preview;
+import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import com.google.common.util.concurrent.ListenableFuture;
 
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.events.DelayedMapListener;
@@ -36,10 +45,13 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import de.hauke_stieler.geonotes.categories.CategoryConfigurationActivity;
-import de.hauke_stieler.geonotes.common.FileHelper;
 import de.hauke_stieler.geonotes.database.Database;
+import de.hauke_stieler.geonotes.databinding.ActivityMainBinding;
 import de.hauke_stieler.geonotes.export.Exporter;
 import de.hauke_stieler.geonotes.map.Map;
 import de.hauke_stieler.geonotes.map.MarkerFragment;
@@ -55,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
     static final int REQUEST_NOTE_LIST_REQUEST_CODE = 4;
     static final int REQUEST_PERMISSIONS_REQUEST_CODE = 3;
     static final int REQUEST_CAMERA_PERMISSIONS_REQUEST_CODE = 2;
-    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private Map map;
     private SharedPreferences preferences;
@@ -63,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
     private Exporter exporter;
     private Toolbar toolbar;
     private NoteIconProvider noteIconProvider;
+    private ActivityMainBinding viewBinding;
+    private ExecutorService cameraExecutor;
+    private ImageCapture imageCapture;
 
     // These fields exist to remember the photo data when the photo Intent is started. This is
     // because the Intent doesn't return anything and works asynchronously. In the result handler
@@ -77,7 +91,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Injector.registerActivity(this);
 
-        setContentView(R.layout.activity_main);
+        viewBinding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(viewBinding.getRoot());
+
+        cameraExecutor = Executors.newSingleThreadExecutor();
+        imageCapture = new ImageCapture.Builder().build();
 
         database = Injector.get(Database.class);
         preferences = Injector.get(SharedPreferences.class);
@@ -91,8 +109,15 @@ public class MainActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.copyright)).setMovementMethod(LinkMovementMethod.getInstance());
         ((TextView) findViewById(R.id.copyright)).setText(Html.fromHtml(getString(R.string.osm_contribution)));
 
+        String storagePermission = "";
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            storagePermission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            storagePermission = Manifest.permission.MANAGE_EXTERNAL_STORAGE;
+        }
+
         requestPermissionsIfNecessary(new String[]{
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                storagePermission,
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.CAMERA
         });
@@ -213,6 +238,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         map.onDestroy();
         super.onDestroy();
+        cameraExecutor.shutdown();
     }
 
     private void requestPermissionsIfNecessary(String[] permissions) {
@@ -247,6 +273,79 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void startCamera() {
+        ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);
+
+        Preview preview = new Preview.Builder().build();
+        CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
+
+        cameraProviderFuture.addListener(() -> {
+            preview.setSurfaceProvider(viewBinding.cameraPreview.getSurfaceProvider());
+
+            try {
+                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                cameraProvider.unbindAll();
+                cameraProvider.bindToLifecycle(
+                        this,
+                        cameraSelector,
+                        preview,
+                        imageCapture
+                );
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }, ContextCompat.getMainExecutor(this));
+    }
+
+    private void takePhoto(Long noteId) {
+        lastPhotoFile = createImageFile();
+        lastPhotoNoteId = noteId;
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, lastPhotoFile.getName());
+        contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg");
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            contentValues.put(MediaStore.Images.Media.RELATIVE_PATH, "");
+        }
+
+        ImageCapture.OutputFileOptions outputOptions = new ImageCapture.OutputFileOptions
+                .Builder(lastPhotoFile)
+                .build();
+
+        imageCapture.takePicture(
+                outputOptions,
+                ContextCompat.getMainExecutor(this),
+                new ImageCapture.OnImageSavedCallback() {
+                    @Override
+                    public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
+                        Log.i("capture", "onImageSaved: " + outputFileResults.getSavedUri());
+
+                        addPhotoToDatabase(lastPhotoNoteId, lastPhotoFile);
+                        map.addImagesToMarkerFragment();
+
+                        closeCamera();
+                    }
+
+                    @Override
+                    public void onError(@NonNull ImageCaptureException exception) {
+                        Log.e("capture", "Error: ", exception);
+                        Toast.makeText(getBaseContext(), "Error taking picture: " + exception.getMessage(), Toast.LENGTH_LONG).show();
+                        closeCamera();
+                    }
+                }
+        );
+    }
+
+    private void closeCamera() {
+        findViewById(R.id.toolbar).setVisibility(View.VISIBLE);
+        findViewById(R.id.main_layout).setVisibility(View.VISIBLE);
+        findViewById(R.id.map_marker_fragment).setVisibility(View.VISIBLE);
+
+        findViewById(R.id.camera_layout).setVisibility(View.INVISIBLE);
+    }
+
     private void addMapListener() {
         DelayedMapListener delayedMapListener = new DelayedMapListener(new MapListener() {
             @Override
@@ -277,31 +376,38 @@ public class MainActivity extends AppCompatActivity {
      * Adds a listener for the camera button. The camera action can only be performed from within an activity.
      */
     private void addCameraListener() {
-        MarkerFragment.RequestPhotoEventHandler requestPhotoEventHandler = (Long noteId) -> {
-            if (!hasPermission(Manifest.permission.CAMERA) || !hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        map.addRequestPhotoHandler((Long noteId) -> {
+            String[] permissions = new String[1];
+            permissions[0] = Manifest.permission.CAMERA;
+
+            boolean hasCameraPermissions = hasPermission(Manifest.permission.CAMERA);
+            boolean hasStoragePermissions = true;
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+                hasStoragePermissions = hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                String[] oldPermissions = permissions;
+                permissions = new String[oldPermissions.length + 1];
+                permissions[permissions.length - 1] = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+            }
+
+            if (!hasCameraPermissions || !hasStoragePermissions) {
                 // We don't have camera and/or storage permissions -> ask for them
                 ActivityCompat.requestPermissions(
                         this,
-                        new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        permissions,
                         REQUEST_CAMERA_PERMISSIONS_REQUEST_CODE);
-            } else {
-                // We do have all permissions -> take photo
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                try {
-                    // Create the File where the photo should go
-                    lastPhotoFile = createImageFile();
-                    lastPhotoNoteId = noteId;
-
-                    Uri photoURI = FileHelper.getFileUri(this, MainActivity.lastPhotoFile);
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-                } catch (Exception e) {
-                    Log.e("TakingPhoto", "Opening camera to take photo failed", e);
-                }
+                return;
             }
-        };
 
-        map.addRequestPhotoHandler(requestPhotoEventHandler);
+            findViewById(R.id.toolbar).setVisibility(View.INVISIBLE);
+            findViewById(R.id.main_layout).setVisibility(View.INVISIBLE);
+            findViewById(R.id.map_marker_fragment).setVisibility(View.INVISIBLE);
+
+            findViewById(R.id.camera_layout).setVisibility(View.VISIBLE);
+            startCamera();
+
+            findViewById(R.id.image_capture_button).setOnClickListener(view -> takePhoto(noteId));
+        });
     }
 
     private boolean hasPermission(String permission) {
@@ -320,10 +426,6 @@ public class MainActivity extends AppCompatActivity {
         // If Intent was successful
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case REQUEST_IMAGE_CAPTURE:
-                    addPhotoToDatabase(lastPhotoNoteId, lastPhotoFile);
-                    map.addImagesToMarkerFragment();
-                    break;
                 case REQUEST_NOTE_LIST_REQUEST_CODE:
                     long selectedNoteId = data.getLongExtra(NoteListActivity.EXTRA_CLICKED_NOTE, -1L);
                     if (selectedNoteId != -1) {
