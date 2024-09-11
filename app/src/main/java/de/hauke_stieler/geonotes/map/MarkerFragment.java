@@ -4,10 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
-import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -49,6 +47,8 @@ public class MarkerFragment extends Fragment {
         void onDelete(GeoNotesMarker marker);
 
         void onSave(GeoNotesMarker marker);
+
+        void onClose(GeoNotesMarker marker);
 
         void onMove(GeoNotesMarker marker);
 
@@ -220,14 +220,16 @@ public class MarkerFragment extends Fragment {
 
         Button deleteButton = view.findViewById(R.id.delete_button);
         deleteButton.setOnClickListener(v -> {
-            reset();
             markerEventHandler.onDelete(marker);
+            markerEventHandler.onClose(marker);
+            reset();
         });
 
         Button saveButton = view.findViewById(R.id.save_button);
         saveButton.setOnClickListener(v -> {
-            reset();
             markerEventHandler.onSave(marker);
+            markerEventHandler.onClose(marker);
+            reset();
         });
 
         Button moveButton = view.findViewById(R.id.move_button);

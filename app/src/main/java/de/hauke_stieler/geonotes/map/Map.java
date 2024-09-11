@@ -274,6 +274,11 @@ public class Map {
             }
 
             @Override
+            public void onClose(GeoNotesMarker marker) {
+                deselectMarker(marker);
+            }
+
+            @Override
             public void onMove(GeoNotesMarker marker) {
                 markerToMove = marker;
                 redraw();
@@ -365,9 +370,8 @@ public class Map {
         // Deselect previously selected marker
         GeoNotesMarker currentlySelectedMarker = markerFragment.getSelectedMarker();
         if (currentlySelectedMarker != null) {
-            // This icon will not be the selected marker after "showInfoWindow", therefore we set the normal icon here.
-            setIcon(currentlySelectedMarker, false);
             markerFragment.reset();
+            deselectMarker(currentlySelectedMarker);
         }
 
         setIcon(markerToSelect, true);
@@ -376,6 +380,15 @@ public class Map {
 
         addImagesToMarkerFragment();
         redraw();
+    }
+
+    private void deselectMarker(GeoNotesMarker marker) {
+        if(marker == null){
+            return;
+        }
+
+        // This icon will not be the selected marker after "showInfoWindow", therefore we set the normal icon here.
+        setIcon(marker, false);
     }
 
     private Marker getSelectedMarker() {
