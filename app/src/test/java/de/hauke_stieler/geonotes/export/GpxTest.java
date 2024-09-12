@@ -22,8 +22,8 @@ public class GpxTest {
         // Assert
         assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
                 "<gpx version=\"1.1\">\n" +
-                "  <wpt lat=\"1.23\" lon=\"2.34\">\n" +
-                "    <time>2022-01-30T12:34:56Z</time>\n" +
+                "  <wpt lat=\"1.230000\" lon=\"2.340000\">\n" +
+                "    <time>2022-01-30T12:34:56+01</time>\n" +
                 "    <name>123</name>\n" +
                 "    <desc>foo bar</desc>\n" +
                 "    <type>11;#abc123;Foo</type>\n" +
