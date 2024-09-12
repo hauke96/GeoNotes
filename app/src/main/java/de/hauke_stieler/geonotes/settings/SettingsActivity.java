@@ -11,6 +11,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -27,6 +28,14 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
+
+        getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                save();
+                finish();
+            }
+        });
 
         Toolbar toolbar = findViewById(R.id.settings_toolbar);
         setSupportActionBar(toolbar);
@@ -138,11 +147,5 @@ public class SettingsActivity extends AppCompatActivity {
         save();
         finish();
         return true;
-    }
-
-    @Override
-    public void onBackPressed() {
-        save();
-        finish();
     }
 }

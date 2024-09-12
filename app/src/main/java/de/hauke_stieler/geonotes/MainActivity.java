@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,6 +32,7 @@ import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.common.util.concurrent.ListenableFuture;
 
@@ -93,6 +95,16 @@ public class MainActivity extends AppCompatActivity {
 
         viewBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(viewBinding.getRoot());
+
+        getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if(findViewById(R.id.camera_layout).getVisibility() == View.VISIBLE) {
+                    closeCamera();
+                }
+                // TODO What to do when back-button pressed but camera not on? Nothing?
+            }
+        });
 
         cameraExecutor = Executors.newSingleThreadExecutor();
         imageCapture = new ImageCapture.Builder().build();
@@ -291,9 +303,8 @@ public class MainActivity extends AppCompatActivity {
                         preview,
                         imageCapture
                 );
-            } catch (ExecutionException e) {
-                throw new RuntimeException(e);
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
+                Log.e("startCamera", "Error while unbinding and binding camera lifecycle: ", e);
                 throw new RuntimeException(e);
             }
         }, ContextCompat.getMainExecutor(this));
@@ -344,6 +355,15 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.map_marker_fragment).setVisibility(View.VISIBLE);
 
         findViewById(R.id.camera_layout).setVisibility(View.INVISIBLE);
+
+        try {
+            ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);
+            ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+            cameraProvider.unbindAll();
+        } catch (Exception e) {
+            Log.e("closeCamera", "Error while unbinding camera lifecycle: ", e);
+            throw new RuntimeException(e);
+        }
     }
 
     private void addMapListener() {
@@ -404,6 +424,10 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.map_marker_fragment).setVisibility(View.INVISIBLE);
 
             findViewById(R.id.camera_layout).setVisibility(View.VISIBLE);
+
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.addToBackStack("");
+            transaction.commit();
             startCamera();
 
             findViewById(R.id.image_capture_button).setOnClickListener(view -> takePhoto(noteId));
