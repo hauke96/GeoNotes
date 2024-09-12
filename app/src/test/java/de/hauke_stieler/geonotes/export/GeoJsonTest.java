@@ -1,7 +1,5 @@
 package de.hauke_stieler.geonotes.export;
 
-import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +7,8 @@ import de.hauke_stieler.geonotes.notes.Note;
 import de.hauke_stieler.geonotes.categories.Category;
 
 import static org.junit.Assert.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 public class GeoJsonTest {
     @Test

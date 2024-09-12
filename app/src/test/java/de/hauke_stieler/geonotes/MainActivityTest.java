@@ -8,14 +8,12 @@ import android.os.Build;
 import android.view.MenuItem;
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.osmdroid.events.DelayedMapListener;
 import org.robolectric.annotation.Config;
@@ -32,7 +30,6 @@ import de.hauke_stieler.geonotes.notes.Note;
 import de.hauke_stieler.geonotes.categories.Category;
 import de.hauke_stieler.geonotes.notes.NoteIconProvider;
 
-@RunWith(AndroidJUnit4.class)
 @Config(maxSdk = Build.VERSION_CODES.P, minSdk = Build.VERSION_CODES.P) // Value of Build.VERSION_CODES.P is 28
 public class MainActivityTest {
 
@@ -48,7 +45,7 @@ public class MainActivityTest {
     private Map mapMock;
     private NoteIconProvider noteIconProviderMock;
 
-    @Before
+    @BeforeEach
     public void setup() {
         databaseMock = testRule.get(Database.class);
         exporterMock = testRule.get(Exporter.class);

@@ -10,8 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
@@ -40,7 +40,7 @@ public class NoteListAdapterTest {
     private NoteListAdapter.NoteListClickListener clickListenerMock;
     private LayoutInflater inflater;
 
-    @Before
+    @BeforeEach
     public void setup() {
         layoutViewMock = Mockito.mock(ViewGroup.class);
 

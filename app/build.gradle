@@ -3,13 +3,14 @@ plugins {
 }
 
 android {
-    compileSdkVersion 34
-    buildToolsVersion "30.0.3"
-
+    namespace 'de.hauke_stieler.geonotes'
     defaultConfig {
         applicationId "de.hauke_stieler.geonotes"
+
         minSdkVersion 24
+        compileSdk 34
         targetSdkVersion 34
+
         versionCode 1006001
         versionName "1.6.1"
 
@@ -23,10 +24,11 @@ android {
     }
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_9
+        targetCompatibility JavaVersion.VERSION_1_9
     }
     testOptions {
         unitTests.returnDefaultValues = true
@@ -35,6 +37,7 @@ android {
         }
         unitTests.all {
             jvmArgs '-noverify'
+            useJUnitPlatform()
         }
     }
 }
@@ -42,28 +45,25 @@ android {
 dependencies {
     implementation 'org.osmdroid:osmdroid-android:6.1.18'
 
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    // noinspection GradleDependency: Versions 1.7.0+ caused compile problems
-    implementation 'com.google.android.material:material:1.6.0'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.recyclerview:recyclerview:1.3.2'
     implementation 'androidx.preference:preference:1.2.1'
     implementation 'org.apache.commons:commons-text:1.9'
-    implementation 'com.google.code.gson:gson:2.8.8'
-    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.google.code.gson:gson:2.10.1'
 
     def camerax_version = "1.3.4"
     implementation "androidx.camera:camera-core:${camerax_version}"
     implementation "androidx.camera:camera-camera2:${camerax_version}"
     implementation "androidx.camera:camera-lifecycle:${camerax_version}"
     implementation "androidx.camera:camera-video:${camerax_version}"
-
     implementation "androidx.camera:camera-view:${camerax_version}"
     implementation "androidx.camera:camera-extensions:${camerax_version}"
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.22")) // Fixes weird "duplicate classes found" error due to weird androidx dependencies
 
-
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.mockito:mockito-inline:3.8.0'
-
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
+    testImplementation 'org.mockito:mockito-core:5.13.0'
     testImplementation 'androidx.test.ext:junit:1.2.1'
     testImplementation 'org.robolectric:robolectric:4.7.3'
 }

@@ -1,19 +1,12 @@
 package de.hauke_stieler.geonotes;
 
 import android.content.SharedPreferences;
-import android.os.Build;
 
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
-import org.junit.runner.RunWith;
 import org.junit.runners.model.Statement;
 import org.mockito.Mockito;
-import org.robolectric.annotation.Config;
-
-import java.util.HashMap;
 
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.export.Exporter;
