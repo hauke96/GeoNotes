@@ -56,7 +56,7 @@ public class MarkerFragment extends Fragment {
     }
 
     public interface RequestPhotoEventHandler {
-        void onRequestPhoto(Long noteId);
+        void onRequestPhoto(Long noteId, Double longitude, Double latitude);
     }
 
     /**
@@ -242,7 +242,7 @@ public class MarkerFragment extends Fragment {
         ImageButton cameraButton = view.findViewById(R.id.camera_button);
         cameraButton.setOnClickListener(v -> {
             markerEventHandler.onSave(marker);
-            requestPhotoHandler.onRequestPhoto(Long.parseLong(marker.getId()));
+            requestPhotoHandler.onRequestPhoto(Long.parseLong(marker.getId()), marker.getPosition().getLongitude(), marker.getPosition().getLatitude());
         });
 
         selectCategory(marker.getCategoryId());

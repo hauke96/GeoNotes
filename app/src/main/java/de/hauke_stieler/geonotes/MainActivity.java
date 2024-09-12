@@ -6,6 +6,10 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+
+import androidx.exifinterface.media.ExifInterface;
+
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -47,11 +51,12 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.concurrent.ExecutionException;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import de.hauke_stieler.geonotes.categories.CategoryConfigurationActivity;
+import de.hauke_stieler.geonotes.common.ExifHelper;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.databinding.ActivityMainBinding;
 import de.hauke_stieler.geonotes.export.Exporter;
@@ -99,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
         getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                if(findViewById(R.id.camera_layout).getVisibility() == View.VISIBLE) {
+                if (findViewById(R.id.camera_layout).getVisibility() == View.VISIBLE) {
                     closeCamera();
                 }
                 // TODO What to do when back-button pressed but camera not on? Nothing?
@@ -310,7 +315,7 @@ public class MainActivity extends AppCompatActivity {
         }, ContextCompat.getMainExecutor(this));
     }
 
-    private void takePhoto(Long noteId) {
+    private void takePhoto(Long noteId, Double longitude, Double latitude) {
         lastPhotoFile = createImageFile();
         lastPhotoNoteId = noteId;
 
@@ -331,7 +336,16 @@ public class MainActivity extends AppCompatActivity {
                 new ImageCapture.OnImageSavedCallback() {
                     @Override
                     public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-                        Log.i("capture", "onImageSaved: " + outputFileResults.getSavedUri());
+                        Log.i("capture", "Saved photo to " + outputFileResults.getSavedUri());
+
+                        try {
+                            ExifInterface exif = new ExifInterface(getContentResolver().openFileDescriptor(Uri.fromFile(lastPhotoFile), "rw").getFileDescriptor());
+                            ExifHelper.fillExifAttributesWithGps(exif, longitude, latitude);
+                            exif.saveAttributes();
+                        } catch (Exception e) {
+                            Log.e("addExifData", "Error getting/setting/saving EXIF data from freshly taken photo", e);
+                            throw new RuntimeException(e);
+                        }
 
                         addPhotoToDatabase(lastPhotoNoteId, lastPhotoFile);
                         map.addImagesToMarkerFragment();
@@ -396,7 +410,7 @@ public class MainActivity extends AppCompatActivity {
      * Adds a listener for the camera button. The camera action can only be performed from within an activity.
      */
     private void addCameraListener() {
-        map.addRequestPhotoHandler((Long noteId) -> {
+        map.addRequestPhotoHandler((Long noteId, Double longitude, Double latitude) -> {
             String[] permissions = new String[1];
             permissions[0] = Manifest.permission.CAMERA;
 
@@ -430,7 +444,7 @@ public class MainActivity extends AppCompatActivity {
             transaction.commit();
             startCamera();
 
-            findViewById(R.id.image_capture_button).setOnClickListener(view -> takePhoto(noteId));
+            findViewById(R.id.image_capture_button).setOnClickListener(view -> takePhoto(noteId, longitude, latitude));
         });
     }
 
