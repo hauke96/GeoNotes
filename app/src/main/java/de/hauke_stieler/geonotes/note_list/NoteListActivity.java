@@ -19,6 +19,7 @@ import java.util.List;
 
 import de.hauke_stieler.geonotes.Injector;
 import de.hauke_stieler.geonotes.R;
+import de.hauke_stieler.geonotes.common.FileHelper;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.notes.Note;
 import de.hauke_stieler.geonotes.notes.NoteIconProvider;
@@ -104,7 +105,7 @@ public class NoteListActivity extends AppCompatActivity implements FilterDialog.
                     builder.setMessage(R.string.note_list_delete_all_filtered_notes);
                 }
                 builder.setPositiveButton(R.string.dialog_yes, (dialog, id) -> {
-                    database.removeAllNotes(getExternalFilesDir("GeoNotes"), filterText, filterCategoryId);
+                    database.removeAllNotes(getExternalFilesDir(FileHelper.GEONOTES_EXTERNAL_DIR_NAME), filterText, filterCategoryId);
                     load();
                 });
                 builder.setNegativeButton(R.string.dialog_no, (dialog, id) -> {

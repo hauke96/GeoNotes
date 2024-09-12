@@ -9,8 +9,8 @@ import android.view.MenuItem;
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.Rule;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
@@ -21,16 +21,16 @@ import org.robolectric.annotation.Config;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hauke_stieler.geonotes.categories.Category;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.export.Exporter;
 import de.hauke_stieler.geonotes.map.Map;
 import de.hauke_stieler.geonotes.map.MarkerFragment;
-import de.hauke_stieler.geonotes.map.TouchDownListener;
 import de.hauke_stieler.geonotes.notes.Note;
-import de.hauke_stieler.geonotes.categories.Category;
 import de.hauke_stieler.geonotes.notes.NoteIconProvider;
 
-@Config(maxSdk = Build.VERSION_CODES.P, minSdk = Build.VERSION_CODES.P) // Value of Build.VERSION_CODES.P is 28
+@Config(maxSdk = Build.VERSION_CODES.P, minSdk = Build.VERSION_CODES.P)
+// Value of Build.VERSION_CODES.P is 28
 public class MainActivityTest {
 
     public ActivityScenarioRule<MainActivity> activityRule;
@@ -54,7 +54,7 @@ public class MainActivityTest {
         noteIconProviderMock = testRule.get(NoteIconProvider.class);
     }
 
-//    @Test
+    //    @Test
     public void testExportGeoJsonClicked_callsExporter() {
         // Arrange
         List<Note> notes = new ArrayList<>();
@@ -69,7 +69,7 @@ public class MainActivityTest {
         Mockito.verify(exporterMock).shareAsGeoJson();
     }
 
-//    @Test
+    //    @Test
     public void testExportGpxClicked_callsExporter() {
         // Arrange
         List<Note> notes = new ArrayList<>();
@@ -101,7 +101,7 @@ public class MainActivityTest {
     @Test
     public void testloadPreferences_setsMapListener() {
         // Act & Assert
-        Mockito.verify(mapMock).addMapListener(Mockito.any(DelayedMapListener.class), Mockito.any(TouchDownListener.class));
+        Mockito.verify(mapMock).addMapListener(Mockito.any(DelayedMapListener.class), Mockito.any(Map.TouchDownListener.class), Mockito.any(Map.NoteMovedListener.class));
     }
 
     @Test

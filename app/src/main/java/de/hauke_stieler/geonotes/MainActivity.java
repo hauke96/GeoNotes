@@ -6,9 +6,6 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-
-import androidx.exifinterface.media.ExifInterface;
-
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,6 +33,7 @@ import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.exifinterface.media.ExifInterface;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.common.util.concurrent.ListenableFuture;
@@ -51,18 +49,17 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import de.hauke_stieler.geonotes.categories.CategoryConfigurationActivity;
 import de.hauke_stieler.geonotes.common.ExifHelper;
+import de.hauke_stieler.geonotes.common.FileHelper;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.databinding.ActivityMainBinding;
 import de.hauke_stieler.geonotes.export.Exporter;
 import de.hauke_stieler.geonotes.map.Map;
 import de.hauke_stieler.geonotes.map.MarkerFragment;
-import de.hauke_stieler.geonotes.map.TouchDownListener;
 import de.hauke_stieler.geonotes.note_list.NoteListActivity;
 import de.hauke_stieler.geonotes.notes.NoteIconProvider;
 import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
@@ -316,6 +313,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void takePhoto(Long noteId, Double longitude, Double latitude) {
+        // TODO Is lastPhotoFile needed, because we get its Uri in the callback below.
         lastPhotoFile = createImageFile();
         lastPhotoNoteId = noteId;
 
@@ -338,14 +336,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
                         Log.i("capture", "Saved photo to " + outputFileResults.getSavedUri());
 
-                        try {
-                            ExifInterface exif = new ExifInterface(getContentResolver().openFileDescriptor(Uri.fromFile(lastPhotoFile), "rw").getFileDescriptor());
-                            ExifHelper.fillExifAttributesWithGps(exif, longitude, latitude);
-                            exif.saveAttributes();
-                        } catch (Exception e) {
-                            Log.e("addExifData", "Error getting/setting/saving EXIF data from freshly taken photo", e);
-                            throw new RuntimeException(e);
-                        }
+                        addPositionToImageExifData(lastPhotoFile, longitude, latitude);
 
                         addPhotoToDatabase(lastPhotoNoteId, lastPhotoFile);
                         map.addImagesToMarkerFragment();
@@ -361,6 +352,17 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+    }
+
+    private void addPositionToImageExifData(File photoFile, Double longitude, Double latitude) {
+        try {
+            ExifInterface exif = new ExifInterface(getContentResolver().openFileDescriptor(Uri.fromFile(photoFile), "rw").getFileDescriptor());
+            ExifHelper.fillExifAttributesWithGps(exif, longitude, latitude);
+            exif.saveAttributes();
+        } catch (Exception e) {
+            Log.e("addExifData", "Error getting/setting/saving EXIF data from freshly taken photo", e);
+            throw new RuntimeException(e);
+        }
     }
 
     private void closeCamera() {
@@ -396,14 +398,22 @@ public class MainActivity extends AppCompatActivity {
         }, 500);
 
         @SuppressLint("RestrictedApi")
-        TouchDownListener touchDownListener = () -> {
+        Map.TouchDownListener touchDownCallback = () -> {
             ActionMenuItemView menuItem = findViewById(R.id.toolbar_btn_gps_follow);
             if (menuItem != null) {
                 menuItem.setIcon(getResources().getDrawable(R.drawable.ic_location_searching));
             }
         };
 
-        map.addMapListener(delayedMapListener, touchDownListener);
+        Map.NoteMovedListener noteMovedCallback = (noteId, longitude, latitude) -> {
+            File externalFilesDir = getExternalFilesDir(FileHelper.GEONOTES_EXTERNAL_DIR_NAME);
+            database.getPhotos(noteId).forEach(photo -> {
+                File photoFile = new File(externalFilesDir, photo);
+                addPositionToImageExifData(photoFile, longitude, latitude);
+            });
+        };
+
+        map.addMapListener(delayedMapListener, touchDownCallback, noteMovedCallback);
     }
 
     /**

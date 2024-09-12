@@ -43,6 +43,13 @@ import de.hauke_stieler.geonotes.notes.Note;
 import de.hauke_stieler.geonotes.notes.NoteIconProvider;
 
 public class Map {
+    public interface TouchDownListener {
+        void onTouchedDown();
+    }
+    public interface NoteMovedListener {
+        void onNoteMoved(String value, Double longitude, Double latitude);
+    }
+
     private final Context context;
     private final PowerManager.WakeLock wakeLock;
     private final Database database;
@@ -219,12 +226,12 @@ public class Map {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    public void addMapListener(MapListener listener, TouchDownListener touchDownListener) {
+    public void addMapListener(MapListener listener, TouchDownListener touchDownListener, NoteMovedListener noteMovedCallback) {
         map.addMapListener(listener);
         map.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    touchDownListener.onTouchDown();
+                    touchDownListener.onTouchedDown();
 
                     // Initialize movement of the marker: Store current screen-location to keep marker there
                     if (markerToMove != null) {
@@ -243,12 +250,20 @@ public class Map {
 
                         // If the ID is set, the marker exists in the DB, therefore we store that new location
                         String id = markerToMove.getId();
+                        Double longitude = null;
+                        Double latitude = null;
                         if (id != null) {
                             database.updateNoteLocation(Long.parseLong(id), markerToMove.getPosition());
+                            longitude = markerToMove.getPosition().getLongitude();
+                            latitude = markerToMove.getPosition().getLatitude();
                         }
 
                         dragStartMarkerPosition = null;
                         markerToMove = null;
+
+                        if(id != null) {
+                            noteMovedCallback.onNoteMoved(id, longitude, latitude);
+                        }
                     }
                     break;
             }
