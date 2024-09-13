@@ -34,9 +34,9 @@ import java.util.List;
 
 import de.hauke_stieler.geonotes.Injector;
 import de.hauke_stieler.geonotes.R;
+import de.hauke_stieler.geonotes.categories.Category;
 import de.hauke_stieler.geonotes.common.FileHelper;
 import de.hauke_stieler.geonotes.database.Database;
-import de.hauke_stieler.geonotes.categories.Category;
 import de.hauke_stieler.geonotes.notes.Note;
 import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
 
@@ -55,8 +55,12 @@ public class MarkerFragment extends Fragment {
         void onCategoryChanged(GeoNotesMarker marker);
     }
 
+    public interface OnCreatedHandler {
+        void onCreated();
+    }
+
     public interface RequestPhotoEventHandler {
-        void onRequestPhoto(Long noteId);
+        void onRequestPhoto(Long noteId, Double longitude, Double latitude);
     }
 
     /**
@@ -77,6 +81,7 @@ public class MarkerFragment extends Fragment {
 
     private MarkerFragmentEventHandler markerEventHandler;
     private RequestPhotoEventHandler requestPhotoHandler;
+    private OnCreatedHandler onCreatedHandler;
     private GeoNotesMarker selectedMarker;
     private State state;
     private Spinner categorySpinner;
@@ -95,6 +100,10 @@ public class MarkerFragment extends Fragment {
 
     void addRequestPhotoHandler(RequestPhotoEventHandler handler) {
         requestPhotoHandler = handler;
+    }
+
+    public void setOnCreatedHandler(OnCreatedHandler handler) {
+        onCreatedHandler = handler;
     }
 
     @Override
@@ -164,6 +173,10 @@ public class MarkerFragment extends Fragment {
 
         state = State.NEW;
         updatePanelVisibility();
+
+        if (onCreatedHandler != null) {
+            onCreatedHandler.onCreated();
+        }
     }
 
     public void selectMarker(GeoNotesMarker marker, boolean transferEditTextContent) {
@@ -242,7 +255,7 @@ public class MarkerFragment extends Fragment {
         ImageButton cameraButton = view.findViewById(R.id.camera_button);
         cameraButton.setOnClickListener(v -> {
             markerEventHandler.onSave(marker);
-            requestPhotoHandler.onRequestPhoto(Long.parseLong(marker.getId()));
+            requestPhotoHandler.onRequestPhoto(Long.parseLong(marker.getId()), marker.getPosition().getLongitude(), marker.getPosition().getLatitude());
         });
 
         selectCategory(marker.getCategoryId());

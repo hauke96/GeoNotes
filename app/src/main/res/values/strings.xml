@@ -17,6 +17,7 @@
     <string name="pref_last_location_lon" translatable="false">PREF_LAST_LOCATION_LON</string>
     <string name="pref_last_location_zoom" translatable="false">PREF_LAST_LOCATION_ZOOM</string>
     <string name="pref_tap_duration" translatable="false">PREF_TAP_DURATION</string>
+    <string name="pref_keep_camera_open" translatable="false">PREF_KEEP_CAMERA_OPEN</string>
     <string name="pref_last_category_id" translatable="false">PREF_LAST_CATEGORY_ID</string>
 
     <!-- Misc strings -->
@@ -47,6 +48,7 @@
     <string name="background_map_cache">Background map cache</string>
     <string name="clear">Clear</string>
     <string name="tap_long_to_create_a_note">Tap long to create a note</string>
+    <string name="keep_camera_open">Keep camera open after taking a picture</string>
     <string name="feedback">Feedback</string>
     <string name="geonotes_version">GeoNotes version</string>
     <string name="no_mail_client_found">No mail client found</string>

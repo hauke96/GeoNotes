@@ -33,6 +33,8 @@
     <string name="background_map_cache">Cache de carte en arrière-plan</string>
     <string name="clear">Effacer</string>
     <string name="tap_long_to_create_a_note">Un appui long permet de créer une note</string>
+    <!-- TODO Translate -->
+    <string name="keep_camera_open">Keep camera open after taking a picture</string>
     <string name="feedback">Avis</string>
     <string name="geonotes_version">GeoNotes version</string>
     <!-- TODO Translate -->

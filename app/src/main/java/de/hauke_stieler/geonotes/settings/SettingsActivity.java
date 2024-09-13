@@ -11,6 +11,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -27,6 +28,14 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
+
+        getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                save();
+                finish();
+            }
+        });
 
         Toolbar toolbar = findViewById(R.id.settings_toolbar);
         setSupportActionBar(toolbar);
@@ -101,6 +110,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         boolean prefLongTap = preferences.getBoolean(getString(R.string.pref_tap_duration), false);
         ((Switch) findViewById(R.id.settings_tap_long)).setChecked(prefLongTap);
+
+        boolean prefKeepCameraOpen = preferences.getBoolean(getString(R.string.pref_keep_camera_open), false);
+        ((Switch) findViewById(R.id.settings_keep_camera_open)).setChecked(prefKeepCameraOpen);
     }
 
     private void save() {
@@ -130,6 +142,9 @@ public class SettingsActivity extends AppCompatActivity {
         boolean useLongTap = ((Switch) findViewById(R.id.settings_tap_long)).isChecked();
         editor.putBoolean(getString(R.string.pref_tap_duration), useLongTap);
 
+        boolean keepCameraOpen = ((Switch) findViewById(R.id.settings_keep_camera_open)).isChecked();
+        editor.putBoolean(getString(R.string.pref_keep_camera_open), keepCameraOpen);
+
         editor.commit();
     }
 
@@ -138,11 +153,5 @@ public class SettingsActivity extends AppCompatActivity {
         save();
         finish();
         return true;
-    }
-
-    @Override
-    public void onBackPressed() {
-        save();
-        finish();
     }
 }

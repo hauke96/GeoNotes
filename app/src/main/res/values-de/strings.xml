@@ -32,6 +32,7 @@
     <string name="background_map_cache">Hintergrundkarten-Cache</string>
     <string name="clear">Leeren</string>
     <string name="tap_long_to_create_a_note">Lange tippen um Notiz zu erstellen</string>
+    <string name="keep_camera_open">Kamera geöffnet lassen, nachdem ein Foto gemacht wurde</string>
     <string name="feedback">Feedback</string>
     <string name="geonotes_version">GeoNotes Version</string>
     <string name="no_mail_client_found">Keine E-Mail App gefunden!</string>
