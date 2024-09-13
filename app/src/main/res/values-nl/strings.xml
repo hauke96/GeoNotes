@@ -33,6 +33,8 @@
     <string name="background_map_cache">Achtergrondkaart-geheugen</string>
     <string name="clear">Wissen</string>
     <string name="tap_long_to_create_a_note">Klik en houd ingedrukt om een opmerking aan te maken</string>
+    <!-- TODO Translate -->
+    <string name="keep_camera_open">Keep camera open after taking a picture</string>
     <string name="feedback">Feedback</string>
     <string name="geonotes_version">GeoNotes versie</string>
     <!-- TODO Translate -->

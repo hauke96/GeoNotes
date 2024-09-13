@@ -32,6 +32,8 @@
     <string name="background_map_cache">Bakgrundskartans cache</string>
     <string name="clear">Töm</string>
     <string name="tap_long_to_create_a_note">Klicka länge för att lägga till anteckning</string>
+    <!-- TODO Translate -->
+    <string name="keep_camera_open">Keep camera open after taking a picture</string>
     <string name="feedback">Feedback</string>
     <string name="geonotes_version">GeoNotes version</string>
     <!-- TODO Translate -->

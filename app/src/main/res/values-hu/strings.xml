@@ -32,6 +32,8 @@
     <string name="background_map_cache">Térképháttér gyorsítótára</string>
     <string name="clear">Törlés</string>
     <string name="tap_long_to_create_a_note">Jegyzet létrehozása hosszú érintéssel</string>
+    <!-- TODO Translate -->
+    <string name="keep_camera_open">Keep camera open after taking a picture</string>
     <string name="feedback">Visszajelzés</string>
     <string name="geonotes_version">GeoNotes verziója</string>
     <string name="no_mail_client_found">Nem található levelezőprogram</string>

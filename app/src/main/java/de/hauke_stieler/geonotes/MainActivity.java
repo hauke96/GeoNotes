@@ -2,14 +2,12 @@ package de.hauke_stieler.geonotes;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -83,14 +81,6 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding viewBinding;
     private LifecycleCameraController cameraController;
     private Bundle savedInstanceState;
-
-    // These fields exist to remember the photo data when the photo Intent is started. This is
-    // because the Intent doesn't return anything and works asynchronously. In the result handler
-    // only "null" is passed but we want to store the photo for the note, that's why we store the
-    // data in these fields here. Ugly and horrorfying but that's how it works in the Android
-    // world ...
-    private static File lastPhotoFile;
-    private static Long lastPhotoNoteId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -249,7 +239,11 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
 
         outState.putBoolean(BUNDLE_KEY_CAMERA_IS_OPEN, findViewById(R.id.camera_layout).getVisibility() == View.VISIBLE);
-        outState.putLong(BUNDLE_KEY_SELECTED_NOTE_ID, Long.parseLong(map.getSelectedMarker().getId()));
+
+        GeoNotesMarker marker = map.getSelectedMarker();
+        if (marker != null) {
+            outState.putLong(BUNDLE_KEY_SELECTED_NOTE_ID, Long.parseLong(marker.getId()));
+        }
     }
 
     @Override
@@ -434,7 +428,10 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.map_marker_fragment).setVisibility(View.INVISIBLE);
 
         findViewById(R.id.camera_layout).setVisibility(View.VISIBLE);
-        findViewById(R.id.image_capture_button).setOnClickListener(view -> takePhoto(noteId, longitude, latitude));
+        findViewById(R.id.image_capture_button).setOnClickListener(view -> {
+            disableCameraButtons();
+            takePhoto(noteId, longitude, latitude);
+        });
 
         cameraController = new LifecycleCameraController(getBaseContext());
 
@@ -472,18 +469,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void takePhoto(Long noteId, Double longitude, Double latitude) {
         // TODO Is lastPhotoFile needed, because we get its Uri in the callback below.
-        lastPhotoFile = createImageFile();
-        lastPhotoNoteId = noteId;
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, lastPhotoFile.getName());
-        contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg");
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-            contentValues.put(MediaStore.Images.Media.RELATIVE_PATH, "");
-        }
+        File photoFile = createImageFile();
 
         ImageCapture.OutputFileOptions outputOptions = new ImageCapture.OutputFileOptions
-                .Builder(lastPhotoFile)
+                .Builder(photoFile)
                 .build();
 
         cameraController.takePicture(
@@ -494,25 +483,46 @@ public class MainActivity extends AppCompatActivity {
                     public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
                         Log.i("capture", "Saved photo to " + outputFileResults.getSavedUri());
 
-                        addPositionToImageExifData(lastPhotoFile, longitude, latitude);
+                        addPositionToImageExifData(photoFile, longitude, latitude);
 
-                        addPhotoToDatabase(lastPhotoNoteId, lastPhotoFile);
+                        addPhotoToDatabase(noteId, photoFile);
                         map.addImagesToMarkerFragment();
 
-                        closeCamera();
+                        enableCameraButtons();
+
+                        boolean keepCameraOpen = preferences.getBoolean(getApplicationContext().getString(R.string.pref_keep_camera_open), false);
+                        if (!keepCameraOpen) {
+                            closeCamera();
+                        }
                     }
 
                     @Override
                     public void onError(@NonNull ImageCaptureException exception) {
                         Log.e("capture", "Error: ", exception);
                         Toast.makeText(getBaseContext(), "Error taking picture: " + exception.getMessage(), Toast.LENGTH_LONG).show();
+                        enableCameraButtons();
                         closeCamera();
                     }
                 }
         );
     }
 
+    private void enableCameraButtons() {
+        findViewById(R.id.image_capture_button).setEnabled(true);
+        findViewById(R.id.image_capture_button).setAlpha(1f);
+        findViewById(R.id.image_capture_back).setEnabled(true);
+        findViewById(R.id.image_capture_back).setAlpha(1f);
+    }
+
+    private void disableCameraButtons() {
+        findViewById(R.id.image_capture_button).setEnabled(false);
+        findViewById(R.id.image_capture_button).setAlpha(0.35f);
+        findViewById(R.id.image_capture_back).setEnabled(false);
+        findViewById(R.id.image_capture_back).setAlpha(0.35f);
+    }
+
     private void addPositionToImageExifData(File photoFile, Double longitude, Double latitude) {
+        Log.i("addExifData", "Add location to EXIF data of file " + photoFile.getAbsolutePath());
         try {
             ExifInterface exif = new ExifInterface(getContentResolver().openFileDescriptor(Uri.fromFile(photoFile), "rw").getFileDescriptor());
             ExifHelper.fillExifAttributesWithGps(exif, longitude, latitude);

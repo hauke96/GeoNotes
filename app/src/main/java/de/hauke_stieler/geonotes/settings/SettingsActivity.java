@@ -110,6 +110,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         boolean prefLongTap = preferences.getBoolean(getString(R.string.pref_tap_duration), false);
         ((Switch) findViewById(R.id.settings_tap_long)).setChecked(prefLongTap);
+
+        boolean prefKeepCameraOpen = preferences.getBoolean(getString(R.string.pref_keep_camera_open), false);
+        ((Switch) findViewById(R.id.settings_keep_camera_open)).setChecked(prefKeepCameraOpen);
     }
 
     private void save() {
@@ -138,6 +141,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         boolean useLongTap = ((Switch) findViewById(R.id.settings_tap_long)).isChecked();
         editor.putBoolean(getString(R.string.pref_tap_duration), useLongTap);
+
+        boolean keepCameraOpen = ((Switch) findViewById(R.id.settings_keep_camera_open)).isChecked();
+        editor.putBoolean(getString(R.string.pref_keep_camera_open), keepCameraOpen);
 
         editor.commit();
     }
