@@ -18,6 +18,8 @@
     <!-- Toolbar -->
     <string name="toolbar_gps_follow_mode">Mode suivi GPS</string>
     <string name="toolbar_export">Exporter</string>
+    <!-- TODO Translate -->
+    <string name="toolbar_import">Import</string>
     <string name="toolbar_list_of_notes">Liste des notes</string>
     <string name="toolbar_categories">Catégories</string>
     <string name="toolbar_settings">Paramètres</string>

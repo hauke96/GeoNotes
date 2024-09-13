@@ -220,6 +220,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.toolbar_btn_export:
                 showExportPopupMenu();
                 return true;
+            case R.id.toolbar_btn_import:
+                // TODO Import
+                Toast.makeText(getApplicationContext(), "Not yet implemented", Toast.LENGTH_SHORT).show();
+                return true;
             case R.id.toolbar_btn_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;

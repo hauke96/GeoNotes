@@ -18,6 +18,8 @@
     <!-- Toolbar -->
     <string name="toolbar_gps_follow_mode">GPS följ-läge</string>
     <string name="toolbar_export">Exportera</string>
+    <!-- TODO Translate -->
+    <string name="toolbar_import">Import</string>
     <string name="toolbar_list_of_notes">Lista anteckningar</string>
     <string name="toolbar_categories">Kategorier</string>
     <string name="toolbar_settings">Inställningar</string>

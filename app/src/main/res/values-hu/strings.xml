@@ -18,6 +18,8 @@
     <!-- Toolbar -->
     <string name="toolbar_gps_follow_mode">GPS-követő mód</string>
     <string name="toolbar_export">Exportálás</string>
+    <!-- TODO Translate -->
+    <string name="toolbar_import">Import</string>
     <string name="toolbar_list_of_notes">Jegyzetek listája</string>
     <string name="toolbar_categories">Kategóriák</string>
     <string name="toolbar_settings">Beállítások</string>

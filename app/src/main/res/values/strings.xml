@@ -34,6 +34,7 @@
     <!-- Toolbar -->
     <string name="toolbar_gps_follow_mode">GPS follow mode</string>
     <string name="toolbar_export">Export</string>
+    <string name="toolbar_import">Import</string>
     <string name="toolbar_list_of_notes">List of notes</string>
     <string name="toolbar_categories">Categories</string>
     <string name="toolbar_settings">Settings</string>
