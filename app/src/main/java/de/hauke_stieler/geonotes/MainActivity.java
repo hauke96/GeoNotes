@@ -304,6 +304,93 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private boolean hasPermission(String permission) {
+        return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void addMapListener() {
+        DelayedMapListener delayedMapListener = new DelayedMapListener(new MapListener() {
+            @Override
+            public boolean onScroll(ScrollEvent event) {
+                storeLocation();
+                return true;
+            }
+
+            @Override
+            public boolean onZoom(ZoomEvent event) {
+                storeLocation();
+                return true;
+            }
+        }, 500);
+
+        @SuppressLint("RestrictedApi")
+        Map.TouchDownListener touchDownCallback = () -> {
+            ActionMenuItemView menuItem = findViewById(R.id.toolbar_btn_gps_follow);
+            if (menuItem != null) {
+                menuItem.setIcon(getResources().getDrawable(R.drawable.ic_location_searching));
+            }
+        };
+
+        Map.NoteMovedListener noteMovedCallback = (noteId, longitude, latitude) -> {
+            File externalFilesDir = getExternalFilesDir(FileHelper.GEONOTES_EXTERNAL_DIR_NAME);
+            database.getPhotos(noteId).forEach(photo -> {
+                File photoFile = new File(externalFilesDir, photo);
+                addPositionToImageExifData(photoFile, longitude, latitude);
+            });
+        };
+
+        map.addMapListener(delayedMapListener, touchDownCallback, noteMovedCallback);
+    }
+
+    /**
+     * Adds a listener for the camera button. The camera action can only be performed from within an activity.
+     */
+    private void addCameraListener() {
+        map.addRequestPhotoHandler(this::startCamera);
+    }
+
+    private void addBackListener() {
+        // Back-button of the phone
+        getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                closeCamera();
+                // TODO What to do when back-button pressed but camera not on? Nothing?
+            }
+        });
+
+        // Back-button of the photo preview
+        findViewById(R.id.image_capture_back).setOnClickListener(v -> {
+            closeCamera();
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Maybe some or all notes got deleted via the note list -> reload map
+        if (requestCode == REQUEST_NOTE_LIST_REQUEST_CODE) {
+            map.reloadAllNotes();
+        }
+
+        // If Intent was successful
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_NOTE_LIST_REQUEST_CODE:
+                    long selectedNoteId = data.getLongExtra(NoteListActivity.EXTRA_CLICKED_NOTE, -1L);
+                    if (selectedNoteId != -1) {
+                        // Note selected in the note list -> also select on the map
+                        map.selectNote(selectedNoteId);
+                    }
+                    break;
+                case REQUEST_CATEGORIES_REQUEST_CODE:
+                    noteIconProvider.updateIcons();
+                    break;
+            }
+        }
+    }
+
     private void startCamera(Long noteId, Double longitude, Double latitude) {
         String[] permissions = new String[1];
         permissions[0] = Manifest.permission.CAMERA;
@@ -417,93 +504,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.e("closeCamera", "Error while unbinding camera lifecycle: ", e);
             throw new RuntimeException(e);
-        }
-    }
-
-    private void addMapListener() {
-        DelayedMapListener delayedMapListener = new DelayedMapListener(new MapListener() {
-            @Override
-            public boolean onScroll(ScrollEvent event) {
-                storeLocation();
-                return true;
-            }
-
-            @Override
-            public boolean onZoom(ZoomEvent event) {
-                storeLocation();
-                return true;
-            }
-        }, 500);
-
-        @SuppressLint("RestrictedApi")
-        Map.TouchDownListener touchDownCallback = () -> {
-            ActionMenuItemView menuItem = findViewById(R.id.toolbar_btn_gps_follow);
-            if (menuItem != null) {
-                menuItem.setIcon(getResources().getDrawable(R.drawable.ic_location_searching));
-            }
-        };
-
-        Map.NoteMovedListener noteMovedCallback = (noteId, longitude, latitude) -> {
-            File externalFilesDir = getExternalFilesDir(FileHelper.GEONOTES_EXTERNAL_DIR_NAME);
-            database.getPhotos(noteId).forEach(photo -> {
-                File photoFile = new File(externalFilesDir, photo);
-                addPositionToImageExifData(photoFile, longitude, latitude);
-            });
-        };
-
-        map.addMapListener(delayedMapListener, touchDownCallback, noteMovedCallback);
-    }
-
-    /**
-     * Adds a listener for the camera button. The camera action can only be performed from within an activity.
-     */
-    private void addCameraListener() {
-        map.addRequestPhotoHandler(this::startCamera);
-    }
-
-    private void addBackListener() {
-        // Back-button of the phone
-        getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                closeCamera();
-                // TODO What to do when back-button pressed but camera not on? Nothing?
-            }
-        });
-
-        // Back-button of the photo preview
-        findViewById(R.id.image_capture_back).setOnClickListener(v -> {
-            closeCamera();
-        });
-    }
-
-    private boolean hasPermission(String permission) {
-        return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // Maybe some or all notes got deleted via the note list -> reload map
-        if (requestCode == REQUEST_NOTE_LIST_REQUEST_CODE) {
-            map.reloadAllNotes();
-        }
-
-        // If Intent was successful
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case REQUEST_NOTE_LIST_REQUEST_CODE:
-                    long selectedNoteId = data.getLongExtra(NoteListActivity.EXTRA_CLICKED_NOTE, -1L);
-                    if (selectedNoteId != -1) {
-                        // Note selected in the note list -> also select on the map
-                        map.selectNote(selectedNoteId);
-                    }
-                    break;
-                case REQUEST_CATEGORIES_REQUEST_CODE:
-                    noteIconProvider.updateIcons();
-                    break;
-            }
         }
     }
 
