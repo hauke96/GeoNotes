@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,7 +35,6 @@ import androidx.camera.view.LifecycleCameraController;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.exifinterface.media.ExifInterface;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.common.util.concurrent.ListenableFuture;
 
@@ -165,7 +165,6 @@ public class MainActivity extends AppCompatActivity {
         map = Injector.get(Map.class);
 
         addMapListener();
-        addCameraListener();
     }
 
     void loadPreferences() {
@@ -340,13 +339,29 @@ public class MainActivity extends AppCompatActivity {
         };
 
         map.addMapListener(delayedMapListener, touchDownCallback, noteMovedCallback);
+        map.addRequestPhotoHandler(this::startCamera);
     }
 
-    /**
-     * Adds a listener for the camera button. The camera action can only be performed from within an activity.
-     */
-    private void addCameraListener() {
-        map.addRequestPhotoHandler(this::startCamera);
+    private void animateFocusRing(float x, float y) {
+        ImageView focusView = findViewById(R.id.camera_preview_focus_view);
+
+        // Move the focus ring so that its center is at the tap location (x, y)
+        float width = focusView.getWidth();
+        float height = focusView.getHeight();
+        focusView.setX(x - width / 2);
+        focusView.setY(y - height / 2);
+
+        // Show focus ring
+        focusView.setVisibility(View.VISIBLE);
+        focusView.setAlpha(0.75F);
+
+        // Animate the focus ring to disappear
+        focusView.animate()
+                .setStartDelay(200)
+                .setDuration(600)
+                .alpha(0F)
+                .withEndAction(() -> focusView.setVisibility(View.INVISIBLE))
+                .start();
     }
 
     private void addBackListener() {
@@ -421,10 +436,6 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.camera_layout).setVisibility(View.VISIBLE);
         findViewById(R.id.image_capture_button).setOnClickListener(view -> takePhoto(noteId, longitude, latitude));
 
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.addToBackStack("");
-        transaction.commit();
-
         cameraController = new LifecycleCameraController(getBaseContext());
 
         try {
@@ -433,6 +444,28 @@ public class MainActivity extends AppCompatActivity {
             viewBinding.cameraPreview.setController(cameraController);
         } catch (Exception e) {
             Log.e("startCamera", "Error while unbinding and binding camera lifecycle: ", e);
+            throw new RuntimeException(e);
+        }
+
+        findViewById(R.id.camera_preview).setOnTouchListener((v, event) -> {
+            animateFocusRing(event.getX(), event.getY());
+            return true;
+        });
+    }
+
+    private void closeCamera() {
+        findViewById(R.id.toolbar).setVisibility(View.VISIBLE);
+        findViewById(R.id.main_layout).setVisibility(View.VISIBLE);
+        findViewById(R.id.map_marker_fragment).setVisibility(View.VISIBLE);
+
+        findViewById(R.id.camera_layout).setVisibility(View.INVISIBLE);
+
+        try {
+            ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);
+            ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+            cameraProvider.unbindAll();
+        } catch (Exception e) {
+            Log.e("closeCamera", "Error while unbinding camera lifecycle: ", e);
             throw new RuntimeException(e);
         }
     }
@@ -486,23 +519,6 @@ public class MainActivity extends AppCompatActivity {
             exif.saveAttributes();
         } catch (Exception e) {
             Log.e("addExifData", "Error getting/setting/saving EXIF data from freshly taken photo file " + photoFile.getAbsolutePath(), e);
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void closeCamera() {
-        findViewById(R.id.toolbar).setVisibility(View.VISIBLE);
-        findViewById(R.id.main_layout).setVisibility(View.VISIBLE);
-        findViewById(R.id.map_marker_fragment).setVisibility(View.VISIBLE);
-
-        findViewById(R.id.camera_layout).setVisibility(View.INVISIBLE);
-
-        try {
-            ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);
-            ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
-            cameraProvider.unbindAll();
-        } catch (Exception e) {
-            Log.e("closeCamera", "Error while unbinding camera lifecycle: ", e);
             throw new RuntimeException(e);
         }
     }
