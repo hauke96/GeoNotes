@@ -11,38 +11,39 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- TODO Zoom etc. nocht working? Possibility to add further controls e.g. for exposure? Setting focus point also not working. -->
         <androidx.camera.view.PreviewView
             android:id="@+id/camera_preview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="visible"/>
+            android:layout_height="match_parent"/>
 
-        <!-- TODO Make this beautiful -->
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
             android:orientation="horizontal"
-            android:layout_gravity="center|bottom">
+            android:layout_gravity="center|bottom"
+            android:background="@color/black_transparent">
 
-            <Button
+            <ImageButton
                 android:id="@+id/image_capture_back"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginEnd="20dp"
-                android:layout_gravity="center"
-                android:text="Back"/>
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignParentStart="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_chevron_left"
+                app:tint="@color/white" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/image_capture_button"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_gravity="center"
-                android:text="Take photo"/>
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_centerHorizontal="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_aperture"
+                app:tint="@color/white" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
     </FrameLayout>
 
