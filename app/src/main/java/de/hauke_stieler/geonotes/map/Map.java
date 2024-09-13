@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.os.PowerManager;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.core.content.res.ResourcesCompat;
@@ -46,6 +47,7 @@ public class Map {
     public interface TouchDownListener {
         void onTouchedDown();
     }
+
     public interface NoteMovedListener {
         void onNoteMoved(String value, Double longitude, Double latitude);
     }
@@ -89,7 +91,7 @@ public class Map {
 
         // Keep device on
         final PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "geonotes:wakelock");
+        wakeLock = pm.newWakeLock(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, "geonotes:wakelock");
         wakeLock.acquire();
 
         Drawable locationIconBackground
@@ -261,7 +263,7 @@ public class Map {
                         dragStartMarkerPosition = null;
                         markerToMove = null;
 
-                        if(id != null) {
+                        if (id != null) {
                             noteMovedCallback.onNoteMoved(id, longitude, latitude);
                         }
                     }
@@ -398,7 +400,7 @@ public class Map {
     }
 
     private void deselectMarker(GeoNotesMarker marker) {
-        if(marker == null){
+        if (marker == null) {
             return;
         }
 
@@ -406,7 +408,7 @@ public class Map {
         setIcon(marker, false);
     }
 
-    private Marker getSelectedMarker() {
+    public GeoNotesMarker getSelectedMarker() {
         return markerFragment.getSelectedMarker();
     }
 

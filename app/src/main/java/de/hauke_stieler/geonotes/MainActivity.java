@@ -56,6 +56,7 @@ import de.hauke_stieler.geonotes.common.FileHelper;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.databinding.ActivityMainBinding;
 import de.hauke_stieler.geonotes.export.Exporter;
+import de.hauke_stieler.geonotes.map.GeoNotesMarker;
 import de.hauke_stieler.geonotes.map.Map;
 import de.hauke_stieler.geonotes.map.MarkerFragment;
 import de.hauke_stieler.geonotes.note_list.NoteListActivity;
@@ -64,6 +65,9 @@ import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
 import de.hauke_stieler.geonotes.settings.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity {
+
+    static final String BUNDLE_KEY_CAMERA_IS_OPEN = "CAMERA_IS_OPEN";
+    static final String BUNDLE_KEY_SELECTED_NOTE_ID = "SELECTED_NOTE_ID";
 
     static final int REQUEST_CATEGORIES_REQUEST_CODE = 5;
     static final int REQUEST_NOTE_LIST_REQUEST_CODE = 4;
@@ -78,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
     private NoteIconProvider noteIconProvider;
     private ActivityMainBinding viewBinding;
     private LifecycleCameraController cameraController;
+    private Bundle savedInstanceState;
 
     // These fields exist to remember the photo data when the photo Intent is started. This is
     // because the Intent doesn't return anything and works asynchronously. In the result handler
@@ -132,15 +137,34 @@ public class MainActivity extends AppCompatActivity {
 
         createMarkerFragment();
         createMap();
+
+        this.savedInstanceState = savedInstanceState;
     }
 
     private void createMarkerFragment() {
-        MarkerFragment markerFragment = new MarkerFragment();
+        MarkerFragment markerFragment = (MarkerFragment) getSupportFragmentManager().findFragmentById(R.id.map_marker_fragment);
+        if (markerFragment == null) {
+            markerFragment = new MarkerFragment();
 
-        getSupportFragmentManager().beginTransaction()
-                .setReorderingAllowed(true)
-                .add(R.id.map_marker_fragment, markerFragment, null)
-                .commit();
+            getSupportFragmentManager().beginTransaction()
+                    .setReorderingAllowed(true)
+                    .add(R.id.map_marker_fragment, markerFragment, null)
+                    .commit();
+        }
+
+        markerFragment.setOnCreatedHandler(() -> {
+            if (savedInstanceState != null) {
+                long selectedNoteId = savedInstanceState.getLong(BUNDLE_KEY_SELECTED_NOTE_ID, -1);
+                if (selectedNoteId != -1) {
+                    map.selectNote(selectedNoteId);
+                }
+
+                if (savedInstanceState.getBoolean(BUNDLE_KEY_CAMERA_IS_OPEN, false)) {
+                    GeoNotesMarker marker = map.getSelectedMarker();
+                    startCamera(Long.parseLong(marker.getId()), marker.getPosition().getLongitude(), marker.getPosition().getLatitude());
+                }
+            }
+        });
 
         Injector.put(markerFragment);
     }
@@ -230,6 +254,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putBoolean(BUNDLE_KEY_CAMERA_IS_OPEN, findViewById(R.id.camera_layout).getVisibility() == View.VISIBLE);
+        outState.putLong(BUNDLE_KEY_SELECTED_NOTE_ID, Long.parseLong(map.getSelectedMarker().getId()));
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         loadPreferences();
@@ -280,7 +312,40 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void startCamera() {
+    private void startCamera(Long noteId, Double longitude, Double latitude) {
+        String[] permissions = new String[1];
+        permissions[0] = Manifest.permission.CAMERA;
+
+        boolean hasCameraPermissions = hasPermission(Manifest.permission.CAMERA);
+        boolean hasStoragePermissions = true;
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            hasStoragePermissions = hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            String[] oldPermissions = permissions;
+            permissions = new String[oldPermissions.length + 1];
+            permissions[permissions.length - 1] = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+        }
+
+        if (!hasCameraPermissions || !hasStoragePermissions) {
+            // We don't have camera and/or storage permissions -> ask for them
+            ActivityCompat.requestPermissions(
+                    this,
+                    permissions,
+                    REQUEST_CAMERA_PERMISSIONS_REQUEST_CODE);
+            return;
+        }
+
+        findViewById(R.id.toolbar).setVisibility(View.INVISIBLE);
+        findViewById(R.id.main_layout).setVisibility(View.INVISIBLE);
+        findViewById(R.id.map_marker_fragment).setVisibility(View.INVISIBLE);
+
+        findViewById(R.id.camera_layout).setVisibility(View.VISIBLE);
+        findViewById(R.id.image_capture_button).setOnClickListener(view -> takePhoto(noteId, longitude, latitude));
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.addToBackStack("");
+        transaction.commit();
+
         cameraController = new LifecycleCameraController(getBaseContext());
 
         try {
@@ -341,7 +406,7 @@ public class MainActivity extends AppCompatActivity {
             ExifHelper.fillExifAttributesWithGps(exif, longitude, latitude);
             exif.saveAttributes();
         } catch (Exception e) {
-            Log.e("addExifData", "Error getting/setting/saving EXIF data from freshly taken photo", e);
+            Log.e("addExifData", "Error getting/setting/saving EXIF data from freshly taken photo file " + photoFile.getAbsolutePath(), e);
             throw new RuntimeException(e);
         }
     }
@@ -401,41 +466,7 @@ public class MainActivity extends AppCompatActivity {
      * Adds a listener for the camera button. The camera action can only be performed from within an activity.
      */
     private void addCameraListener() {
-        map.addRequestPhotoHandler((Long noteId, Double longitude, Double latitude) -> {
-            String[] permissions = new String[1];
-            permissions[0] = Manifest.permission.CAMERA;
-
-            boolean hasCameraPermissions = hasPermission(Manifest.permission.CAMERA);
-            boolean hasStoragePermissions = true;
-
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-                hasStoragePermissions = hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                String[] oldPermissions = permissions;
-                permissions = new String[oldPermissions.length + 1];
-                permissions[permissions.length - 1] = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-            }
-
-            if (!hasCameraPermissions || !hasStoragePermissions) {
-                // We don't have camera and/or storage permissions -> ask for them
-                ActivityCompat.requestPermissions(
-                        this,
-                        permissions,
-                        REQUEST_CAMERA_PERMISSIONS_REQUEST_CODE);
-                return;
-            }
-
-            findViewById(R.id.toolbar).setVisibility(View.INVISIBLE);
-            findViewById(R.id.main_layout).setVisibility(View.INVISIBLE);
-            findViewById(R.id.map_marker_fragment).setVisibility(View.INVISIBLE);
-
-            findViewById(R.id.camera_layout).setVisibility(View.VISIBLE);
-            findViewById(R.id.image_capture_button).setOnClickListener(view -> takePhoto(noteId, longitude, latitude));
-
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.addToBackStack("");
-            transaction.commit();
-            startCamera();
-        });
+        map.addRequestPhotoHandler(this::startCamera);
     }
 
     private boolean hasPermission(String permission) {

@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <FrameLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <FrameLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/camera_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="invisible">
 
         <androidx.camera.view.PreviewView
             android:id="@+id/camera_preview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_gravity="center|bottom"
-            android:background="@color/black_transparent">
+            android:background="@color/black_transparent"
+            android:orientation="horizontal">
 
             <ImageButton
                 android:id="@+id/image_capture_back"
