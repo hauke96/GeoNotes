@@ -100,16 +100,6 @@ public class MainActivity extends AppCompatActivity {
         viewBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(viewBinding.getRoot());
 
-        getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                if (findViewById(R.id.camera_layout).getVisibility() == View.VISIBLE) {
-                    closeCamera();
-                }
-                // TODO What to do when back-button pressed but camera not on? Nothing?
-            }
-        });
-
         database = Injector.get(Database.class);
         preferences = Injector.get(SharedPreferences.class);
         exporter = Injector.get(Exporter.class);
@@ -134,6 +124,8 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.CAMERA
         });
+
+        addBackListener();
 
         createMarkerFragment();
         createMap();
@@ -467,6 +459,22 @@ public class MainActivity extends AppCompatActivity {
      */
     private void addCameraListener() {
         map.addRequestPhotoHandler(this::startCamera);
+    }
+
+    private void addBackListener() {
+        // Back-button of the phone
+        getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                closeCamera();
+                // TODO What to do when back-button pressed but camera not on? Nothing?
+            }
+        });
+
+        // Back-button of the photo preview
+        findViewById(R.id.image_capture_back).setOnClickListener(v -> {
+            closeCamera();
+        });
     }
 
     private boolean hasPermission(String permission) {
