@@ -29,8 +29,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
-import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
+import androidx.camera.view.LifecycleCameraController;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.exifinterface.media.ExifInterface;
@@ -49,8 +49,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import de.hauke_stieler.geonotes.categories.CategoryConfigurationActivity;
 import de.hauke_stieler.geonotes.common.ExifHelper;
@@ -79,8 +77,7 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private NoteIconProvider noteIconProvider;
     private ActivityMainBinding viewBinding;
-    private ExecutorService cameraExecutor;
-    private ImageCapture imageCapture;
+    private LifecycleCameraController cameraController;
 
     // These fields exist to remember the photo data when the photo Intent is started. This is
     // because the Intent doesn't return anything and works asynchronously. In the result handler
@@ -107,9 +104,6 @@ public class MainActivity extends AppCompatActivity {
                 // TODO What to do when back-button pressed but camera not on? Nothing?
             }
         });
-
-        cameraExecutor = Executors.newSingleThreadExecutor();
-        imageCapture = new ImageCapture.Builder().build();
 
         database = Injector.get(Database.class);
         preferences = Injector.get(SharedPreferences.class);
@@ -252,7 +246,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         map.onDestroy();
         super.onDestroy();
-        cameraExecutor.shutdown();
     }
 
     private void requestPermissionsIfNecessary(String[] permissions) {
@@ -288,28 +281,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startCamera() {
-        ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);
+        cameraController = new LifecycleCameraController(getBaseContext());
 
-        Preview preview = new Preview.Builder().build();
-        CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
-
-        cameraProviderFuture.addListener(() -> {
-            preview.setSurfaceProvider(viewBinding.cameraPreview.getSurfaceProvider());
-
-            try {
-                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
-                cameraProvider.unbindAll();
-                cameraProvider.bindToLifecycle(
-                        this,
-                        cameraSelector,
-                        preview,
-                        imageCapture
-                );
-            } catch (Exception e) {
-                Log.e("startCamera", "Error while unbinding and binding camera lifecycle: ", e);
-                throw new RuntimeException(e);
-            }
-        }, ContextCompat.getMainExecutor(this));
+        try {
+            cameraController.bindToLifecycle(this);
+            cameraController.setCameraSelector(CameraSelector.DEFAULT_BACK_CAMERA);
+            viewBinding.cameraPreview.setController(cameraController);
+        } catch (Exception e) {
+            Log.e("startCamera", "Error while unbinding and binding camera lifecycle: ", e);
+            throw new RuntimeException(e);
+        }
     }
 
     private void takePhoto(Long noteId, Double longitude, Double latitude) {
@@ -328,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
                 .Builder(lastPhotoFile)
                 .build();
 
-        imageCapture.takePicture(
+        cameraController.takePicture(
                 outputOptions,
                 ContextCompat.getMainExecutor(this),
                 new ImageCapture.OnImageSavedCallback() {
@@ -448,13 +429,12 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.map_marker_fragment).setVisibility(View.INVISIBLE);
 
             findViewById(R.id.camera_layout).setVisibility(View.VISIBLE);
+            findViewById(R.id.image_capture_button).setOnClickListener(view -> takePhoto(noteId, longitude, latitude));
 
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.addToBackStack("");
             transaction.commit();
             startCamera();
-
-            findViewById(R.id.image_capture_button).setOnClickListener(view -> takePhoto(noteId, longitude, latitude));
         });
     }
 
