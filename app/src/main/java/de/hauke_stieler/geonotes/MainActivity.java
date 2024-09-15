@@ -48,6 +48,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.hauke_stieler.geonotes.categories.CategoryConfigurationActivity;
@@ -55,12 +56,11 @@ import de.hauke_stieler.geonotes.common.ExifHelper;
 import de.hauke_stieler.geonotes.common.FileHelper;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.databinding.ActivityMainBinding;
-import de.hauke_stieler.geonotes.export.Exporter;
 import de.hauke_stieler.geonotes.export.BackupImportDialog;
+import de.hauke_stieler.geonotes.export.Exporter;
 import de.hauke_stieler.geonotes.map.GeoNotesMarker;
 import de.hauke_stieler.geonotes.map.Map;
 import de.hauke_stieler.geonotes.map.MarkerFragment;
-import de.hauke_stieler.geonotes.note_list.FilterDialog;
 import de.hauke_stieler.geonotes.note_list.NoteListActivity;
 import de.hauke_stieler.geonotes.notes.NoteIconProvider;
 import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
@@ -234,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
                 showExportPopupMenu();
                 return true;
             case R.id.toolbar_btn_import:
-                new BackupImportDialog().show(getSupportFragmentManager(), BackupImportDialog.class.getName());;
+                new BackupImportDialog().show(getSupportFragmentManager(), BackupImportDialog.class.getName());
                 return true;
             case R.id.toolbar_btn_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
@@ -449,6 +449,9 @@ public class MainActivity extends AppCompatActivity {
             takePhoto(noteId, longitude, latitude);
         });
 
+        int numerOfPhotos = database.getPhotos(noteId + "").size();
+        ((TextView) findViewById(R.id.image_capture_image_count_label)).setText(numerOfPhotos + "");
+
         cameraController = new LifecycleCameraController(getBaseContext());
 
         try {
@@ -463,7 +466,7 @@ public class MainActivity extends AppCompatActivity {
         AtomicBoolean wasPinching = new AtomicBoolean(false);
 
         findViewById(R.id.camera_preview).setOnTouchListener((v, event) -> {
-            Log.i("cam", "startCamera: "+event.getPointerCount() + " - " + MotionEvent.actionToString(event.getAction()));
+            Log.i("cam", "startCamera: " + event.getPointerCount() + " - " + MotionEvent.actionToString(event.getAction()));
 
             boolean actionDown = event.getActionMasked() == MotionEvent.ACTION_DOWN || event.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN;
             boolean actionUp = event.getActionMasked() == MotionEvent.ACTION_UP || event.getActionMasked() == MotionEvent.ACTION_POINTER_UP;
@@ -520,7 +523,9 @@ public class MainActivity extends AppCompatActivity {
                         addPositionToImageExifData(photoFile, longitude, latitude);
 
                         addPhotoToDatabase(noteId, photoFile);
-                        map.addImagesToMarkerFragment();
+                        List<String> photosOfFragment = map.addImagesToMarkerFragment();
+
+                        ((TextView) findViewById(R.id.image_capture_image_count_label)).setText(photosOfFragment.size() + "");
 
                         enableCameraButtons();
 
