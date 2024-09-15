@@ -90,6 +90,17 @@ public class BackupImportDialog extends DialogFragment {
                     view.findViewById(R.id.backup_import_overwrite_warning_label).setVisibility(isAppendSelected ? View.GONE : View.VISIBLE);
                 });
 
+        ((Switch) view.findViewById(R.id.backup_import_notes_switch))
+                .setOnCheckedChangeListener((buttonView, isSelected) -> {
+                    Switch photoSwitch = view.findViewById(R.id.backup_import_photos_switch);
+                    if (isSelected) {
+                        photoSwitch.setEnabled(true);
+                    } else {
+                        photoSwitch.setChecked(false);
+                        photoSwitch.setEnabled(false);
+                    }
+                });
+
         view.findViewById(R.id.backup_import_start_button).setOnClickListener(v -> {
             hideAllBottomControls();
             view.findViewById(R.id.backup_import_wait_layout).setVisibility(View.VISIBLE);
@@ -199,7 +210,7 @@ public class BackupImportDialog extends DialogFragment {
                     showDoneWithErrorMessage();
                     return;
                 }
-                Category defaultCategory = defaultCategoryOptional.get();
+                Category defaultCategory = defaultCategoryOptional.orElse(null);
 
                 // Old ID to new ID
                 HashMap<Long, Long> categoryIdMap = new HashMap<>();
@@ -235,7 +246,7 @@ public class BackupImportDialog extends DialogFragment {
                     editor.putBoolean(key, (Boolean) noteBackupModel.preferences.getOrDefault(key, false));
 
                     key = getContext().getString(R.string.pref_map_scaling);
-                    editor.putFloat(key, (Float) noteBackupModel.preferences.getOrDefault(key, 1.0f));
+                    editor.putFloat(key, new Float((Double) noteBackupModel.preferences.getOrDefault(key, 1.0f)));
 
                     key = getContext().getString(R.string.pref_snap_note_gps);
                     editor.putBoolean(key, (Boolean) noteBackupModel.preferences.getOrDefault(key, false));
