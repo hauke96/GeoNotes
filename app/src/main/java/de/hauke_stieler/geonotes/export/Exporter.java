@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
-import android.widget.EditText;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -94,7 +92,7 @@ public class Exporter {
         preferencesMap.put(key, prefKeepCameraOpen);
 
         List<Note> allNotes = database.getAllNotes();
-        Map<Long, List<String>> noteToPhotosMap = database.getAllPhotos();
+        Map<Long, List<String>> noteToPhotosMap = database.getAllPhotosMap();
         List<File> photoFiles = noteToPhotosMap.values()
                 .stream()
                 .flatMap(List::stream)

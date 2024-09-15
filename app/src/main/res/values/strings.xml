@@ -93,4 +93,23 @@
     <string name="initial_color_orange">Orange</string>
     <string name="initial_color_brown">Brown</string>
     <string name="initial_color_grey">Grey</string>
+
+    <!-- Backup import dialog -->
+    <string name="backup_import_title">Import Backup</string>
+    <string name="backup_import_file_chooser_title">1. Select a backup ".zip" file</string>
+    <string name="backup_import_file_chooser">Select file</string>
+    <string name="backup_import_overwrite_append">2. Choose whether to append the backup to the current app or to overwrite everything.</string>
+    <string name="backup_import_append">Overwrite</string>
+    <string name="backup_import_overwrite">Append</string>
+    <string name="backup_import_what_to_import">3. Choose what parts of the backup to import</string>
+    <string name="backup_import_notes">Notes</string>
+    <string name="backup_import_photos">Photos</string>
+    <string name="backup_import_categories">Categories</string>
+    <string name="backup_import_settings">Settings</string>
+    <string name="backup_import_overwrite_warning">CAUTION: You chose to overwrite the current data!\n\nBefore you continue: Make sure you created a backup of the current app.\n\nAll(!) data of this app will be removed during import! This cannot be undone!</string>
+    <string name="backup_import_start">Import</string>
+    <string name="backup_import_loading">Importing backup …</string>
+    <string name="backup_import_done_label">Done ✓</string>
+    <string name="backup_import_close_button">Close</string>
+    <string name="backup_import_error_label">Aborted import due to error.</string>
 </resources>

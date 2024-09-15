@@ -60,11 +60,16 @@ public class NoteStore {
     }
 
     public long addNote(SQLiteDatabase db, String description, double lat, double lon, long categoryId) {
+        String createdAt = Note.getDateTimeString(GregorianCalendar.getInstance());
+        return addNote(db, description, lat, lon, categoryId, createdAt);
+    }
+
+    public long addNote(SQLiteDatabase db, String description, double lat, double lon, long categoryId, String createdAt) {
         ContentValues values = new ContentValues();
         values.put(NOTES_COL_LAT, lat);
         values.put(NOTES_COL_LON, lon);
         values.put(NOTES_COL_DESCRIPTION, description);
-        values.put(NOTES_COL_CREATED_AT, Note.getDateTimeString(GregorianCalendar.getInstance()));
+        values.put(NOTES_COL_CREATED_AT, createdAt);
         values.put(NOTES_COL_CATEGORY, categoryId);
 
         return db.insert(NOTES_TABLE_NAME, null, values);

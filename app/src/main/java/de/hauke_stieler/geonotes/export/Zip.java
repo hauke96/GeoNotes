@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -45,13 +46,13 @@ public class Zip {
     /**
      * This file unzips the given file and assumes that there are <i>no</i> folder within this ZIP file.
      */
-    public void unzipFlatZip(File zipFile, File outputFolder) throws IOException {
+    public static void unzipFlatZip(InputStream zipFileInputStream, File outputFolder) throws IOException {
         if (!outputFolder.isDirectory()) {
             throw new IOException("Output directory " + outputFolder.getAbsolutePath() + " must be an existing directory.");
         }
 
         try {
-            ZipInputStream zipInput = new ZipInputStream(new FileInputStream(zipFile));
+            ZipInputStream zipInput = new ZipInputStream(zipFileInputStream);
             ZipEntry entry;
 
             while ((entry = zipInput.getNextEntry()) != null) {

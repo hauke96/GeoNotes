@@ -100,4 +100,8 @@ public class CategoryStore {
     public void removeCategory(SQLiteDatabase db, long id) {
         db.delete(CATEGORIES_TABLE_NAME, CATEGORIES_COL_ID + " = ?", new String[]{"" + id});
     }
+
+    public void removeAllCategories(SQLiteDatabase db) {
+        db.delete(CATEGORIES_TABLE_NAME, null, null);
+    }
 }

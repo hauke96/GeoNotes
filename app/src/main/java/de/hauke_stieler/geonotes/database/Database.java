@@ -11,6 +11,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.categories.Category;
@@ -60,6 +61,10 @@ public class Database extends SQLiteOpenHelper {
         return noteStore.addNote(getWritableDatabase(), description, lat, lon, categoryId);
     }
 
+    public long addNote(String description, double lat, double lon, long categoryId, String createdAt) {
+        return noteStore.addNote(getWritableDatabase(), description, lat, lon, categoryId);
+    }
+
     public void updateNoteDescription(long noteId, String newDescription) {
         noteStore.updateDescription(getWritableDatabase(), noteId, newDescription);
     }
@@ -85,6 +90,15 @@ public class Database extends SQLiteOpenHelper {
         }
     }
 
+    public void removeAllNotes(File storageDir) {
+        List<Note> notesToRemove = noteStore.getAllNotes(getReadableDatabase());
+
+        for (Note note : notesToRemove) {
+            removePhotos(note.getId(), storageDir);
+            noteStore.removeNote(getWritableDatabase(), note.getId());
+        }
+    }
+
     public List<Note> getAllNotes() {
         return noteStore.getAllNotes(getWritableDatabase());
     }
@@ -101,7 +115,14 @@ public class Database extends SQLiteOpenHelper {
         return photoStore.getPhotos(getReadableDatabase(), noteId);
     }
 
-    public Map<Long, List<String>> getAllPhotos() {
+    public List<String> getAllPhotos() {
+        return getAllNotes().stream()
+                .map(n -> getPhotos(n.getId() + ""))
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+    }
+
+    public Map<Long, List<String>> getAllPhotosMap() {
         HashMap<Long, List<String>> result = new HashMap<>();
         getAllNotes().forEach(n -> {
             List<String> photos = getPhotos(n.getId() + "");
@@ -174,5 +195,9 @@ public class Database extends SQLiteOpenHelper {
             editor.putLong(preferenceKey, getAllCategories().get(0).getId());
             editor.commit();
         }
+    }
+
+    public void removeAllCategories() {
+        categoryStore.removeAllCategories(getWritableDatabase());
     }
 }

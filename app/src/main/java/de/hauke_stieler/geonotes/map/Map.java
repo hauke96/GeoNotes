@@ -142,6 +142,8 @@ public class Map {
                 createMarker("" + n.getId(), n.getDescription(), new GeoPoint(n.getLat(), n.getLon()), n.getCategory().getId(), markerClickListener);
             }
         }
+
+        redraw();
     }
 
     private void createOverlays(BitmapDrawable locationIcon, BitmapDrawable arrowIcon) {

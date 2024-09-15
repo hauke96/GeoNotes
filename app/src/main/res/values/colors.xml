@@ -6,6 +6,8 @@
     <color name="black_transparent">#80000000</color>
     <color name="grey">#bdbdbd</color>
     <color name="dark_grey">#555555</color>
+    <color name="warn">#f44336</color>
+    <color name="success">#4caf50</color>
 
     <color name="primary">#4caf50</color>
     <color name="primary_dark">#388e3c</color>

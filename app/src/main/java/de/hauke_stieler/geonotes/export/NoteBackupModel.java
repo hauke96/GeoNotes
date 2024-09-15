@@ -10,10 +10,10 @@ import de.hauke_stieler.geonotes.BuildConfig;
 import de.hauke_stieler.geonotes.notes.Note;
 
 public class NoteBackupModel {
-    private String geonotesVersion = BuildConfig.VERSION_NAME;
-    private List<CategoryModel> categories;
-    private List<NoteModel> notes;
-    private HashMap<String, Object> preferences;
+    int geonotesVersion = BuildConfig.VERSION_CODE;
+    List<CategoryModel> categories;
+    List<NoteModel> notes;
+    HashMap<String, Object> preferences;
 
     public NoteBackupModel(List<Note> notes, Map<Long, List<String>> noteToPhotos, HashMap<String, Object> preferencesMap) {
         this.categories = notes.stream()
@@ -46,13 +46,13 @@ public class NoteBackupModel {
 }
 
 class NoteModel {
-    private long id;
-    private String description;
-    private String createdAt;
-    private double lon;
-    private double lat;
-    private long categoryId;
-    private List<String> photosFileNames;
+    long id;
+    String description;
+    String createdAt;
+    double lon;
+    double lat;
+    long categoryId;
+    List<String> photosFileNames;
 
     NoteModel(long id, String description, String createdAt, double lon, double lat, long categoryId, List<String> photoFileNames) {
         this.id = id;
