@@ -1,5 +1,6 @@
 package de.hauke_stieler.geonotes.export;
 
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,7 +23,6 @@ import androidx.fragment.app.DialogFragment;
 import com.google.gson.GsonBuilder;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -31,11 +31,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
+import de.hauke_stieler.geonotes.BuildConfig;
 import de.hauke_stieler.geonotes.Injector;
 import de.hauke_stieler.geonotes.R;
+import de.hauke_stieler.geonotes.categories.Category;
 import de.hauke_stieler.geonotes.common.FileHelper;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.map.Map;
@@ -49,6 +50,7 @@ public class BackupImportDialog extends DialogFragment {
     private Map map;
     private NoteIconProvider noteIconProvider;
     private MarkerFragment markerFragment;
+    private SharedPreferences sharedPreferences;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,6 +60,7 @@ public class BackupImportDialog extends DialogFragment {
         map = Injector.get(Map.class);
         noteIconProvider = Injector.get(NoteIconProvider.class);
         markerFragment = Injector.get(MarkerFragment.class);
+        sharedPreferences = Injector.get(SharedPreferences.class);
 
         resultLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(),
                 uri -> {
@@ -164,12 +167,17 @@ public class BackupImportDialog extends DialogFragment {
                     return;
                 }
 
+                if (!isVersionCompatible(noteBackupModel.geonotesVersion, BuildConfig.VERSION_CODE)) {
+                    Log.e("import", "Version of backup file incompatible (backup=" + noteBackupModel.geonotesVersion + ", current=" + BuildConfig.VERSION_CODE + ")");
+                    Toast.makeText(getContext(), "Version " + noteBackupModel.geonotesVersion + " of backup not compatible with app version " + BuildConfig.VERSION_CODE + ". Abort import.", Toast.LENGTH_LONG).show();
+                    showDoneWithErrorMessage();
+                    return;
+                }
+
                 if (!shouldAppend) {
                     database.removeAllNotes(externalFilesDir);
                     database.removeAllCategories();
                 }
-
-                // TODO version check of the backup
 
                 if (shouldImportPhotos) {
                     Arrays.stream(backupExtractDir.listFiles()).filter(f -> f.getName().toLowerCase().endsWith(".jpg"))
@@ -185,14 +193,15 @@ public class BackupImportDialog extends DialogFragment {
 
                 // Old ID to new ID
                 HashMap<Long, Long> categoryIdMap = new HashMap<>();
-                if (shouldImportCategories) {
-                    for (int i = 0; i < noteBackupModel.categories.size(); i++) {
-                        CategoryModel category = noteBackupModel.categories.get(i);
+                Category defaultCategory = database.getAllCategories().get(0);
+                for (int i = 0; i < noteBackupModel.categories.size(); i++) {
+                    CategoryModel category = noteBackupModel.categories.get(i);
+                    if (shouldImportCategories) {
                         long newId = database.addCategory(category.color, category.name, i);
                         categoryIdMap.put(category.id, newId);
+                    } else {
+                        categoryIdMap.put(category.id, defaultCategory.getId());
                     }
-                } else {
-                    // TODO Take first category from DB as default category and use it below.
                 }
 
                 if (shouldImportNotes) {
@@ -210,7 +219,29 @@ public class BackupImportDialog extends DialogFragment {
                     });
                 }
 
-                // TODO import settings
+                if (shouldImportSettings) {
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                    String key = getContext().getString(R.string.pref_zoom_buttons);
+                    editor.putBoolean(key, (Boolean) noteBackupModel.preferences.getOrDefault(key, false));
+
+                    key = getContext().getString(R.string.pref_map_scaling);
+                    editor.putFloat(key, (Float) noteBackupModel.preferences.getOrDefault(key, 1.0f));
+
+                    key = getContext().getString(R.string.pref_snap_note_gps);
+                    editor.putBoolean(key, (Boolean) noteBackupModel.preferences.getOrDefault(key, false));
+
+                    key = getContext().getString(R.string.pref_enable_rotating_map);
+                    editor.putBoolean(key, (Boolean) noteBackupModel.preferences.getOrDefault(key, false));
+
+                    key = getContext().getString(R.string.pref_tap_duration);
+                    editor.putBoolean(key, (Boolean) noteBackupModel.preferences.getOrDefault(key, false));
+
+                    key = getContext().getString(R.string.pref_keep_camera_open);
+                    editor.putBoolean(key, (Boolean) noteBackupModel.preferences.getOrDefault(key, false));
+
+                    editor.commit();
+                }
 
                 noteIconProvider.updateIcons();
                 map.reloadAllNotes();
@@ -226,6 +257,29 @@ public class BackupImportDialog extends DialogFragment {
         view.findViewById(R.id.backup_import_close_button).setOnClickListener(v -> dismiss());
 
         return view;
+    }
+
+    static boolean isVersionCompatible(int backupVersion, int currentVersion) {
+        // Example: 1006002 -> major=1, minor=6, patch=2
+        int backupMajor = backupVersion / 1000 / 1000;
+        int backupMinor = (backupVersion - backupMajor * 1000 * 1000) / 1000;
+        // int backupPatch = (backupVersion - backupMajor * 1000 * 1000 - backupMinor * 1000);
+
+        int currentMajor = currentVersion / 1000 / 1000;
+        int currentMinor = (currentVersion - currentMajor * 1000 * 1000) / 1000;
+        // int currentPatch = (backupVersion - currentMajor * 1000 * 1000 - currentMinor * 1000);
+
+
+        if (backupMajor <= 1 && backupMinor < 7) {
+            // Backups older than the version where backups were introduces (1.7.0) are considered
+            // invalid since this should not happen!
+            return false;
+        }
+
+        // We don't accept backups from significantly newer GeoNotes versions. This is strange and
+        // to not break anything, this is not allowed. Also other major versions are considered
+        // incompatible because a major version a) doesn't exist yet and b) means breaking changes.
+        return currentMajor == backupMajor && currentMinor >= backupMinor;
     }
 
     private void showDoneWithErrorMessage() {
