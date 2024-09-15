@@ -454,7 +454,6 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.camera_preview).setOnTouchListener((v, event) -> {
             Log.i("cam", "startCamera: "+event.getPointerCount() + " - " + MotionEvent.actionToString(event.getAction()));
-            boolean touchHandled = false;
 
             boolean actionDown = event.getActionMasked() == MotionEvent.ACTION_DOWN || event.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN;
             boolean actionUp = event.getActionMasked() == MotionEvent.ACTION_UP || event.getActionMasked() == MotionEvent.ACTION_POINTER_UP;
@@ -466,12 +465,12 @@ public class MainActivity extends AppCompatActivity {
                 if (!wasPinching.get()) {
                     animateFocusRing(event.getX(), event.getY());
                     v.performClick();
-                    touchHandled = true;
                 }
 
                 wasPinching.set(false);
             }
-            return touchHandled;
+
+            return false;
         });
     }
 
