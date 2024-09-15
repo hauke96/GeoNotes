@@ -13,6 +13,7 @@ import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -47,6 +48,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.hauke_stieler.geonotes.categories.CategoryConfigurationActivity;
 import de.hauke_stieler.geonotes.common.ExifHelper;
@@ -448,9 +450,28 @@ public class MainActivity extends AppCompatActivity {
             throw new RuntimeException(e);
         }
 
+        AtomicBoolean wasPinching = new AtomicBoolean(false);
+
         findViewById(R.id.camera_preview).setOnTouchListener((v, event) -> {
-            animateFocusRing(event.getX(), event.getY());
-            return true;
+            Log.i("cam", "startCamera: "+event.getPointerCount() + " - " + MotionEvent.actionToString(event.getAction()));
+            boolean touchHandled = false;
+
+            boolean actionDown = event.getActionMasked() == MotionEvent.ACTION_DOWN || event.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN;
+            boolean actionUp = event.getActionMasked() == MotionEvent.ACTION_UP || event.getActionMasked() == MotionEvent.ACTION_POINTER_UP;
+
+            if (event.getPointerCount() > 1 && actionDown) {
+                wasPinching.set(true);
+            }
+            if (event.getPointerCount() == 1 && actionUp) {
+                if (!wasPinching.get()) {
+                    animateFocusRing(event.getX(), event.getY());
+                    v.performClick();
+                    touchHandled = true;
+                }
+
+                wasPinching.set(false);
+            }
+            return touchHandled;
         });
     }
 
