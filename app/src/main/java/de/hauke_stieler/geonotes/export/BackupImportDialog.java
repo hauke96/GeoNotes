@@ -192,7 +192,6 @@ public class BackupImportDialog extends DialogFragment {
                     noteBackupModel.notes.forEach(note -> note.photosFileNames = new ArrayList<>());
                 }
 
-                // Old ID to new ID
                 Optional<Category> defaultCategoryOptional = database.getAllCategories().stream().sorted((c1, c2) -> (int) (c1.getSortKey() - c2.getSortKey())).findFirst();
                 if (!shouldImportCategories && defaultCategoryOptional.isEmpty()) {
                     Log.e("import", "No default category found but needed because categories should not be imported.");
@@ -202,6 +201,7 @@ public class BackupImportDialog extends DialogFragment {
                 }
                 Category defaultCategory = defaultCategoryOptional.get();
 
+                // Old ID to new ID
                 HashMap<Long, Long> categoryIdMap = new HashMap<>();
                 for (int i = 0; i < noteBackupModel.categories.size(); i++) {
                     CategoryModel category = noteBackupModel.categories.get(i);
