@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import de.hauke_stieler.geonotes.BuildConfig;
@@ -192,8 +193,16 @@ public class BackupImportDialog extends DialogFragment {
                 }
 
                 // Old ID to new ID
+                Optional<Category> defaultCategoryOptional = database.getAllCategories().stream().sorted((c1, c2) -> (int) (c1.getSortKey() - c2.getSortKey())).findFirst();
+                if (!shouldImportCategories && defaultCategoryOptional.isEmpty()) {
+                    Log.e("import", "No default category found but needed because categories should not be imported.");
+                    Toast.makeText(getContext(), "No category found, which needed as default value because categories should not be imported. Abort import.", Toast.LENGTH_LONG).show();
+                    showDoneWithErrorMessage();
+                    return;
+                }
+                Category defaultCategory = defaultCategoryOptional.get();
+
                 HashMap<Long, Long> categoryIdMap = new HashMap<>();
-                Category defaultCategory = database.getAllCategories().get(0);
                 for (int i = 0; i < noteBackupModel.categories.size(); i++) {
                     CategoryModel category = noteBackupModel.categories.get(i);
                     if (shouldImportCategories) {
