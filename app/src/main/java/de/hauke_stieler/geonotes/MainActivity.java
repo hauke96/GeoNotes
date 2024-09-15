@@ -185,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
 
         exportPopupMenu.getMenu().add(0, 0, 0, "GeoJson");
         exportPopupMenu.getMenu().add(0, 1, 1, "GPX");
+        exportPopupMenu.getMenu().add(0, 2, 2, "Backup (ZIP)");
 
         exportPopupMenu.setOnMenuItemClickListener(menuItem -> {
             switch (menuItem.getItemId()) {
@@ -193,6 +194,14 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case 1:
                     exporter.shareAsGpx();
+                    break;
+                case 2:
+                    try {
+                        exporter.shareAsBackup(preferences);
+                    } catch (IOException e) {
+                        Log.e("export", "Cannot export backup", e);
+                        Toast.makeText(getApplicationContext(), "Error creating backup file", Toast.LENGTH_SHORT).show();
+                    }
                     break;
             }
             return true;

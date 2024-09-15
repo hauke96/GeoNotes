@@ -8,7 +8,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import org.osmdroid.util.GeoPoint;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.categories.Category;
@@ -99,6 +101,15 @@ public class Database extends SQLiteOpenHelper {
         return photoStore.getPhotos(getReadableDatabase(), noteId);
     }
 
+    public Map<Long, List<String>> getAllPhotos() {
+        HashMap<Long, List<String>> result = new HashMap<>();
+        getAllNotes().forEach(n -> {
+            List<String> photos = getPhotos(n.getId() + "");
+            result.put(n.getId(), photos);
+        });
+        return result;
+    }
+
     public boolean hasPhotos(long noteId) {
         return hasPhotos("" + noteId);
     }
@@ -157,7 +168,7 @@ public class Database extends SQLiteOpenHelper {
         categoryStore.removeCategory(getWritableDatabase(), id);
 
         String preferenceKey = this.context.getString(R.string.pref_last_category_id);
-        if(preferences.contains(preferenceKey) && preferences.getLong(preferenceKey, -1) == id) {
+        if (preferences.contains(preferenceKey) && preferences.getLong(preferenceKey, -1) == id) {
             // The currently stored category has been removed from the database.
             SharedPreferences.Editor editor = preferences.edit();
             editor.putLong(preferenceKey, getAllCategories().get(0).getId());
