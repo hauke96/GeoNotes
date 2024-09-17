@@ -236,6 +236,8 @@ public class MarkerFragment extends Fragment {
             markerEventHandler.onDelete(marker);
             markerEventHandler.onClose(marker);
             reset();
+
+            descriptionView.clearFocus();
         });
 
         Button saveButton = view.findViewById(R.id.save_button);
@@ -243,6 +245,8 @@ public class MarkerFragment extends Fragment {
             markerEventHandler.onSave(marker);
             markerEventHandler.onClose(marker);
             reset();
+
+            descriptionView.clearFocus();
         });
 
         Button moveButton = view.findViewById(R.id.move_button);

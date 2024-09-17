@@ -497,6 +497,12 @@ public class MainActivity extends AppCompatActivity {
             ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);
             ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
             cameraProvider.unbindAll();
+
+            // Re-select the note so that the input field is selected and the keyboard comes up.
+            // Makes it easier to add text after taking pictures.
+            if (map.getSelectedMarker() != null) {
+                map.selectNote(Long.parseLong(map.getSelectedMarker().getId()));
+            }
         } catch (Exception e) {
             Log.e("closeCamera", "Error while unbinding camera lifecycle: ", e);
             throw new RuntimeException(e);
