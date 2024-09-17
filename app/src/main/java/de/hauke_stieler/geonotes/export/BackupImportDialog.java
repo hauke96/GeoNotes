@@ -143,18 +143,21 @@ public class BackupImportDialog extends DialogFragment {
 
         File externalFilesDir = getContext().getExternalFilesDir(FileHelper.GEONOTES_EXTERNAL_DIR_NAME);
 
+        Log.i("import", "1. Extract ZIP");
         File backupExtractDir = extractSelectedBackupFile(view, externalFilesDir);
         if (backupExtractDir == null) {
             Log.e("import", "Abort due to error during backup file extraction");
             return;
         }
 
+        Log.i("import", "2. Create model");
         NoteBackupModel noteBackupModel = getBackupModelFromBackupFiles(backupExtractDir);
         if (noteBackupModel == null) {
             Log.e("import", "Abort due to error during model creation of backup");
             return;
         }
 
+        Log.i("import", "3. Check backup version");
         if (!isVersionCompatible(noteBackupModel.geonotesVersion, BuildConfig.VERSION_CODE)) {
             Log.e("import", "Version of backup file incompatible (backup=" + noteBackupModel.geonotesVersion + ", current=" + BuildConfig.VERSION_CODE + ")");
             Toast.makeText(getContext(), "Version " + noteBackupModel.geonotesVersion + " of backup not compatible with app version " + BuildConfig.VERSION_CODE + ". Abort import.", Toast.LENGTH_LONG).show();
@@ -162,12 +165,14 @@ public class BackupImportDialog extends DialogFragment {
             return;
         }
 
+        Log.i("import", "4. Check append setting");
         if (!shouldAppend) {
             database.removeAllNotes(externalFilesDir);
             database.removeAllCategories();
         }
 
         if (shouldImportPhotos) {
+            Log.i("import", "5. Import photos");
             Arrays.stream(backupExtractDir.listFiles()).filter(f -> f.getName().toLowerCase().endsWith(".jpg"))
                     .forEach(photoFile -> {
                         boolean movedSuccessfully = photoFile.renameTo(new File(externalFilesDir, photoFile.getName()));
@@ -176,28 +181,34 @@ public class BackupImportDialog extends DialogFragment {
                         }
                     });
         } else {
+            Log.i("import", "5. Reset photos in notes to import");
             noteBackupModel.notes.forEach(note -> note.photosFileNames = new ArrayList<>());
         }
 
+        Log.i("import", "6. Import categories (or create default mapping)");
         HashMap<Long, Long> categoryIdMap = importCategories(shouldImportCategories, noteBackupModel);
         if (categoryIdMap == null) {
             Log.e("import", "Abort due to error during note-to-category mapping creation");
             return;
         }
 
+        Log.i("import", "7. Import notes (if selected)");
         if (shouldImportNotes) {
             importNotes(noteBackupModel, categoryIdMap, externalFilesDir);
         }
 
+        Log.i("import", "8. Import settings (if selected)");
         if (shouldImportSettings) {
             importSettings(noteBackupModel);
         }
 
+        Log.i("import", "9. Delete backup dir");
         boolean deletionOfBackupExtractDirSucceeded = backupExtractDir.delete();
         if (!deletionOfBackupExtractDirSucceeded) {
             Log.w("import", "Backup extraction directory deletion failed.");
         }
 
+        Log.i("import", "10. Update and reload everything");
         noteIconProvider.updateIcons();
         map.reloadAllNotes();
         markerFragment.reloadCategories();
@@ -230,12 +241,14 @@ public class BackupImportDialog extends DialogFragment {
             return null;
         }
 
+        // Delete the temporary file and create it as folder below.
         if (backupExtractDir.exists()) {
             backupExtractDir.delete();
         }
 
         boolean successful = backupExtractDir.mkdirs();
         if (!successful) {
+            Log.e("import", "Could not create temporary extract dir");
             Toast.makeText(getContext(), "Temporary directory " + backupExtractDir.getName() + " could not be created. Abort import.", Toast.LENGTH_LONG).show();
             showDoneWithErrorMessage();
             return null;

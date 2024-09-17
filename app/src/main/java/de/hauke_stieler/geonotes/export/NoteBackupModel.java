@@ -27,11 +27,6 @@ public class NoteBackupModel {
                 .map(note -> {
                     List<String> photoFileNames = noteToPhotos.get(note.getId());
 
-                    // TODO Is this necessary?
-                    if (photoFileNames == null) {
-                        photoFileNames = new ArrayList<>();
-                    }
-
                     return new NoteModel(
                             note.getId(),
                             note.getDescription(),
