@@ -155,11 +155,6 @@ public class BackupImportDialog extends DialogFragment {
             return;
         }
 
-        boolean deletionOfBackupExtractDirSucceeded = backupExtractDir.delete();
-        if (!deletionOfBackupExtractDirSucceeded) {
-            Log.w("import", "Backup extraction directory deletion failed.");
-        }
-
         if (!isVersionCompatible(noteBackupModel.geonotesVersion, BuildConfig.VERSION_CODE)) {
             Log.e("import", "Version of backup file incompatible (backup=" + noteBackupModel.geonotesVersion + ", current=" + BuildConfig.VERSION_CODE + ")");
             Toast.makeText(getContext(), "Version " + noteBackupModel.geonotesVersion + " of backup not compatible with app version " + BuildConfig.VERSION_CODE + ". Abort import.", Toast.LENGTH_LONG).show();
@@ -196,6 +191,11 @@ public class BackupImportDialog extends DialogFragment {
 
         if (shouldImportSettings) {
             importSettings(noteBackupModel);
+        }
+
+        boolean deletionOfBackupExtractDirSucceeded = backupExtractDir.delete();
+        if (!deletionOfBackupExtractDirSucceeded) {
+            Log.w("import", "Backup extraction directory deletion failed.");
         }
 
         noteIconProvider.updateIcons();
