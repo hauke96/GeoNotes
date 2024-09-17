@@ -129,6 +129,12 @@ public class Map {
     }
 
     public void reloadAllNotes() {
+        GeoNotesMarker currentlySelectedMarker = markerFragment.getSelectedMarker();
+        if (currentlySelectedMarker != null) {
+            markerFragment.reset();
+            deselectMarker(currentlySelectedMarker);
+        }
+
         for (Overlay o : map.getOverlays()) {
             if (o instanceof Marker) {
                 map.getOverlayManager().remove(o);

@@ -101,6 +101,28 @@ public class BackupImportDialog extends DialogFragment {
                     }
                 });
 
+        ((Switch) view.findViewById(R.id.backup_import_categories_switch))
+                .setOnCheckedChangeListener((buttonView, isSelected) -> {
+                    boolean shouldAppend = ((Switch) view.findViewById(R.id.backup_import_append_overwrite_switch)).isChecked();
+                    if (!shouldAppend) {
+                        // Deleting all existing data and then importing notes without categories
+                        // doesn't make any sense. So we prohibit overwriting imports with notes
+                        // but without categories.
+                        Switch noteSwitch = view.findViewById(R.id.backup_import_notes_switch);
+                        Switch photoSwitch = view.findViewById(R.id.backup_import_photos_switch);
+                        if (isSelected) {
+                            noteSwitch.setEnabled(true);
+                            // Do not activate photo switch because note switch is unselected and
+                            // therefore importing photos should not be possible (s. click handler above).
+                        } else {
+                            noteSwitch.setChecked(false);
+                            noteSwitch.setEnabled(false);
+                            photoSwitch.setChecked(false);
+                            photoSwitch.setEnabled(false);
+                        }
+                    }
+                });
+
         view.findViewById(R.id.backup_import_start_button).setOnClickListener(v -> {
             hideAllBottomControls();
             view.findViewById(R.id.backup_import_wait_layout).setVisibility(View.VISIBLE);
@@ -266,7 +288,6 @@ public class BackupImportDialog extends DialogFragment {
                 noteIconProvider.updateIcons();
                 map.reloadAllNotes();
                 markerFragment.reloadCategories();
-                // TODO NoteList not updated, all icons are empty.
 
                 hideAllBottomControls();
                 view.findViewById(R.id.backup_import_done_layout).setVisibility(View.VISIBLE);

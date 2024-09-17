@@ -380,7 +380,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void handleOnBackPressed() {
                 closeCamera();
-                // TODO What to do when back-button pressed but camera not on? Nothing?
             }
         });
 
@@ -505,7 +504,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void takePhoto(Long noteId, Double longitude, Double latitude) {
-        // TODO Is lastPhotoFile needed, because we get its Uri in the callback below.
         File photoFile = createImageFile();
 
         ImageCapture.OutputFileOptions outputOptions = new ImageCapture.OutputFileOptions
