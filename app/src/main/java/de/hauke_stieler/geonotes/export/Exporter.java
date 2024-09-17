@@ -26,6 +26,7 @@ import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.common.FileHelper;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.notes.Note;
+import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
 
 public class Exporter {
     private static final String LOGTAG = Exporter.class.getName();
@@ -93,19 +94,24 @@ public class Exporter {
 
         List<Note> allNotes = database.getAllNotes();
         Map<Long, List<String>> noteToPhotosMap = database.getAllPhotosMap();
-        List<File> photoFiles = noteToPhotosMap.values()
+        List<File> photoFiles = new ArrayList<>();
+        noteToPhotosMap.values()
                 .stream()
                 .flatMap(List::stream)
-                .map(filename -> new File(externalFilesDir, filename))
-                .collect(Collectors.toList());
+                .forEach(filename -> {
+                    photoFiles.add(new File(externalFilesDir, filename));
+
+                    File thumbnailFile = ThumbnailUtil.getThumbnailFile(new File(filename));
+                    photoFiles.add(new File(externalFilesDir, thumbnailFile.getName()));
+                });
 
         // Create JSON file for the notes backup
         File notesBackupFile = getFile("notes-backup", ".json");
-        String notesBackupJson =  new GsonBuilder()
+        String notesBackupJson = new GsonBuilder()
                 .setPrettyPrinting()
                 .create()
                 .toJson(new NoteBackupModel(allNotes, noteToPhotosMap, preferencesMap));
-        Log.i("export", "Backup JSON:\n"+notesBackupJson);
+        Log.i("export", "Backup JSON:\n" + notesBackupJson);
         FileOutputStream notesBackupOutput = new FileOutputStream(notesBackupFile);
         notesBackupOutput.write(notesBackupJson.getBytes());
         notesBackupOutput.close();
