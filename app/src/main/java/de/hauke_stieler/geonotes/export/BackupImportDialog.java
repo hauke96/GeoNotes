@@ -27,6 +27,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -202,8 +203,8 @@ public class BackupImportDialog extends DialogFragment {
             importSettings(noteBackupModel);
         }
 
-        Log.i("import", "9. Delete backup dir");
-        boolean deletionOfBackupExtractDirSucceeded = backupExtractDir.delete();
+        Log.i("import", "9. Delete backup dir " + backupExtractDir.getName());
+        boolean deletionOfBackupExtractDirSucceeded = deleteRecursive(backupExtractDir);
         if (!deletionOfBackupExtractDirSucceeded) {
             Log.w("import", "Backup extraction directory deletion failed.");
         }
@@ -216,6 +217,19 @@ public class BackupImportDialog extends DialogFragment {
         hideAllBottomControls();
         view.findViewById(R.id.backup_import_done_layout).setVisibility(View.VISIBLE);
         view.findViewById(R.id.backup_import_done_label).setVisibility(View.VISIBLE);
+    }
+
+    boolean deleteRecursive(File fileOrDirectory) {
+        if (fileOrDirectory.isDirectory()) {
+            for (File child : fileOrDirectory.listFiles()) {
+                boolean deleted = deleteRecursive(child);
+                if (!deleted) {
+                    return deleted;
+                }
+            }
+        }
+
+        return fileOrDirectory.delete();
     }
 
     private @Nullable File extractSelectedBackupFile(View view, File externalFilesDir) {
@@ -278,11 +292,23 @@ public class BackupImportDialog extends DialogFragment {
         }
 
         NoteBackupModel noteBackupModel;
+        FileReader reader;
         try {
-            noteBackupModel = new GsonBuilder().create().fromJson(new FileReader(backupJsonFiles.get(0)), NoteBackupModel.class);
+            reader = new FileReader(backupJsonFiles.get(0));
         } catch (FileNotFoundException e) {
             Log.e("import", "Error turning JSON file to Java object", e);
-            Toast.makeText(getContext(), "Could not open file stream to backup JSON file: " + e.getMessage() + ". Abort import.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "Could not open backup JSON file: " + e.getMessage() + ". Abort import.", Toast.LENGTH_LONG).show();
+            showDoneWithErrorMessage();
+            return null;
+        }
+
+        noteBackupModel = new GsonBuilder().create().fromJson(reader, NoteBackupModel.class);
+
+        try {
+            reader.close();
+        } catch (IOException e) {
+            Log.e("import", "Error closing reader to backup JSON file", e);
+            Toast.makeText(getContext(), "Error reading backup JSON file: " + e.getMessage() + ". Abort import.", Toast.LENGTH_LONG).show();
             showDoneWithErrorMessage();
             return null;
         }
