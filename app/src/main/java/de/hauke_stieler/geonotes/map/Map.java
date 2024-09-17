@@ -158,8 +158,10 @@ public class Map {
         gpsLocationProvider = new GpsMyLocationProvider(context);
         locationOverlay = new MyLocationNewOverlay(gpsLocationProvider, map);
         locationOverlay.enableMyLocation();
-        locationOverlay.setDirectionArrow(locationIcon.getBitmap(), arrowIcon.getBitmap());
-        locationOverlay.setPersonHotspot(32, 32);
+        locationOverlay.setPersonIcon(locationIcon.getBitmap());
+        locationOverlay.setDirectionIcon(arrowIcon.getBitmap());
+        locationOverlay.setDirectionAnchor(.5f, .5f);
+        locationOverlay.setPersonAnchor(32, 32);
         map.getOverlays().add(this.locationOverlay);
 
         // Add rotation overlay
