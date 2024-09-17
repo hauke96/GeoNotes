@@ -34,6 +34,7 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 import de.hauke_stieler.geonotes.Injector;
@@ -128,6 +129,12 @@ public class Map {
     }
 
     public void reloadAllNotes() {
+        GeoNotesMarker currentlySelectedMarker = markerFragment.getSelectedMarker();
+        if (currentlySelectedMarker != null) {
+            markerFragment.reset();
+            deselectMarker(currentlySelectedMarker);
+        }
+
         for (Overlay o : map.getOverlays()) {
             if (o instanceof Marker) {
                 map.getOverlayManager().remove(o);
@@ -142,6 +149,8 @@ public class Map {
                 createMarker("" + n.getId(), n.getDescription(), new GeoPoint(n.getLat(), n.getLon()), n.getCategory().getId(), markerClickListener);
             }
         }
+
+        redraw();
     }
 
     private void createOverlays(BitmapDrawable locationIcon, BitmapDrawable arrowIcon) {
@@ -415,14 +424,14 @@ public class Map {
     /**
      * Loads images of current marker (which contains the note-ID) from database and show them.
      */
-    public void addImagesToMarkerFragment() {
+    public List<String> addImagesToMarkerFragment() {
         markerFragment.resetImageList();
         GeoNotesMarker marker = markerFragment.getSelectedMarker();
 
         // It could happen that the user rotates the device (e.g. while taking a photo) and this
         // causes the whole activity to be reset. Therefore we might not have a marker here.
         if (marker == null) {
-            return;
+            return Collections.emptyList();
         }
 
         List<String> photoFileNames = database.getPhotos(marker.getId());
@@ -434,6 +443,8 @@ public class Map {
 
         setIcon(marker, true);
         redraw();
+
+        return photoFileNames;
     }
 
     private void setIcon(GeoNotesMarker marker, boolean isSelected) {

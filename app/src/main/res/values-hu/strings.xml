@@ -18,6 +18,8 @@
     <!-- Toolbar -->
     <string name="toolbar_gps_follow_mode">GPS-követő mód</string>
     <string name="toolbar_export">Exportálás</string>
+    <!-- TODO Translate -->
+    <string name="toolbar_import">Import</string>
     <string name="toolbar_list_of_notes">Jegyzetek listája</string>
     <string name="toolbar_categories">Kategóriák</string>
     <string name="toolbar_settings">Beállítások</string>
@@ -77,4 +79,24 @@
     <string name="initial_color_orange">Narancssárga</string>
     <string name="initial_color_brown">Barna</string>
     <string name="initial_color_grey">Szürke</string>
+
+    <!-- Backup import dialog -->
+    <!-- TODO Translate -->
+    <string name="backup_import_title">Import Backup</string>
+    <string name="backup_import_file_chooser_title">1. Select a backup ".zip" file</string>
+    <string name="backup_import_file_chooser">Select file</string>
+    <string name="backup_import_overwrite_append">2. Choose whether to append the backup to the current app or to overwrite everything. If settings are imported, they are overwritten regardless of this selection.</string>
+    <string name="backup_import_append">Overwrite</string>
+    <string name="backup_import_overwrite">Append</string>
+    <string name="backup_import_what_to_import">3. Choose what parts of the backup to import</string>
+    <string name="backup_import_notes">Notes</string>
+    <string name="backup_import_photos">Photos</string>
+    <string name="backup_import_categories">Categories</string>
+    <string name="backup_import_settings">Settings</string>
+    <string name="backup_import_overwrite_warning">CAUTION: You chose to overwrite the current data!\n\nBefore you continue: Make sure you created a backup of the current app.\n\nAll(!) data (notes, categories, photos) of this app will be removed during import! This cannot be undone!</string>
+    <string name="backup_import_start">Import</string>
+    <string name="backup_import_loading">Importing backup …</string>
+    <string name="backup_import_done_label">Done ✓</string>
+    <string name="backup_import_close_button">Close</string>
+    <string name="backup_import_error_label">Aborted import due to error.</string>
 </resources>

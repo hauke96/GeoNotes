@@ -13,6 +13,7 @@ import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -47,12 +48,15 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.hauke_stieler.geonotes.categories.CategoryConfigurationActivity;
 import de.hauke_stieler.geonotes.common.ExifHelper;
 import de.hauke_stieler.geonotes.common.FileHelper;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.databinding.ActivityMainBinding;
+import de.hauke_stieler.geonotes.export.BackupImportDialog;
 import de.hauke_stieler.geonotes.export.Exporter;
 import de.hauke_stieler.geonotes.map.GeoNotesMarker;
 import de.hauke_stieler.geonotes.map.Map;
@@ -183,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
 
         exportPopupMenu.getMenu().add(0, 0, 0, "GeoJson");
         exportPopupMenu.getMenu().add(0, 1, 1, "GPX");
+        exportPopupMenu.getMenu().add(0, 2, 2, "Backup (ZIP)");
 
         exportPopupMenu.setOnMenuItemClickListener(menuItem -> {
             switch (menuItem.getItemId()) {
@@ -191,6 +196,14 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case 1:
                     exporter.shareAsGpx();
+                    break;
+                case 2:
+                    try {
+                        exporter.shareAsBackup(preferences);
+                    } catch (IOException e) {
+                        Log.e("export", "Cannot export backup", e);
+                        Toast.makeText(getApplicationContext(), "Error creating backup file", Toast.LENGTH_SHORT).show();
+                    }
                     break;
             }
             return true;
@@ -219,6 +232,9 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.toolbar_btn_export:
                 showExportPopupMenu();
+                return true;
+            case R.id.toolbar_btn_import:
+                new BackupImportDialog().show(getSupportFragmentManager(), BackupImportDialog.class.getName());
                 return true;
             case R.id.toolbar_btn_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
@@ -364,7 +380,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void handleOnBackPressed() {
                 closeCamera();
-                // TODO What to do when back-button pressed but camera not on? Nothing?
             }
         });
 
@@ -433,6 +448,9 @@ public class MainActivity extends AppCompatActivity {
             takePhoto(noteId, longitude, latitude);
         });
 
+        int numerOfPhotos = database.getPhotos(noteId + "").size();
+        ((TextView) findViewById(R.id.image_capture_image_count_label)).setText(numerOfPhotos + "");
+
         cameraController = new LifecycleCameraController(getBaseContext());
 
         try {
@@ -444,9 +462,27 @@ public class MainActivity extends AppCompatActivity {
             throw new RuntimeException(e);
         }
 
+        AtomicBoolean wasPinching = new AtomicBoolean(false);
+
         findViewById(R.id.camera_preview).setOnTouchListener((v, event) -> {
-            animateFocusRing(event.getX(), event.getY());
-            return true;
+            Log.i("cam", "startCamera: " + event.getPointerCount() + " - " + MotionEvent.actionToString(event.getAction()));
+
+            boolean actionDown = event.getActionMasked() == MotionEvent.ACTION_DOWN || event.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN;
+            boolean actionUp = event.getActionMasked() == MotionEvent.ACTION_UP || event.getActionMasked() == MotionEvent.ACTION_POINTER_UP;
+
+            if (event.getPointerCount() > 1 && actionDown) {
+                wasPinching.set(true);
+            }
+            if (event.getPointerCount() == 1 && actionUp) {
+                if (!wasPinching.get()) {
+                    animateFocusRing(event.getX(), event.getY());
+                    v.performClick();
+                }
+
+                wasPinching.set(false);
+            }
+
+            return false;
         });
     }
 
@@ -468,7 +504,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void takePhoto(Long noteId, Double longitude, Double latitude) {
-        // TODO Is lastPhotoFile needed, because we get its Uri in the callback below.
         File photoFile = createImageFile();
 
         ImageCapture.OutputFileOptions outputOptions = new ImageCapture.OutputFileOptions
@@ -486,7 +521,9 @@ public class MainActivity extends AppCompatActivity {
                         addPositionToImageExifData(photoFile, longitude, latitude);
 
                         addPhotoToDatabase(noteId, photoFile);
-                        map.addImagesToMarkerFragment();
+                        List<String> photosOfFragment = map.addImagesToMarkerFragment();
+
+                        ((TextView) findViewById(R.id.image_capture_image_count_label)).setText(photosOfFragment.size() + "");
 
                         enableCameraButtons();
 

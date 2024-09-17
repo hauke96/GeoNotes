@@ -68,14 +68,3 @@ class GeometryModel {
     }
 }
 
-class CategoryModel {
-    final long id;
-    final String name;
-    final String color;
-
-    CategoryModel(long id, String name, String color) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
-    }
-}

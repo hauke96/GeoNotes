@@ -11,8 +11,8 @@ android {
         compileSdk 34
         targetSdkVersion 34
 
-        versionCode 1006001
-        versionName "1.6.1"
+        versionCode 1007000
+        versionName "1.7.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

@@ -110,8 +110,7 @@ public class MarkerFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        loadCategories();
-        categorySpinnerAdapter.notifyDataSetChanged();
+        reloadCategories();
     }
 
     @Nullable
@@ -140,11 +139,8 @@ public class MarkerFragment extends Fragment {
         categorySpinnerAdapter = new CategorySpinnerAdapter(getContext(), R.layout.category_spinner_item);
         long lastUsedCategoryId = preferences.getLong(getString(R.string.pref_last_category_id), 1);
 
-        loadCategories();
-
         categorySpinner = view.findViewById(R.id.category_spinner);
         categorySpinner.setAdapter(categorySpinnerAdapter);
-        selectCategory(lastUsedCategoryId);
         categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -160,11 +156,15 @@ public class MarkerFragment extends Fragment {
             }
         });
 
+        reloadCategories();
+        selectCategory(lastUsedCategoryId);
+
         return view;
     }
 
-    private void loadCategories() {
+    public void reloadCategories() {
         categorySpinnerAdapter.setCategories(database.getAllCategories());
+        categorySpinnerAdapter.notifyDataSetChanged();
     }
 
     @Override
