@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
@@ -33,7 +32,6 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.LifecycleCameraController;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.exifinterface.media.ExifInterface;
 
 import com.google.common.util.concurrent.ListenableFuture;
 
@@ -567,9 +565,7 @@ public class MainActivity extends AppCompatActivity {
     private void addPositionToImageExifData(File photoFile, Double longitude, Double latitude) {
         Log.i("addExifData", "Add location to EXIF data of file " + photoFile.getAbsolutePath());
         try {
-            ExifInterface exif = new ExifInterface(getContentResolver().openFileDescriptor(Uri.fromFile(photoFile), "rw").getFileDescriptor());
-            ExifHelper.fillExifAttributesWithGps(exif, longitude, latitude);
-            exif.saveAttributes();
+            ExifHelper.fillExifAttributesWithGps(getContentResolver(), photoFile, longitude, latitude);
         } catch (Exception e) {
             Log.e("addExifData", "Error getting/setting/saving EXIF data from freshly taken photo file " + photoFile.getAbsolutePath(), e);
             throw new RuntimeException(e);
@@ -595,7 +591,7 @@ public class MainActivity extends AppCompatActivity {
         int sizeInPixel = getResources().getDimensionPixelSize(R.dimen.ImageButton);
 
         try {
-            ThumbnailUtil.writeThumbnail(sizeInPixel, photoFile);
+            ThumbnailUtil.writeThumbnail(getContentResolver(), photoFile, sizeInPixel);
         } catch (IOException e) {
             Toast.makeText(getApplicationContext(), R.string.note_list_create_thumbnail_failed, Toast.LENGTH_SHORT);
         }

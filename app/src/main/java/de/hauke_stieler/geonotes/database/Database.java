@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import org.osmdroid.util.GeoPoint;
 
@@ -146,10 +147,12 @@ public class Database extends SQLiteOpenHelper {
 
         for (String photo : photos) {
             File photoFile = new File(storageDir, photo);
-            File thumbnailFile = ThumbnailUtil.getThumbnailFile(photoFile);
-
-            photoFile.delete();
-            thumbnailFile.delete();
+            boolean deleted = photoFile.delete();
+            if (deleted) {
+                ThumbnailUtil.deleteThumbnail(photoFile);
+            } else {
+                Log.e("database", "Could not delete photo file " + photoFile.getAbsolutePath());
+            }
         }
     }
 
