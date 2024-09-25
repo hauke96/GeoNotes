@@ -1,5 +1,6 @@
 package de.hauke_stieler.geonotes.export;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -199,6 +200,7 @@ public class BackupImportDialog extends DialogFragment {
 
     private boolean importZipBackup(View view, boolean shouldAppend, boolean shouldImportNotes, boolean shouldImportPhotos, boolean shouldImportCategories, boolean shouldImportSettings) {
         File externalFilesDir = getContext().getExternalFilesDir(FileHelper.GEONOTES_EXTERNAL_DIR_NAME);
+        updateProgressLabel(0, 9);
 
         Log.i("import", "1. Extract ZIP");
         File backupExtractDir = extractSelectedBackupFile(view, externalFilesDir);
@@ -206,6 +208,7 @@ public class BackupImportDialog extends DialogFragment {
             Log.e("import", "Abort due to error during backup file extraction");
             return false;
         }
+        updateProgressLabel(1, 9);
 
         Log.i("import", "2. Create model");
         NoteBackupModel noteBackupModel = getBackupModelFromBackupFiles(backupExtractDir);
@@ -213,6 +216,7 @@ public class BackupImportDialog extends DialogFragment {
             Log.e("import", "Abort due to error during model creation of backup");
             return false;
         }
+        updateProgressLabel(2, 9);
 
         Log.i("import", "3. Check backup version");
         if (!isVersionCompatible(noteBackupModel.geonotesVersion, BuildConfig.VERSION_CODE)) {
@@ -220,12 +224,14 @@ public class BackupImportDialog extends DialogFragment {
             Toast.makeText(getContext(), "Version " + noteBackupModel.geonotesVersion + " of backup not compatible with app version " + BuildConfig.VERSION_CODE + ". Abort import.", Toast.LENGTH_LONG).show();
             return false;
         }
+        updateProgressLabel(3, 9);
 
         Log.i("import", "4. Check append setting");
         if (!shouldAppend) {
             database.removeAllNotes(externalFilesDir);
             database.removeAllCategories();
         }
+        updateProgressLabel(4, 9);
 
         if (shouldImportPhotos) {
             Log.i("import", "5. Import photos");
@@ -240,6 +246,7 @@ public class BackupImportDialog extends DialogFragment {
             Log.i("import", "5. Reset photos in notes to import");
             noteBackupModel.notes.forEach(note -> note.photosFileNames = new ArrayList<>());
         }
+        updateProgressLabel(5, 9);
 
         Log.i("import", "6. Import categories (or create default mapping)");
         HashMap<Long, Long> categoryIdMap = importCategories(shouldImportCategories, noteBackupModel);
@@ -247,28 +254,33 @@ public class BackupImportDialog extends DialogFragment {
             Log.e("import", "Abort due to error during note-to-category mapping creation");
             return false;
         }
+        updateProgressLabel(6, 9);
 
         Log.i("import", "7. Import notes (if selected)");
         if (shouldImportNotes) {
             importNotes(noteBackupModel, categoryIdMap, externalFilesDir);
         }
+        updateProgressLabel(7, 9);
 
         Log.i("import", "8. Import settings (if selected)");
         if (shouldImportSettings) {
             importSettings(noteBackupModel);
         }
+        updateProgressLabel(8, 9);
 
         Log.i("import", "9. Delete backup dir " + backupExtractDir.getName());
         boolean deletionOfBackupExtractDirSucceeded = deleteRecursive(backupExtractDir);
         if (!deletionOfBackupExtractDirSucceeded) {
             Log.w("import", "Backup extraction directory deletion failed.");
         }
+        updateProgressLabel(9, 9);
 
         return true;
     }
 
     private boolean importGeojsonExport(View view, boolean shouldAppend, boolean shouldImportNotes, boolean shouldImportCategories) {
         File externalFilesDir = getContext().getExternalFilesDir(FileHelper.GEONOTES_EXTERNAL_DIR_NAME);
+        updateProgressLabel(0, 5);
 
         Log.i("import", "1. Read input file");
         String fileContent;
@@ -281,6 +293,7 @@ public class BackupImportDialog extends DialogFragment {
             Toast.makeText(getContext(), "File " + filename + " not found. Abort import.", Toast.LENGTH_SHORT).show();
             return false;
         }
+        updateProgressLabel(1, 5);
 
         Log.i("import", "2. Create model");
         NoteExportModel noteExportModel = GeoJson.fromGeoJson(fileContent);
@@ -307,12 +320,14 @@ public class BackupImportDialog extends DialogFragment {
             Log.e("import", "Abort due to error during model creation of backup");
             return false;
         }
+        updateProgressLabel(2, 5);
 
         Log.i("import", "3. Check append setting");
         if (!shouldAppend) {
             database.removeAllNotes(externalFilesDir);
             database.removeAllCategories();
         }
+        updateProgressLabel(3, 5);
 
         Log.i("import", "4. Import categories (or create default mapping)");
         HashMap<Long, Long> categoryIdMap = importCategories(shouldImportCategories, noteBackupModel);
@@ -320,11 +335,13 @@ public class BackupImportDialog extends DialogFragment {
             Log.e("import", "Abort due to error during note-to-category mapping creation");
             return false;
         }
+        updateProgressLabel(4, 5);
 
         Log.i("import", "5. Import notes (if selected)");
         if (shouldImportNotes) {
             importNotes(noteBackupModel, categoryIdMap, externalFilesDir);
         }
+        updateProgressLabel(5, 5);
 
         return true;
     }
@@ -513,6 +530,15 @@ public class BackupImportDialog extends DialogFragment {
         // to not break anything, this is not allowed. Also other major versions are considered
         // incompatible because a major version a) doesn't exist yet and b) means breaking changes.
         return currentMajor == backupMajor && currentMinor >= backupMinor;
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void updateProgressLabel(int currentStep, int maxSteps) {
+        String prefix = "☑".repeat(currentStep);
+        String suffix = "☐".repeat(maxSteps - currentStep);
+        ((TextView) getView().findViewById(R.id.import_wait_progress_label)).setText(
+                prefix + suffix + " " + currentStep + "/" + maxSteps
+        );
     }
 
     private void showDoneWithErrorMessage() {
