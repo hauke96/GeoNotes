@@ -87,7 +87,7 @@
     <!-- Backup import dialog -->
     <!-- TODO Translate -->
     <string name="backup_import_title">Import Backup</string>
-    <string name="backup_import_file_chooser_title">1. Select a backup ".zip" file</string>
+    <string name="backup_import_file_chooser_title">1. Select a backup ".zip" or ".geojson" file</string>
     <string name="backup_import_file_chooser">Select file</string>
     <string name="backup_import_overwrite_append">2. Choose whether to append the backup to the current app or to overwrite everything. If settings are imported, they are overwritten regardless of this selection.</string>
     <string name="backup_import_append">Overwrite</string>

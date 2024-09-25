@@ -22,12 +22,13 @@ import androidx.fragment.app.DialogFragment;
 
 import com.google.gson.GsonBuilder;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -42,11 +43,17 @@ import de.hauke_stieler.geonotes.common.FileHelper;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.map.Map;
 import de.hauke_stieler.geonotes.map.MarkerFragment;
+import de.hauke_stieler.geonotes.notes.Note;
 import de.hauke_stieler.geonotes.notes.NoteIconProvider;
 
 public class BackupImportDialog extends DialogFragment {
+    enum ImportType {
+        GEOJSON_EXPORT, ZIP_BACKUP;
+    }
+
     private ActivityResultLauncher<String> resultLauncher;
     private Uri selectedInputFileUri;
+    private ImportType selectedInputType;
     private Database database;
     private Map map;
     private NoteIconProvider noteIconProvider;
@@ -68,20 +75,44 @@ public class BackupImportDialog extends DialogFragment {
                     Cursor cursor = getContext().getContentResolver().query(uri, null, null, null, null);
                     int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
                     cursor.moveToFirst();
-                    ((TextView) getView().findViewById(R.id.backup_import_filename_label)).setText(cursor.getString(nameIndex));
-                    selectedInputFileUri = uri;
+
+                    String filename = cursor.getString(nameIndex);
 
                     getView().findViewById(R.id.backup_import_start_button).setEnabled(true);
+
+                    if (filename.toLowerCase().endsWith(".geojson")) {
+                        selectedInputFileUri = uri;
+                        selectedInputType = ImportType.GEOJSON_EXPORT;
+                        getView().findViewById(R.id.backup_import_photos_layout).setVisibility(View.GONE);
+                        getView().findViewById(R.id.backup_import_settings_layout).setVisibility(View.GONE);
+                    } else if (filename.toLowerCase().endsWith(".zip")) {
+                        selectedInputFileUri = uri;
+                        selectedInputType = ImportType.ZIP_BACKUP;
+                        getView().findViewById(R.id.backup_import_photos_layout).setVisibility(View.VISIBLE);
+                        getView().findViewById(R.id.backup_import_settings_layout).setVisibility(View.VISIBLE);
+                    } else {
+                        selectedInputFileUri = null;
+                        selectedInputType = null;
+                        getView().findViewById(R.id.backup_import_start_button).setEnabled(false);
+                        Toast.makeText(getContext(), "Only .zip and .geojson files allowed!", Toast.LENGTH_SHORT).show();
+                        Log.e("import", "Invalid import filetype of file " + filename);
+                    }
+
+                    if(selectedInputFileUri != null) {
+                        ((TextView) getView().findViewById(R.id.backup_import_filename_label)).setText(filename);
+                    }
+
+                    cursor.close();
                 });
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.backup_import_dialog, container);
+        View view = inflater.inflate(R.layout.import_dialog, container);
 
         view.findViewById(R.id.backup_import_file_select_button).setOnClickListener(v -> {
-            resultLauncher.launch("application/zip");
+            resultLauncher.launch("*/*");
         });
 
         ((Switch) view.findViewById(R.id.backup_import_append_overwrite_switch))
@@ -142,28 +173,52 @@ public class BackupImportDialog extends DialogFragment {
         boolean shouldImportCategories = ((Switch) view.findViewById(R.id.backup_import_categories_switch)).isChecked();
         boolean shouldImportSettings = ((Switch) view.findViewById(R.id.backup_import_settings_switch)).isChecked();
 
+        boolean success;
+        if (selectedInputType == ImportType.ZIP_BACKUP) {
+            success = importZipBackup(view, shouldAppend, shouldImportNotes, shouldImportPhotos, shouldImportCategories, shouldImportSettings);
+        } else if (selectedInputType == ImportType.GEOJSON_EXPORT) {
+            success = importGeojsonExport(view, shouldAppend, shouldImportNotes, shouldImportCategories);
+        } else {
+            throw new RuntimeException("Invalid import type " + selectedInputType + " selected");
+        }
+
+        if (!success) {
+            hideAllBottomControls();
+            return;
+        }
+
+        Log.i("import", "Last step: Update and reload everything");
+        noteIconProvider.updateIcons();
+        map.reloadAllNotes();
+        markerFragment.reloadCategories();
+
+        hideAllBottomControls();
+        view.findViewById(R.id.backup_import_done_layout).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.backup_import_done_label).setVisibility(View.VISIBLE);
+    }
+
+    private boolean importZipBackup(View view, boolean shouldAppend, boolean shouldImportNotes, boolean shouldImportPhotos, boolean shouldImportCategories, boolean shouldImportSettings) {
         File externalFilesDir = getContext().getExternalFilesDir(FileHelper.GEONOTES_EXTERNAL_DIR_NAME);
 
         Log.i("import", "1. Extract ZIP");
         File backupExtractDir = extractSelectedBackupFile(view, externalFilesDir);
         if (backupExtractDir == null) {
             Log.e("import", "Abort due to error during backup file extraction");
-            return;
+            return false;
         }
 
         Log.i("import", "2. Create model");
         NoteBackupModel noteBackupModel = getBackupModelFromBackupFiles(backupExtractDir);
         if (noteBackupModel == null) {
             Log.e("import", "Abort due to error during model creation of backup");
-            return;
+            return false;
         }
 
         Log.i("import", "3. Check backup version");
         if (!isVersionCompatible(noteBackupModel.geonotesVersion, BuildConfig.VERSION_CODE)) {
             Log.e("import", "Version of backup file incompatible (backup=" + noteBackupModel.geonotesVersion + ", current=" + BuildConfig.VERSION_CODE + ")");
             Toast.makeText(getContext(), "Version " + noteBackupModel.geonotesVersion + " of backup not compatible with app version " + BuildConfig.VERSION_CODE + ". Abort import.", Toast.LENGTH_LONG).show();
-            showDoneWithErrorMessage();
-            return;
+            return false;
         }
 
         Log.i("import", "4. Check append setting");
@@ -190,7 +245,7 @@ public class BackupImportDialog extends DialogFragment {
         HashMap<Long, Long> categoryIdMap = importCategories(shouldImportCategories, noteBackupModel);
         if (categoryIdMap == null) {
             Log.e("import", "Abort due to error during note-to-category mapping creation");
-            return;
+            return false;
         }
 
         Log.i("import", "7. Import notes (if selected)");
@@ -209,14 +264,69 @@ public class BackupImportDialog extends DialogFragment {
             Log.w("import", "Backup extraction directory deletion failed.");
         }
 
-        Log.i("import", "10. Update and reload everything");
-        noteIconProvider.updateIcons();
-        map.reloadAllNotes();
-        markerFragment.reloadCategories();
+        return true;
+    }
 
-        hideAllBottomControls();
-        view.findViewById(R.id.backup_import_done_layout).setVisibility(View.VISIBLE);
-        view.findViewById(R.id.backup_import_done_label).setVisibility(View.VISIBLE);
+    private boolean importGeojsonExport(View view, boolean shouldAppend, boolean shouldImportNotes, boolean shouldImportCategories) {
+        File externalFilesDir = getContext().getExternalFilesDir(FileHelper.GEONOTES_EXTERNAL_DIR_NAME);
+
+        Log.i("import", "1. Read input file");
+        String fileContent;
+        try {
+            InputStream backupFileInputStream = getContext().getContentResolver().openInputStream(selectedInputFileUri);
+            fileContent = new BufferedReader(new InputStreamReader(backupFileInputStream)).lines().collect(Collectors.joining("\n"));
+        } catch (FileNotFoundException e) {
+            Log.e("import", "Error creating import file input stream", e);
+            CharSequence filename = ((TextView) view.findViewById(R.id.backup_import_filename_label)).getText();
+            Toast.makeText(getContext(), "File " + filename + " not found. Abort import.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        Log.i("import", "2. Create model");
+        NoteExportModel noteExportModel = GeoJson.fromGeoJson(fileContent);
+        if (noteExportModel == null) {
+            Log.e("import", "Abort due to error during model creation of input GeoJson export file");
+            return false;
+        }
+
+        List<Note> notesToImport = noteExportModel.features
+                .stream()
+                .map(f -> new Note(
+                                -1,
+                                f.properties.description,
+                                f.geometry.coordinates[1],
+                                f.geometry.coordinates[0],
+                                f.properties.createdAt,
+                                new Category(f.properties.categoryColor, f.properties.categoryName, 1)
+                        )
+                )
+                .collect(Collectors.toList());
+
+        NoteBackupModel noteBackupModel = new NoteBackupModel(notesToImport, new HashMap<>(), new HashMap<>());
+        if (noteExportModel == null) {
+            Log.e("import", "Abort due to error during model creation of backup");
+            return false;
+        }
+
+        Log.i("import", "3. Check append setting");
+        if (!shouldAppend) {
+            database.removeAllNotes(externalFilesDir);
+            database.removeAllCategories();
+        }
+
+        Log.i("import", "4. Import categories (or create default mapping)");
+        HashMap<Long, Long> categoryIdMap = importCategories(shouldImportCategories, noteBackupModel);
+        if (categoryIdMap == null) {
+            Log.e("import", "Abort due to error during note-to-category mapping creation");
+            return false;
+        }
+
+        Log.i("import", "5. Import notes (if selected)");
+        if (shouldImportNotes) {
+            importNotes(noteBackupModel, categoryIdMap, externalFilesDir);
+        }
+
+        return true;
     }
 
     boolean deleteRecursive(File fileOrDirectory) {

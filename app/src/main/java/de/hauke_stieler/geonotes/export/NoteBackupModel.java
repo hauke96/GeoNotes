@@ -27,6 +27,10 @@ public class NoteBackupModel {
                 .map(note -> {
                     List<String> photoFileNames = noteToPhotos.get(note.getId());
 
+                    if (photoFileNames == null) {
+                        photoFileNames = new ArrayList<>();
+                    }
+
                     return new NoteModel(
                             note.getId(),
                             note.getDescription(),

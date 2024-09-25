@@ -80,7 +80,7 @@
 
     <!-- Backup import dialog -->
     <string name="backup_import_title">Backup Einspielen</string>
-    <string name="backup_import_file_chooser_title">1. Wähle eine ".zip"-Datei aus</string>
+    <string name="backup_import_file_chooser_title">1. Wähle eine ".zip"- oder ".geojson"-Datei aus</string>
     <string name="backup_import_file_chooser">Auswählen</string>
     <string name="backup_import_overwrite_append">2. Wähle, ob die Sicherung an die aktuellen Daten angehängt oder alles überschrieben werden soll. Wenn Einstellungen importiert werden, werden sie unabhängig von dieser Auswahl überschrieben.</string>
     <string name="backup_import_append">Überschreiben</string>

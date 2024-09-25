@@ -1,5 +1,6 @@
 package de.hauke_stieler.geonotes.export;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.List;
@@ -12,5 +13,9 @@ public class GeoJson {
                 .setPrettyPrinting()
                 .create()
                 .toJson(new NoteExportModel(notes));
+    }
+
+    public static NoteExportModel fromGeoJson(String geoJsonText) {
+        return new Gson().fromJson(geoJsonText, NoteExportModel.class);
     }
 }

@@ -116,10 +116,26 @@ public class Exporter {
         notesBackupOutput.write(notesBackupJson.getBytes());
         notesBackupOutput.close();
 
+        // Add GeoJson export for convenience in case someone wants to visit/edit data in a GIS tool.
+        String geoJsonString = GeoJson.toGeoJson(allNotes);
+        File geoJsonExportFile = getFile("geojson-export", ".geojson");
+        try {
+            DataOutputStream output = new DataOutputStream(new FileOutputStream(geoJsonExportFile));
+            output.write(geoJsonString.getBytes());
+            output.close();
+        } catch (Exception e) {
+            Log.e(LOGTAG, "Writing data to stream failed", e);
+            geoJsonExportFile = null;
+        }
+
         // Create ZIP file
         ArrayList<File> allFiles = new ArrayList<>();
         allFiles.add(notesBackupFile);
         allFiles.addAll(photoFiles);
+
+        if (geoJsonExportFile != null) {
+            allFiles.add(geoJsonExportFile);
+        }
 
         File backupFile = getFile("backup", ".zip");
         Zip.zip(allFiles, backupFile);
@@ -130,7 +146,7 @@ public class Exporter {
     }
 
     private void openShareIntent(byte[] data, String fileSuffix, String fileExtension, String mimeType) {
-        File exportFile = getFile(fileExtension, fileSuffix);
+        File exportFile = getFile(fileSuffix, fileExtension);
 
         try {
             DataOutputStream output = new DataOutputStream(new FileOutputStream(exportFile));
