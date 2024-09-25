@@ -79,21 +79,21 @@
     <string name="initial_color_grey">Grau</string>
 
     <!-- Backup import dialog -->
-    <string name="backup_import_title">Backup Einspielen</string>
-    <string name="backup_import_file_chooser_title">1. Wähle eine ".zip"- oder ".geojson"-Datei aus</string>
-    <string name="backup_import_file_chooser">Auswählen</string>
-    <string name="backup_import_overwrite_append">2. Wähle, ob die Sicherung an die aktuellen Daten angehängt oder alles überschrieben werden soll. Wenn Einstellungen importiert werden, werden sie unabhängig von dieser Auswahl überschrieben.</string>
-    <string name="backup_import_append">Überschreiben</string>
-    <string name="backup_import_overwrite">Anhängen</string>
-    <string name="backup_import_what_to_import">3. Wähle die Teile der Sicherung aus, die importiert werden sollen</string>
-    <string name="backup_import_notes">Notizen</string>
-    <string name="backup_import_photos">Fotos</string>
-    <string name="backup_import_categories">Kategorien</string>
-    <string name="backup_import_settings">Einstellungen</string>
-    <string name="backup_import_overwrite_warning">ACHTUNG: Du hast dich dazu entschieden, die aktuellen Daten zu überschreiben!\n\nBevor du fortfährst: Vergewissere dich, dass du ein Backup der aktuellen App erstellt hast.\n\nAlle(!) Daten (Notizen, Kategorien, Fotos) dieser App werden beim Import entfernt! Dies kann nicht rückgängig gemacht werden!</string>
-    <string name="backup_import_start">Importieren</string>
-    <string name="backup_import_loading">Importiere Sicherung …</string>
-    <string name="backup_import_done_label">Fertig ✓</string>
-    <string name="backup_import_close_button">Schließen</string>
-    <string name="backup_import_error_label">Aufgrund von Fehler abgebrochen.</string>
+    <string name="import_title">Backup Einspielen</string>
+    <string name="import_file_chooser_title">1. Wähle eine ".zip"- oder ".geojson"-Datei aus</string>
+    <string name="import_file_chooser">Auswählen</string>
+    <string name="import_overwrite_append">2. Wähle, ob die Sicherung an die aktuellen Daten angehängt oder alles überschrieben werden soll. Wenn Einstellungen importiert werden, werden sie unabhängig von dieser Auswahl überschrieben.</string>
+    <string name="import_append">Überschreiben</string>
+    <string name="import_overwrite">Anhängen</string>
+    <string name="import_what_to_import">3. Wähle die Teile der Sicherung aus, die importiert werden sollen</string>
+    <string name="import_notes">Notizen</string>
+    <string name="import_photos">Fotos</string>
+    <string name="import_categories">Kategorien</string>
+    <string name="import_settings">Einstellungen</string>
+    <string name="import_overwrite_warning">ACHTUNG: Du hast dich dazu entschieden, die aktuellen Daten zu überschreiben!\n\nBevor du fortfährst: Vergewissere dich, dass du ein Backup der aktuellen App erstellt hast.\n\nAlle(!) Daten (Notizen, Kategorien, Fotos) dieser App werden beim Import entfernt! Dies kann nicht rückgängig gemacht werden!</string>
+    <string name="import_start">Importieren</string>
+    <string name="import_loading">Importiere Sicherung …</string>
+    <string name="import_done_label">Fertig ✓</string>
+    <string name="import_close_button">Schließen</string>
+    <string name="import_error_label">Aufgrund von Fehler abgebrochen.</string>
 </resources>

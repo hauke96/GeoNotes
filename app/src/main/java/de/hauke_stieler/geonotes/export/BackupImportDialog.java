@@ -78,28 +78,28 @@ public class BackupImportDialog extends DialogFragment {
 
                     String filename = cursor.getString(nameIndex);
 
-                    getView().findViewById(R.id.backup_import_start_button).setEnabled(true);
+                    getView().findViewById(R.id.import_start_button).setEnabled(true);
 
                     if (filename.toLowerCase().endsWith(".geojson")) {
                         selectedInputFileUri = uri;
                         selectedInputType = ImportType.GEOJSON_EXPORT;
-                        getView().findViewById(R.id.backup_import_photos_layout).setVisibility(View.GONE);
-                        getView().findViewById(R.id.backup_import_settings_layout).setVisibility(View.GONE);
+                        getView().findViewById(R.id.import_photos_layout).setVisibility(View.GONE);
+                        getView().findViewById(R.id.import_settings_layout).setVisibility(View.GONE);
                     } else if (filename.toLowerCase().endsWith(".zip")) {
                         selectedInputFileUri = uri;
                         selectedInputType = ImportType.ZIP_BACKUP;
-                        getView().findViewById(R.id.backup_import_photos_layout).setVisibility(View.VISIBLE);
-                        getView().findViewById(R.id.backup_import_settings_layout).setVisibility(View.VISIBLE);
+                        getView().findViewById(R.id.import_photos_layout).setVisibility(View.VISIBLE);
+                        getView().findViewById(R.id.import_settings_layout).setVisibility(View.VISIBLE);
                     } else {
                         selectedInputFileUri = null;
                         selectedInputType = null;
-                        getView().findViewById(R.id.backup_import_start_button).setEnabled(false);
+                        getView().findViewById(R.id.import_start_button).setEnabled(false);
                         Toast.makeText(getContext(), "Only .zip and .geojson files allowed!", Toast.LENGTH_SHORT).show();
                         Log.e("import", "Invalid import filetype of file " + filename);
                     }
 
-                    if(selectedInputFileUri != null) {
-                        ((TextView) getView().findViewById(R.id.backup_import_filename_label)).setText(filename);
+                    if (selectedInputFileUri != null) {
+                        ((TextView) getView().findViewById(R.id.import_filename_label)).setText(filename);
                     }
 
                     cursor.close();
@@ -111,19 +111,19 @@ public class BackupImportDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.import_dialog, container);
 
-        view.findViewById(R.id.backup_import_file_select_button).setOnClickListener(v -> {
+        view.findViewById(R.id.import_file_select_button).setOnClickListener(v -> {
             resultLauncher.launch("*/*");
         });
 
-        ((Switch) view.findViewById(R.id.backup_import_append_overwrite_switch))
+        ((Switch) view.findViewById(R.id.import_append_overwrite_switch))
                 .setOnCheckedChangeListener((buttonView, isAppendSelected) -> {
                     // Append=true -> No notice visible / Overwrite=false -> Notice visible
-                    view.findViewById(R.id.backup_import_overwrite_warning_label).setVisibility(isAppendSelected ? View.GONE : View.VISIBLE);
+                    view.findViewById(R.id.import_overwrite_warning_label).setVisibility(isAppendSelected ? View.GONE : View.VISIBLE);
                 });
 
-        ((Switch) view.findViewById(R.id.backup_import_notes_switch))
+        ((Switch) view.findViewById(R.id.import_notes_switch))
                 .setOnCheckedChangeListener((buttonView, isSelected) -> {
-                    Switch photoSwitch = view.findViewById(R.id.backup_import_photos_switch);
+                    Switch photoSwitch = view.findViewById(R.id.import_photos_switch);
                     if (isSelected) {
                         photoSwitch.setEnabled(true);
                     } else {
@@ -132,15 +132,15 @@ public class BackupImportDialog extends DialogFragment {
                     }
                 });
 
-        ((Switch) view.findViewById(R.id.backup_import_categories_switch))
+        ((Switch) view.findViewById(R.id.import_categories_switch))
                 .setOnCheckedChangeListener((buttonView, isSelected) -> {
-                    boolean shouldAppend = ((Switch) view.findViewById(R.id.backup_import_append_overwrite_switch)).isChecked();
+                    boolean shouldAppend = ((Switch) view.findViewById(R.id.import_append_overwrite_switch)).isChecked();
                     if (!shouldAppend) {
                         // Deleting all existing data and then importing notes without categories
                         // doesn't make any sense. So we prohibit overwriting imports with notes
                         // but without categories.
-                        Switch noteSwitch = view.findViewById(R.id.backup_import_notes_switch);
-                        Switch photoSwitch = view.findViewById(R.id.backup_import_photos_switch);
+                        Switch noteSwitch = view.findViewById(R.id.import_notes_switch);
+                        Switch photoSwitch = view.findViewById(R.id.import_photos_switch);
                         if (isSelected) {
                             noteSwitch.setEnabled(true);
                             // Do not activate photo switch because note switch is unselected and
@@ -154,24 +154,24 @@ public class BackupImportDialog extends DialogFragment {
                     }
                 });
 
-        view.findViewById(R.id.backup_import_start_button).setOnClickListener(v -> {
+        view.findViewById(R.id.import_start_button).setOnClickListener(v -> {
             hideAllBottomControls();
-            view.findViewById(R.id.backup_import_wait_layout).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.import_wait_layout).setVisibility(View.VISIBLE);
 
             new Handler().post(() -> startImport(view));
         });
 
-        view.findViewById(R.id.backup_import_close_button).setOnClickListener(v -> dismiss());
+        view.findViewById(R.id.import_close_button).setOnClickListener(v -> dismiss());
 
         return view;
     }
 
     private void startImport(View view) {
-        boolean shouldAppend = ((Switch) view.findViewById(R.id.backup_import_append_overwrite_switch)).isChecked();
-        boolean shouldImportNotes = ((Switch) view.findViewById(R.id.backup_import_notes_switch)).isChecked();
-        boolean shouldImportPhotos = ((Switch) view.findViewById(R.id.backup_import_photos_switch)).isChecked();
-        boolean shouldImportCategories = ((Switch) view.findViewById(R.id.backup_import_categories_switch)).isChecked();
-        boolean shouldImportSettings = ((Switch) view.findViewById(R.id.backup_import_settings_switch)).isChecked();
+        boolean shouldAppend = ((Switch) view.findViewById(R.id.import_append_overwrite_switch)).isChecked();
+        boolean shouldImportNotes = ((Switch) view.findViewById(R.id.import_notes_switch)).isChecked();
+        boolean shouldImportPhotos = ((Switch) view.findViewById(R.id.import_photos_switch)).isChecked();
+        boolean shouldImportCategories = ((Switch) view.findViewById(R.id.import_categories_switch)).isChecked();
+        boolean shouldImportSettings = ((Switch) view.findViewById(R.id.import_settings_switch)).isChecked();
 
         boolean success;
         if (selectedInputType == ImportType.ZIP_BACKUP) {
@@ -193,8 +193,8 @@ public class BackupImportDialog extends DialogFragment {
         markerFragment.reloadCategories();
 
         hideAllBottomControls();
-        view.findViewById(R.id.backup_import_done_layout).setVisibility(View.VISIBLE);
-        view.findViewById(R.id.backup_import_done_label).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.import_done_layout).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.import_done_label).setVisibility(View.VISIBLE);
     }
 
     private boolean importZipBackup(View view, boolean shouldAppend, boolean shouldImportNotes, boolean shouldImportPhotos, boolean shouldImportCategories, boolean shouldImportSettings) {
@@ -277,7 +277,7 @@ public class BackupImportDialog extends DialogFragment {
             fileContent = new BufferedReader(new InputStreamReader(backupFileInputStream)).lines().collect(Collectors.joining("\n"));
         } catch (FileNotFoundException e) {
             Log.e("import", "Error creating import file input stream", e);
-            CharSequence filename = ((TextView) view.findViewById(R.id.backup_import_filename_label)).getText();
+            CharSequence filename = ((TextView) view.findViewById(R.id.import_filename_label)).getText();
             Toast.makeText(getContext(), "File " + filename + " not found. Abort import.", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -348,7 +348,7 @@ public class BackupImportDialog extends DialogFragment {
             backupFileInputStream = getContext().getContentResolver().openInputStream(selectedInputFileUri);
         } catch (FileNotFoundException e) {
             Log.e("import", "Error creating backup file input stream", e);
-            CharSequence filename = ((TextView) view.findViewById(R.id.backup_import_filename_label)).getText();
+            CharSequence filename = ((TextView) view.findViewById(R.id.import_filename_label)).getText();
             Toast.makeText(getContext(), "File " + filename + " not found. Abort import.", Toast.LENGTH_SHORT).show();
             showDoneWithErrorMessage();
             return null;
@@ -517,15 +517,15 @@ public class BackupImportDialog extends DialogFragment {
 
     private void showDoneWithErrorMessage() {
         hideAllBottomControls();
-        getView().findViewById(R.id.backup_import_done_layout).setVisibility(View.VISIBLE);
-        getView().findViewById(R.id.backup_import_done_with_error_label).setVisibility(View.VISIBLE);
+        getView().findViewById(R.id.import_done_layout).setVisibility(View.VISIBLE);
+        getView().findViewById(R.id.import_done_with_error_label).setVisibility(View.VISIBLE);
     }
 
     private void hideAllBottomControls() {
-        getView().findViewById(R.id.backup_import_start_layout).setVisibility(View.GONE);
-        getView().findViewById(R.id.backup_import_done_layout).setVisibility(View.GONE);
-        getView().findViewById(R.id.backup_import_done_label).setVisibility(View.GONE);
-        getView().findViewById(R.id.backup_import_done_with_error_label).setVisibility(View.GONE);
-        getView().findViewById(R.id.backup_import_wait_layout).setVisibility(View.GONE);
+        getView().findViewById(R.id.import_start_layout).setVisibility(View.GONE);
+        getView().findViewById(R.id.import_done_layout).setVisibility(View.GONE);
+        getView().findViewById(R.id.import_done_label).setVisibility(View.GONE);
+        getView().findViewById(R.id.import_done_with_error_label).setVisibility(View.GONE);
+        getView().findViewById(R.id.import_wait_layout).setVisibility(View.GONE);
     }
 }

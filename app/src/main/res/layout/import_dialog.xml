@@ -11,14 +11,14 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="20dp"
-        android:text="@string/backup_import_title"
+        android:text="@string/import_title"
         android:textSize="20sp"
         android:textStyle="bold" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/backup_import_file_chooser_title"
+        android:text="@string/import_file_chooser_title"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -27,13 +27,13 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/backup_import_file_select_button"
+            android:id="@+id/import_file_select_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/backup_import_file_chooser" />
+            android:text="@string/import_file_chooser" />
 
         <TextView
-            android:id="@+id/backup_import_filename_label"
+            android:id="@+id/import_filename_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp" />
@@ -44,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="@string/backup_import_overwrite_append"
+        android:text="@string/import_overwrite_append"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -58,11 +58,11 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="end|center_vertical"
-            android:text="@string/backup_import_append"
+            android:text="@string/import_append"
             android:textColor="@color/warn" />
 
         <Switch
-            android:id="@+id/backup_import_append_overwrite_switch"
+            android:id="@+id/import_append_overwrite_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -74,7 +74,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:text="@string/backup_import_overwrite" />
+            android:text="@string/import_overwrite" />
 
     </LinearLayout>
 
@@ -82,7 +82,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="@string/backup_import_what_to_import"
+        android:text="@string/import_what_to_import"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -95,10 +95,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/backup_import_notes" />
+            android:text="@string/import_notes" />
 
         <Switch
-            android:id="@+id/backup_import_notes_switch"
+            android:id="@+id/import_notes_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -106,7 +106,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/backup_import_photos_layout"
+        android:id="@+id/import_photos_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
@@ -116,10 +116,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/backup_import_photos" />
+            android:text="@string/import_photos" />
 
         <Switch
-            android:id="@+id/backup_import_photos_switch"
+            android:id="@+id/import_photos_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -136,10 +136,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/backup_import_categories" />
+            android:text="@string/import_categories" />
 
         <Switch
-            android:id="@+id/backup_import_categories_switch"
+            android:id="@+id/import_categories_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -147,7 +147,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/backup_import_settings_layout"
+        android:id="@+id/import_settings_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
@@ -157,10 +157,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/backup_import_settings" />
+            android:text="@string/import_settings" />
 
         <Switch
-            android:id="@+id/backup_import_settings_switch"
+            android:id="@+id/import_settings_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -168,17 +168,17 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/backup_import_overwrite_warning_label"
+        android:id="@+id/import_overwrite_warning_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="@string/backup_import_overwrite_warning"
+        android:text="@string/import_overwrite_warning"
         android:textColor="@color/warn"
         android:textStyle="bold"
         android:visibility="gone" />
 
     <LinearLayout
-        android:id="@+id/backup_import_start_layout"
+        android:id="@+id/import_start_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -187,16 +187,16 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/backup_import_start_button"
+            android:id="@+id/import_start_button"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:text="@string/backup_import_start" />
+            android:text="@string/import_start" />
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/backup_import_wait_layout"
+        android:id="@+id/import_wait_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -208,11 +208,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
-            android:text="@string/backup_import_loading" />
+            android:text="@string/import_loading" />
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/backup_import_done_layout"
+        android:id="@+id/import_done_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -221,28 +221,28 @@
         android:visibility="gone">
 
         <TextView
-            android:id="@+id/backup_import_done_label"
+            android:id="@+id/import_done_label"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/backup_import_done_label"
+            android:text="@string/import_done_label"
             android:textColor="@color/success"
             android:visibility="gone" />
 
         <TextView
-            android:id="@+id/backup_import_done_with_error_label"
+            android:id="@+id/import_done_with_error_label"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/backup_import_error_label"
+            android:text="@string/import_error_label"
             android:textColor="@color/warn"
             android:visibility="gone" />
 
         <Button
-            android:id="@+id/backup_import_close_button"
+            android:id="@+id/import_close_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/backup_import_close_button" />
+            android:text="@string/import_close_button" />
 
     </LinearLayout>
 
