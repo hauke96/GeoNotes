@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.os.PowerManager;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.core.content.res.ResourcesCompat;
@@ -33,6 +34,7 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 import de.hauke_stieler.geonotes.Injector;
@@ -43,6 +45,14 @@ import de.hauke_stieler.geonotes.notes.Note;
 import de.hauke_stieler.geonotes.notes.NoteIconProvider;
 
 public class Map {
+    public interface TouchDownListener {
+        void onTouchedDown();
+    }
+
+    public interface NoteMovedListener {
+        void onNoteMoved(String value, Double longitude, Double latitude);
+    }
+
     private final Context context;
     private final PowerManager.WakeLock wakeLock;
     private final Database database;
@@ -82,7 +92,7 @@ public class Map {
 
         // Keep device on
         final PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "geonotes:wakelock");
+        wakeLock = pm.newWakeLock(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, "geonotes:wakelock");
         wakeLock.acquire();
 
         Drawable locationIconBackground
@@ -119,6 +129,12 @@ public class Map {
     }
 
     public void reloadAllNotes() {
+        GeoNotesMarker currentlySelectedMarker = markerFragment.getSelectedMarker();
+        if (currentlySelectedMarker != null) {
+            markerFragment.reset();
+            deselectMarker(currentlySelectedMarker);
+        }
+
         for (Overlay o : map.getOverlays()) {
             if (o instanceof Marker) {
                 map.getOverlayManager().remove(o);
@@ -133,15 +149,19 @@ public class Map {
                 createMarker("" + n.getId(), n.getDescription(), new GeoPoint(n.getLat(), n.getLon()), n.getCategory().getId(), markerClickListener);
             }
         }
+
+        redraw();
     }
 
     private void createOverlays(BitmapDrawable locationIcon, BitmapDrawable arrowIcon) {
         // Add location icon
         gpsLocationProvider = new GpsMyLocationProvider(context);
         locationOverlay = new MyLocationNewOverlay(gpsLocationProvider, map);
-        locationOverlay.enableMyLocation();
-        locationOverlay.setDirectionArrow(locationIcon.getBitmap(), arrowIcon.getBitmap());
-        locationOverlay.setPersonHotspot(32, 32);
+        enableLocationsOverlay();
+        locationOverlay.setPersonIcon(locationIcon.getBitmap());
+        locationOverlay.setDirectionIcon(arrowIcon.getBitmap());
+        locationOverlay.setDirectionAnchor(.5f, .5f);
+        locationOverlay.setPersonAnchor(32, 32);
         map.getOverlays().add(this.locationOverlay);
 
         // Add rotation overlay
@@ -207,6 +227,10 @@ public class Map {
         map.getOverlays().add(compassOverlay);
     }
 
+    public void enableLocationsOverlay() {
+        locationOverlay.enableMyLocation();
+    }
+
     private void saveMapRotationProperty(float angle) {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putFloat(context.getString(R.string.pref_map_rotation), angle);
@@ -219,12 +243,12 @@ public class Map {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    public void addMapListener(MapListener listener, TouchDownListener touchDownListener) {
+    public void addMapListener(MapListener listener, TouchDownListener touchDownListener, NoteMovedListener noteMovedCallback) {
         map.addMapListener(listener);
         map.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    touchDownListener.onTouchDown();
+                    touchDownListener.onTouchedDown();
 
                     // Initialize movement of the marker: Store current screen-location to keep marker there
                     if (markerToMove != null) {
@@ -243,12 +267,20 @@ public class Map {
 
                         // If the ID is set, the marker exists in the DB, therefore we store that new location
                         String id = markerToMove.getId();
+                        Double longitude = null;
+                        Double latitude = null;
                         if (id != null) {
                             database.updateNoteLocation(Long.parseLong(id), markerToMove.getPosition());
+                            longitude = markerToMove.getPosition().getLongitude();
+                            latitude = markerToMove.getPosition().getLatitude();
                         }
 
                         dragStartMarkerPosition = null;
                         markerToMove = null;
+
+                        if (id != null) {
+                            noteMovedCallback.onNoteMoved(id, longitude, latitude);
+                        }
                     }
                     break;
             }
@@ -271,7 +303,11 @@ public class Map {
             public void onSave(GeoNotesMarker marker) {
                 // We always have an ID and can therefore update the note
                 database.updateNoteDescription(Long.parseLong(marker.getId()), marker.getSnippet());
-                onCategoryChanged(marker);
+            }
+
+            @Override
+            public void onClose(GeoNotesMarker marker) {
+                deselectMarker(marker);
             }
 
             @Override
@@ -288,7 +324,9 @@ public class Map {
                 editor.putLong(context.getString(R.string.pref_last_category_id), marker.getCategoryId());
                 editor.commit();
 
+                // Update Icon with the new color
                 setIcon(marker, getSelectedMarker() == marker);
+
                 redraw();
             }
         });
@@ -364,9 +402,8 @@ public class Map {
         // Deselect previously selected marker
         GeoNotesMarker currentlySelectedMarker = markerFragment.getSelectedMarker();
         if (currentlySelectedMarker != null) {
-            // This icon will not be the selected marker after "showInfoWindow", therefore we set the normal icon here.
-            setIcon(currentlySelectedMarker, false);
             markerFragment.reset();
+            deselectMarker(currentlySelectedMarker);
         }
 
         setIcon(markerToSelect, true);
@@ -377,21 +414,30 @@ public class Map {
         redraw();
     }
 
-    private Marker getSelectedMarker() {
+    private void deselectMarker(GeoNotesMarker marker) {
+        if (marker == null) {
+            return;
+        }
+
+        // This icon will not be the selected marker after "showInfoWindow", therefore we set the normal icon here.
+        setIcon(marker, false);
+    }
+
+    public GeoNotesMarker getSelectedMarker() {
         return markerFragment.getSelectedMarker();
     }
 
     /**
      * Loads images of current marker (which contains the note-ID) from database and show them.
      */
-    public void addImagesToMarkerFragment() {
+    public List<String> addImagesToMarkerFragment() {
         markerFragment.resetImageList();
         GeoNotesMarker marker = markerFragment.getSelectedMarker();
 
         // It could happen that the user rotates the device (e.g. while taking a photo) and this
         // causes the whole activity to be reset. Therefore we might not have a marker here.
         if (marker == null) {
-            return;
+            return Collections.emptyList();
         }
 
         List<String> photoFileNames = database.getPhotos(marker.getId());
@@ -403,6 +449,8 @@ public class Map {
 
         setIcon(marker, true);
         redraw();
+
+        return photoFileNames;
     }
 
     private void setIcon(GeoNotesMarker marker, boolean isSelected) {

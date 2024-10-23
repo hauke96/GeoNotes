@@ -1,0 +1,5 @@
+1.6.1:
+
+Änderungen und Fehlerbehebungen:
+
+* Performanceverbesserung beim Schreiben von Notizen.

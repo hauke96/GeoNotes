@@ -6,6 +6,7 @@ Derzeitige Funktionen:
 <li>Ergänze Fotos zu einer Notiz</li>
 <li>Kategorisiere Notizen</li>
 <li>Liste mit allen Notizen</li>
-<li>Exportiere Notizen in GeoJSON oder GPX</li>
 <li>Zeige und folge deiner derzeitigen Position</li>
+<li>Exportiere Notizen in GeoJSON oder GPX</li>
+<li>Erstelle vollständige Backups und stelle diese wieder her</li>
 </ul>

@@ -27,18 +27,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="@string/show_zoom_buttons"
                 android:textSize="16dp" />
-
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
 
             <Switch
                 android:id="@+id/settings_zoom_switch"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -50,18 +47,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="@string/map_scaling_factor"
                 android:textSize="16dp" />
-
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
 
             <EditText
                 android:id="@+id/settings_scale_input"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
                 android:digits="0123456789."
                 android:inputType="number" />
         </LinearLayout>
@@ -75,18 +69,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="@string/snap_note_to_gps_location"
                 android:textSize="16dp" />
-
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
 
             <Switch
                 android:id="@+id/settings_snap_note_gps"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -98,18 +89,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="@string/enable_rotating_the_map"
                 android:textSize="16dp" />
-
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
 
             <Switch
                 android:id="@+id/settings_enable_rotating_map"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -121,27 +109,24 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="@string/background_map_cache"
                 android:textSize="16dp" />
 
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
             <ProgressBar
+                android:id="@+id/settings_clear_cache_loading_spinner"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
+                android:layout_marginStart="10dp"
                 android:indeterminate="true"
-                android:layout_marginRight="10dp"
-                android:visibility="gone"
-                android:id="@+id/settings_clear_cache_loading_spinner"/>
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/settings_clear_cache"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/clear"/>
+                android:layout_marginStart="10dp"
+                android:text="@string/clear" />
         </LinearLayout>
 
         <LinearLayout
@@ -153,18 +138,36 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="@string/tap_long_to_create_a_note"
                 android:textSize="16dp" />
-
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
 
             <Switch
                 android:id="@+id/settings_tap_long"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:minHeight="50dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:singleLine="false"
+                android:text="@string/keep_camera_open"
+                android:textSize="16dp" />
+
+            <Switch
+                android:id="@+id/settings_keep_camera_open"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp" />
         </LinearLayout>
 
         <Space

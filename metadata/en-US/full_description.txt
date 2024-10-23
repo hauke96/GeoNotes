@@ -6,6 +6,7 @@ Currently the basic features are:
 <li>Attach photos to a note</li>
 <li>Categorize notes</li>
 <li>List of all notes</li>
-<li>Export all notes in GeoJSON or GPX format</li>
 <li>Show and follow current location</li>
+<li>Export all notes in GeoJSON or GPX format</li>
+<li>Hozzon létre és állítson vissza teljes biztonsági másolatot</li>
 </ul>

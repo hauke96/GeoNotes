@@ -4,10 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
-import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,9 +34,9 @@ import java.util.List;
 
 import de.hauke_stieler.geonotes.Injector;
 import de.hauke_stieler.geonotes.R;
+import de.hauke_stieler.geonotes.categories.Category;
 import de.hauke_stieler.geonotes.common.FileHelper;
 import de.hauke_stieler.geonotes.database.Database;
-import de.hauke_stieler.geonotes.categories.Category;
 import de.hauke_stieler.geonotes.notes.Note;
 import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
 
@@ -50,13 +48,19 @@ public class MarkerFragment extends Fragment {
 
         void onSave(GeoNotesMarker marker);
 
+        void onClose(GeoNotesMarker marker);
+
         void onMove(GeoNotesMarker marker);
 
         void onCategoryChanged(GeoNotesMarker marker);
     }
 
+    public interface OnCreatedHandler {
+        void onCreated();
+    }
+
     public interface RequestPhotoEventHandler {
-        void onRequestPhoto(Long noteId);
+        void onRequestPhoto(Long noteId, Double longitude, Double latitude);
     }
 
     /**
@@ -77,6 +81,7 @@ public class MarkerFragment extends Fragment {
 
     private MarkerFragmentEventHandler markerEventHandler;
     private RequestPhotoEventHandler requestPhotoHandler;
+    private OnCreatedHandler onCreatedHandler;
     private GeoNotesMarker selectedMarker;
     private State state;
     private Spinner categorySpinner;
@@ -97,12 +102,15 @@ public class MarkerFragment extends Fragment {
         requestPhotoHandler = handler;
     }
 
+    public void setOnCreatedHandler(OnCreatedHandler handler) {
+        onCreatedHandler = handler;
+    }
+
     @Override
     public void onResume() {
         super.onResume();
 
-        loadCategories();
-        categorySpinnerAdapter.notifyDataSetChanged();
+        reloadCategories();
     }
 
     @Nullable
@@ -128,33 +136,11 @@ public class MarkerFragment extends Fragment {
             }
         });
 
-        // React to changed text and update the content of the marker
-        descriptionView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (selectedMarker != null) {
-                    selectedMarker.setSnippet(s.toString());
-                    markerEventHandler.onSave(selectedMarker);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-
         categorySpinnerAdapter = new CategorySpinnerAdapter(getContext(), R.layout.category_spinner_item);
         long lastUsedCategoryId = preferences.getLong(getString(R.string.pref_last_category_id), 1);
 
-        loadCategories();
-
         categorySpinner = view.findViewById(R.id.category_spinner);
         categorySpinner.setAdapter(categorySpinnerAdapter);
-        selectCategory(lastUsedCategoryId);
         categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -170,11 +156,15 @@ public class MarkerFragment extends Fragment {
             }
         });
 
+        reloadCategories();
+        selectCategory(lastUsedCategoryId);
+
         return view;
     }
 
-    private void loadCategories() {
+    public void reloadCategories() {
         categorySpinnerAdapter.setCategories(database.getAllCategories());
+        categorySpinnerAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -183,6 +173,10 @@ public class MarkerFragment extends Fragment {
 
         state = State.NEW;
         updatePanelVisibility();
+
+        if (onCreatedHandler != null) {
+            onCreatedHandler.onCreated();
+        }
     }
 
     public void selectMarker(GeoNotesMarker marker, boolean transferEditTextContent) {
@@ -239,14 +233,20 @@ public class MarkerFragment extends Fragment {
 
         Button deleteButton = view.findViewById(R.id.delete_button);
         deleteButton.setOnClickListener(v -> {
-            reset();
             markerEventHandler.onDelete(marker);
+            markerEventHandler.onClose(marker);
+            reset();
+
+            descriptionView.clearFocus();
         });
 
         Button saveButton = view.findViewById(R.id.save_button);
         saveButton.setOnClickListener(v -> {
-            reset();
             markerEventHandler.onSave(marker);
+            markerEventHandler.onClose(marker);
+            reset();
+
+            descriptionView.clearFocus();
         });
 
         Button moveButton = view.findViewById(R.id.move_button);
@@ -259,7 +259,7 @@ public class MarkerFragment extends Fragment {
         ImageButton cameraButton = view.findViewById(R.id.camera_button);
         cameraButton.setOnClickListener(v -> {
             markerEventHandler.onSave(marker);
-            requestPhotoHandler.onRequestPhoto(Long.parseLong(marker.getId()));
+            requestPhotoHandler.onRequestPhoto(Long.parseLong(marker.getId()), marker.getPosition().getLongitude(), marker.getPosition().getLatitude());
         });
 
         selectCategory(marker.getCategoryId());
@@ -309,7 +309,16 @@ public class MarkerFragment extends Fragment {
         photoLayout.addView(space);
     }
 
+    /**
+     * Resets the fragment but not the selected marker. The content and icon of the marker stays
+     * unchanged even though it's not selected anymore!
+     */
     public void reset() {
+        if (selectedMarker != null) {
+            selectedMarker.setSnippet(((EditText) getView().findViewById(R.id.note_description)).getText().toString());
+            markerEventHandler.onSave(selectedMarker);
+        }
+
         if (getView() == null) {
             return;
         }

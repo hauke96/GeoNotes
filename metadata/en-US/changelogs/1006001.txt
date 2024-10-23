@@ -1,0 +1,5 @@
+1.6.1:
+
+Changes and Bug-fixes:
+
+* Performance enhancement when writing text of a note.

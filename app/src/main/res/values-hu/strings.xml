@@ -18,6 +18,8 @@
     <!-- Toolbar -->
     <string name="toolbar_gps_follow_mode">GPS-követő mód</string>
     <string name="toolbar_export">Exportálás</string>
+    <!-- TODO Translate -->
+    <string name="toolbar_import">Import</string>
     <string name="toolbar_list_of_notes">Jegyzetek listája</string>
     <string name="toolbar_categories">Kategóriák</string>
     <string name="toolbar_settings">Beállítások</string>
@@ -32,6 +34,8 @@
     <string name="background_map_cache">Térképháttér gyorsítótára</string>
     <string name="clear">Törlés</string>
     <string name="tap_long_to_create_a_note">Jegyzet létrehozása hosszú érintéssel</string>
+    <!-- TODO Translate -->
+    <string name="keep_camera_open">Keep camera open after taking a picture</string>
     <string name="feedback">Visszajelzés</string>
     <string name="geonotes_version">GeoNotes verziója</string>
     <string name="no_mail_client_found">Nem található levelezőprogram</string>
@@ -75,4 +79,24 @@
     <string name="initial_color_orange">Narancssárga</string>
     <string name="initial_color_brown">Barna</string>
     <string name="initial_color_grey">Szürke</string>
+
+    <!-- Backup import dialog -->
+    <!-- TODO Translate -->
+    <string name="import_title">Import Backup</string>
+    <string name="import_file_chooser_title">1. Select a backup ".zip" or ".geojson" file</string>
+    <string name="import_file_chooser">Select file</string>
+    <string name="import_overwrite_append">2. Choose whether to append the backup to the current app or to overwrite everything. If settings are imported, they are overwritten regardless of this selection.</string>
+    <string name="import_append">Overwrite</string>
+    <string name="import_overwrite">Append</string>
+    <string name="import_what_to_import">3. Choose what parts of the backup to import</string>
+    <string name="import_notes">Notes</string>
+    <string name="import_photos">Photos</string>
+    <string name="import_categories">Categories</string>
+    <string name="import_settings">Settings</string>
+    <string name="import_overwrite_warning">CAUTION: You chose to overwrite the current data!\n\nBefore you continue: Make sure you created a backup of the current app.\n\nAll(!) data (notes, categories, photos) of this app will be removed during import! This cannot be undone!</string>
+    <string name="import_start">Import</string>
+    <string name="import_loading">Importing backup …</string>
+    <string name="import_done_label">Done ✓</string>
+    <string name="import_close_button">Close</string>
+    <string name="import_error_label">Aborted import due to error.</string>
 </resources>

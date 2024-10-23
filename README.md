@@ -1,4 +1,4 @@
-<img align="right" width="64px" src="https://raw.githubusercontent.com/hauke96/GeoNotes/main/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png">
+<img align="right" width="64px" src="https://raw.githubusercontent.com/hauke96/GeoNotes/main/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png">
 
 # GeoNotes
 A simple and lightweight app to create and manage georeferenced notes (text and photos) on a map. The goal is to create the notes as fast as possible without any unnecessary UI/UX overhead.
@@ -13,7 +13,7 @@ A simple and lightweight app to create and manage georeferenced notes (text and 
 [<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" alt="Get it on IzzyOnDroid" height="60">](https://apt.izzysoft.de/fdroid/index/apk/de.hauke_stieler.geonotes)
 [<img src="https://user-images.githubusercontent.com/663460/26973090-f8fdc986-4d14-11e7-995a-e7c5e79ed925.png" alt="Download APK from GitHub" height="60">](https://github.com/hauke96/geonotes/releases/latest)
 
-GeoNotes runs on Android 4.1 (SDK 16) and newer. There's an [F-Droid version](https://f-droid.org/en/packages/de.hauke_stieler.geonotes/) only (no version at the Google Play store yet).
+GeoNotes runs on Android 7.0 (SDK 24) and newer. There's an [F-Droid version](https://f-droid.org/en/packages/de.hauke_stieler.geonotes/) only, there is _no_ version at the Google Play store.
 
 ## Need help?
 
@@ -25,8 +25,9 @@ See the [OSM Wiki page](https://wiki.openstreetmap.org/wiki/GeoNotes) for detail
 * Attach photos to note
 * List of all notes
 * Organize your notes with categories
-* Export all notes in GeoJson or GPX format
 * Show and follow current location
+* Export all notes in GeoJson or GPX format
+* Create and restore full backups
 
 ## Contribute to this project
 
@@ -53,9 +54,9 @@ To implement the above goal/idea, the app follows some basic principles:
 
 * Offline maps (too much work for now)
 * Creating notes on osm.org
-* Uploading data directly to OSM (there are [other apps](https://github.com/streetcomplete/StreetComplete) to do that)
+* Uploading data directly to OSM (see below for apps doing that)
 * All sorts of features that will only be used by just a few users but require a lot of work to be implemented
 * iOS and other non-android support
 
-Try other apps like [StreetComplete](https://github.com/streetcomplete/StreetComplete) if you want to interact with OSM-data and osm.org notes directly.
+Try other apps like [StreetComplete](https://github.com/streetcomplete/StreetComplete) or [OsmAnd](https://osmand.net/) if you want to interact with OSM-data and osm.org notes directly.
 

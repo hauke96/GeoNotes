@@ -17,6 +17,7 @@
     <string name="pref_last_location_lon" translatable="false">PREF_LAST_LOCATION_LON</string>
     <string name="pref_last_location_zoom" translatable="false">PREF_LAST_LOCATION_ZOOM</string>
     <string name="pref_tap_duration" translatable="false">PREF_TAP_DURATION</string>
+    <string name="pref_keep_camera_open" translatable="false">PREF_KEEP_CAMERA_OPEN</string>
     <string name="pref_last_category_id" translatable="false">PREF_LAST_CATEGORY_ID</string>
 
     <!-- Misc strings -->
@@ -33,6 +34,7 @@
     <!-- Toolbar -->
     <string name="toolbar_gps_follow_mode">GPS follow mode</string>
     <string name="toolbar_export">Export</string>
+    <string name="toolbar_import">Import</string>
     <string name="toolbar_list_of_notes">List of notes</string>
     <string name="toolbar_categories">Categories</string>
     <string name="toolbar_settings">Settings</string>
@@ -47,6 +49,7 @@
     <string name="background_map_cache">Background map cache</string>
     <string name="clear">Clear</string>
     <string name="tap_long_to_create_a_note">Tap long to create a note</string>
+    <string name="keep_camera_open">Keep camera open after taking a picture</string>
     <string name="feedback">Feedback</string>
     <string name="geonotes_version">GeoNotes version</string>
     <string name="no_mail_client_found">No mail client found</string>
@@ -90,4 +93,23 @@
     <string name="initial_color_orange">Orange</string>
     <string name="initial_color_brown">Brown</string>
     <string name="initial_color_grey">Grey</string>
+
+    <!-- Backup import dialog -->
+    <string name="import_title">Import Backup</string>
+    <string name="import_file_chooser_title">1. Select a backup ".zip" or ".geojson" file</string>
+    <string name="import_file_chooser">Select file</string>
+    <string name="import_overwrite_append">2. Choose whether to append the backup to the current app or to overwrite everything. If settings are imported, they are overwritten regardless of this selection.</string>
+    <string name="import_append">Overwrite</string>
+    <string name="import_overwrite">Append</string>
+    <string name="import_what_to_import">3. Choose what parts of the backup to import</string>
+    <string name="import_notes">Notes</string>
+    <string name="import_photos">Photos</string>
+    <string name="import_categories">Categories</string>
+    <string name="import_settings">Settings</string>
+    <string name="import_overwrite_warning">CAUTION: You chose to overwrite the current data!\n\nBefore you continue: Make sure you created a backup of the current app.\n\nAll(!) data (notes, categories, photos) of this app will be removed during import! This cannot be undone!</string>
+    <string name="import_start">Import</string>
+    <string name="import_loading">Importing backup …</string>
+    <string name="import_done_label">Done ✓</string>
+    <string name="import_close_button">Close</string>
+    <string name="import_error_label">Aborted import due to error.</string>
 </resources>
