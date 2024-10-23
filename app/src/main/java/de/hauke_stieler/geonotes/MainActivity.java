@@ -2,9 +2,13 @@ package de.hauke_stieler.geonotes;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
@@ -83,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding viewBinding;
     private LifecycleCameraController cameraController;
     private Bundle savedInstanceState;
+    private BroadcastReceiver gpsSwitchStateReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +126,16 @@ public class MainActivity extends AppCompatActivity {
 
         createMarkerFragment();
         createMap();
+
+        gpsSwitchStateReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().matches("android.location.PROVIDERS_CHANGED")) {
+                    map.enableLocationsOverlay();
+                }
+            }
+        };
+        registerReceiver(gpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
 
         this.savedInstanceState = savedInstanceState;
     }
@@ -265,6 +280,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         loadPreferences();
         map.onResume();
+        registerReceiver(gpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
     }
 
     @Override
@@ -276,6 +292,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         map.onDestroy();
+        unregisterReceiver(gpsSwitchStateReceiver);
         super.onDestroy();
     }
 

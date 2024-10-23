@@ -157,7 +157,7 @@ public class Map {
         // Add location icon
         gpsLocationProvider = new GpsMyLocationProvider(context);
         locationOverlay = new MyLocationNewOverlay(gpsLocationProvider, map);
-        locationOverlay.enableMyLocation();
+        enableLocationsOverlay();
         locationOverlay.setPersonIcon(locationIcon.getBitmap());
         locationOverlay.setDirectionIcon(arrowIcon.getBitmap());
         locationOverlay.setDirectionAnchor(.5f, .5f);
@@ -225,6 +225,10 @@ public class Map {
         compassOverlay = new ClickableMapCompass(context, rotationGestureOverlay, map);
         compassOverlay.enableCompass();
         map.getOverlays().add(compassOverlay);
+    }
+
+    public void enableLocationsOverlay() {
+        locationOverlay.enableMyLocation();
     }
 
     private void saveMapRotationProperty(float angle) {
