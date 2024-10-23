@@ -1,0 +1,11 @@
+1.7.0:
+
+Änderungen:
+
+* Neuer Kamera-Mechanismus
+* Fügt GPS-Position in EXIF-Metadaten von Fotos ein
+* Ergänzt Export und Import von vollständigen Backups
+* Ergänzt Import von GeoJSON Dateien
+* Verbesserte Handhabung von GPS Signalen
+* Verbesserte Handhabung der Tastatur für schnellere Kartennavigation und Notizenerstellung
+* Aktualisierte Bibliotheken, sowie Migration auf neuere Java- und Gradle-Versionen

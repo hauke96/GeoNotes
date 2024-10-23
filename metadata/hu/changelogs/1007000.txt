@@ -1,0 +1,11 @@
+1.7.0:
+
+Changes:
+
+* New camera handling
+* Add GPS location to EXIF-metadata of photos
+* Added creation and import of full backups
+* Added import for GeoJSON files
+* Better GPS signal handling
+* Better keyboard handling for better map navigation and faster note creation
+* Library updates and migration to newer Java and Gradle versions
