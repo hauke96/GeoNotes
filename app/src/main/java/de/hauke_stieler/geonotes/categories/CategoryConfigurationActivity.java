@@ -43,7 +43,6 @@ public class CategoryConfigurationActivity extends AppCompatActivity {
         RecyclerView listView = findViewById(R.id.category_list_view);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         listView.setLayoutManager(manager);
-        listView.setHasFixedSize(true);
         listView.setAdapter(adapter);
         DividerItemDecoration divider = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         listView.addItemDecoration(divider);
