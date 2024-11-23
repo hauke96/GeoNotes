@@ -1,0 +1,5 @@
+1.7.1:
+
+Változtatások:
+
+* Javítottuk a GeoJSON importálás hibáját, ahol a kategóriák helytelenül lettek létrehozva
