@@ -1,0 +1,5 @@
+1.7.1:
+
+Changes:
+
+* Fixed bug in the GeoJSON import where categories were created incorrectly

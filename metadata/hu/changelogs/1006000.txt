@@ -1,7 +1,7 @@
 1.6.0:
 
-Changes and Bug-fixes:
+Változtatások és hibajavítások:
 
-* Adding, removing and reordering categories
-* Changing colors of categories
-* Notes in export contain the new category information
+* Kategóriák hozzáadása, eltávolítása és átrendezése
+* Kategóriák színének megváltoztatása
+* Az exportálásban lévő jegyzetek tartalmazzák az új kategóriainformációkat

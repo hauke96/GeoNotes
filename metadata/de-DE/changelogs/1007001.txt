@@ -1,0 +1,5 @@
+1.7.1:
+
+Änderungen:
+
+* Fehlerbehebung beim Import von GeoJSON Dateien, bei dem Kategorien falsch angelegt wurden
