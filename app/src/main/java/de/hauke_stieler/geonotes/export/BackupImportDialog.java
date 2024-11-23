@@ -310,7 +310,7 @@ public class BackupImportDialog extends DialogFragment {
                                 f.geometry.coordinates[1],
                                 f.geometry.coordinates[0],
                                 f.properties.createdAt,
-                                new Category(f.properties.categoryColor, f.properties.categoryName, 1)
+                                new Category(f.properties.categoryId, f.properties.categoryColor, f.properties.categoryName, 1)
                         )
                 )
                 .collect(Collectors.toList());
