@@ -1,0 +1,101 @@
+<resources>
+    <string name="app_name">GeoNotes</string>
+
+    <!-- Activity titles -->
+    <string name="title_activity_settings">Nastavení</string>
+    <string name="title_activity_note_list">Všechny poznámky</string>
+    <string name="title_activity_categories">Kategorie</string>
+
+    <!-- Misc strings -->
+    <string name="feedback_mail_domain" translatable="false">hauke-stieler.de</string>
+    <string name="feedback_mail_local_part" translatable="false">geonotes</string>
+    <string name="ok">OK</string>
+    <string name="reset">Resetovat</string>
+    <string name="osm_contribution">© Přispěvatelé <a href="https://openstreetmap.org/copyright">OpenStreetMap</a></string>
+
+    <!-- Dialog buttons -->
+    <string name="dialog_yes">Ano</string>
+    <string name="dialog_no">Ne</string>
+
+    <!-- Toolbar -->
+    <string name="toolbar_gps_follow_mode">Režim sledování polohy</string>
+    <string name="toolbar_export">Export</string>
+    <string name="toolbar_import">Import</string>
+    <string name="toolbar_list_of_notes">Seznam poznámek</string>
+    <string name="toolbar_categories">Kategorie</string>
+    <string name="toolbar_settings">Nastavení</string>
+    <string name="toolbar_remove_all_notes">Odstranit všechny poznámky</string>
+    <string name="toolbar_open_filter_dialog">Otevřít nabídku filtrů</string>
+
+    <!-- Settings -->
+    <string name="show_zoom_buttons">Zobrazit tlačítka přiblížení</string>
+    <string name="map_scaling_factor">Faktor měřítka mapy</string>
+    <string name="snap_note_to_gps_location">Přichytit poznámku k poloze z GPS</string>
+    <string name="enable_rotating_the_map">Povolit otáčení mapy</string>
+    <string name="background_map_cache">Mezipaměť podkladové mapy</string>
+    <string name="clear">Vymazat</string>
+    <string name="tap_long_to_create_a_note">Podržte pro vytvoření poznámky</string>
+    <string name="keep_camera_open">Po pořízení fotky ponechat fotoaparát otevřený</string>
+    <string name="feedback">Zpětná vazba</string>
+    <string name="geonotes_version">Verze GeoNotes</string>
+    <string name="no_mail_client_found">Nenalezen žádný e-mailový klient</string>
+    <string name="cache_cleared">Mezipaměť vymazána</string>
+    <string name="cache_cleared_error">Chyba při mazání mezipaměti!</string>
+
+    <!-- Marker -->
+    <string name="marker_instructions">1. Přesuňte mapu\n2. Pusťte prst pro uložení polohy</string>
+    <string name="enter_text_for_a_new_note">Zadejte text nové poznámky:</string>
+    <string name="marker_move">Přesunout</string>
+    <string name="marker_delete">Odstranit</string>
+
+    <!-- Exporter -->
+    <string name="gpx_export_failed">Při extrahování souboru GPX došlo k chybě</string>
+
+    <!-- Note List -->
+    <string name="note_list_delete_all_notes">Opravdu chcete odstranit VŠECHNY poznámky? Tato akce je nevratná!</string>
+    <string name="note_list_delete_all_filtered_notes">Opravdu chcete odstranit FILTROVANÉ poznámky? Tato akce je nevratná!</string>
+    <string name="note_list_create_thumbnail_failed">Nepodařilo se vytvořit náhled</string>
+    <string name="note_list_only_photo">„(pouze fotka)“</string>
+
+    <!-- Filter dialog-->
+    <string name="filter_dialog_filter_by_note_text">Filtrovat podle textu poznámky:</string>
+    <string name="filter_dialog_filter_by_category">Filtrovat podle kategorie:</string>
+
+    <!-- Category list -->
+    <string name="category_list_save">Uložit</string>
+    <string name="category_list_color_notice">Změna barvy zatím není možná, ale v budoucnu změnit půjde.</string>
+    <string name="category_cannot_delete_with_notes">V této kategorii se nacházení poznámky, nemůžete ji odstranit.</string>
+    <string name="category_new">+ Nová</string>
+
+    <!-- Initial color names -->
+    <string name="initial_color_red">Červená</string>
+    <string name="initial_color_pink">Růžová</string>
+    <string name="initial_color_purple">Fialová</string>
+    <string name="initial_color_blue">Modrá</string>
+    <string name="initial_color_light_blue">Světle modrá</string>
+    <string name="initial_color_teal">Modrozelená</string>
+    <string name="initial_color_green">Zelená</string>
+    <string name="initial_color_yellow">Žlutá</string>
+    <string name="initial_color_orange">Oranžová</string>
+    <string name="initial_color_brown">Hnědá</string>
+    <string name="initial_color_grey">Šedá</string>
+
+    <!-- Backup import dialog -->
+    <string name="import_title">Importovat zálohu</string>
+    <string name="import_file_chooser_title">1. Vyberte soubor zálohy ve formátu „.zip“ nebo „.geojson“</string>
+    <string name="import_file_chooser">Vybrat soubor</string>
+    <string name="import_overwrite_append">2. Vyberte, zda chcete přidat zálohu k aktuální aplikaci nebo vše přepsat. Při importu nastavení budou nastavení přepsána nezávisle na této volbě.</string>
+    <string name="import_append">Přepsat</string>
+    <string name="import_overwrite">Přidat</string>
+    <string name="import_what_to_import">3. Vyberte, které řásti zálohy chcete importovat</string>
+    <string name="import_notes">Poznámky</string>
+    <string name="import_photos">Fotky</string>
+    <string name="import_categories">Kategorie</string>
+    <string name="import_settings">Nastavení</string>
+    <string name="import_overwrite_warning">VAROVÁNÍ: Chystáte se přepsat aktuální data!\n\nNež budete pokračovat: Ujistěte se, že máte vytvořenou zálohu aktuální aplikace.\n\nVšechna(!) data (poznámky, kategorie, fotky) této aplikace budou při importu odstraněna! Tato akce je nevratná!</string>
+    <string name="import_start">Importovat</string>
+    <string name="import_loading">Importování zálohy…</string>
+    <string name="import_done_label">Hotovo ✓</string>
+    <string name="import_close_button">Zavřít</string>
+    <string name="import_error_label">Import byl přerušen z kvůli chybě.</string>
+</resources>
