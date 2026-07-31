@@ -2,6 +2,6 @@
 
 Változtatások:
 
-* Migrazione da osmdroid a MapLibre
-  * Rimozione dei pulsanti di zoom (zoom tramite gesto di pizzicamento o toccando due volte e spostando il dito verso l'alto/verso il basso)
-* Salvataggio delle esportazioni come file normali, ovvero tramite il selettore di file anziché la finestra di condivisione
+* Költöztetés az osmdroid programkönyvtárról a MapLibre programkönyvtárra
+* Nagyítási gombok eltávolítása (nagyítás összecsippentéses kézmozdulattal vagy kétszeri koppintással, majd az ujj felfelé/lefelé mozgatásával)
+* Exportálások mentése normál fájlokként, azaz a fájlválasztón keresztül a megosztás párbeszédablak helyett

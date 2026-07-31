@@ -2,4 +2,4 @@
 
 Változtatások:
 
-* Javítottuk a GeoJSON importálás hibáját, ahol a kategóriák helytelenül lettek létrehozva
+* Javítva lett a GeoJSON importálásában lévő hiba, ahol a kategóriák helytelenül lettek létrehozva
