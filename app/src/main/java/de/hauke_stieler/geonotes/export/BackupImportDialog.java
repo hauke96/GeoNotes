@@ -516,9 +516,8 @@ public class BackupImportDialog extends DialogFragment {
         int currentMinor = (currentVersion - currentMajor * 1000 * 1000) / 1000;
         // int currentPatch = (backupVersion - currentMajor * 1000 * 1000 - currentMinor * 1000);
 
-
         if (backupMajor <= 1 && backupMinor < 7) {
-            // Backups older than the version where backups were introduces (1.7.0) are considered
+            // Backups older than the version where backups were introduced (1.7.0) are considered
             // invalid since this should not happen!
             return false;
         }

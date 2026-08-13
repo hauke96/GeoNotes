@@ -12,7 +12,7 @@ android {
         targetSdkVersion 37
 
         versionCode 1008000
-        versionName "1.8.0-rc.1"
+        versionName "1.8.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
