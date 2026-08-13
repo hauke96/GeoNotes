@@ -40,7 +40,7 @@ public class NoteIconProvider {
         for (int i = 0; i < allCategories.size(); i++) {
             Category category = allCategories.get(i);
 
-            // We render the drawables to a single bitmap because OsmDroid (or Android?) has problem
+            // We render the drawables to a single bitmap because I had problems
             // with these LayerDrawables. Parts of these layered drawables just disappear after some
             // time o.O This does not happen to a single pre-rendered bitmap.
             Drawable noteIcon = NoteIconRenderer.render(context, category.getColor(), R.drawable.ic_note_exclamation_mark, false);
@@ -72,5 +72,16 @@ public class NoteIconProvider {
                 return categoryToNormalIcon.get(categoryId);
             }
         }
+    }
+
+    public Map<String, Drawable> getIconNameToDrawableMap() {
+        HashMap<String, Drawable> result = new HashMap<>();
+
+        categoryToNormalIcon.forEach((categoryId, drawable) -> result.put("category-"+categoryId+"-normal", drawable));
+        categoryToCameraIcon.forEach((categoryId, drawable) -> result.put("category-"+categoryId+"-camera", drawable));
+        categoryToNormalIconSelected.forEach((categoryId, drawable) -> result.put("category-"+categoryId+"-normal-selected", drawable));
+        categoryToCameraIconSelected.forEach((categoryId, drawable) -> result.put("category-"+categoryId+"-camera-selected", drawable));
+
+        return result;
     }
 }

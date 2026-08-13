@@ -2,7 +2,6 @@ package de.hauke_stieler.geonotes;
 
 import android.content.SharedPreferences;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -19,7 +18,7 @@ public class GeoNotesTestRule extends Injector implements TestRule {
         classBuilders.put(Database.class, () -> add(Database.class));
         classBuilders.put(Exporter.class, () -> add(Exporter.class));
         classBuilders.put(SharedPreferences.class, () -> add(SharedPreferences.class));
-        classBuilders.put(de.hauke_stieler.geonotes.map.Map.class, () -> add(Map.class));
+        classBuilders.put(Map.class, () -> add(Map.class));
         classBuilders.put(NoteIconProvider.class, () -> add(NoteIconProvider.class));
     }
 

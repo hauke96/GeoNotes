@@ -1,0 +1,1 @@
+Una aplicación sencilla para crear notas georreferenciadas.

@@ -43,7 +43,7 @@ import de.hauke_stieler.geonotes.categories.Category;
 import de.hauke_stieler.geonotes.common.FileHelper;
 import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.map.Map;
-import de.hauke_stieler.geonotes.map.MarkerFragment;
+import de.hauke_stieler.geonotes.map.SymbolFragment;
 import de.hauke_stieler.geonotes.notes.Note;
 import de.hauke_stieler.geonotes.notes.NoteIconProvider;
 
@@ -58,7 +58,7 @@ public class BackupImportDialog extends DialogFragment {
     private Database database;
     private Map map;
     private NoteIconProvider noteIconProvider;
-    private MarkerFragment markerFragment;
+    private SymbolFragment symbolFragment;
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -68,7 +68,7 @@ public class BackupImportDialog extends DialogFragment {
         database = Injector.get(Database.class);
         map = Injector.get(Map.class);
         noteIconProvider = Injector.get(NoteIconProvider.class);
-        markerFragment = Injector.get(MarkerFragment.class);
+        symbolFragment = Injector.get(SymbolFragment.class);
         sharedPreferences = Injector.get(SharedPreferences.class);
 
         resultLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(),
@@ -191,7 +191,7 @@ public class BackupImportDialog extends DialogFragment {
         Log.i("import", "Last step: Update and reload everything");
         noteIconProvider.updateIcons();
         map.reloadAllNotes();
-        markerFragment.reloadCategories();
+        symbolFragment.reloadCategories();
 
         hideAllBottomControls();
         view.findViewById(R.id.import_done_layout).setVisibility(View.VISIBLE);
@@ -488,11 +488,8 @@ public class BackupImportDialog extends DialogFragment {
     private void importSettings(NoteBackupModel noteBackupModel) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        String key = getContext().getString(R.string.pref_zoom_buttons);
-        editor.putBoolean(key, (Boolean) noteBackupModel.preferences.getOrDefault(key, false));
-
-        key = getContext().getString(R.string.pref_map_scaling);
-        editor.putFloat(key, new Float((Double) noteBackupModel.preferences.getOrDefault(key, 1.0f)));
+        String key = getContext().getString(R.string.pref_map_scaling);
+        editor.putFloat(key, new Float((Double) noteBackupModel.preferences.getOrDefault(key, Float.NaN)));
 
         key = getContext().getString(R.string.pref_snap_note_gps);
         editor.putBoolean(key, (Boolean) noteBackupModel.preferences.getOrDefault(key, false));
@@ -519,9 +516,8 @@ public class BackupImportDialog extends DialogFragment {
         int currentMinor = (currentVersion - currentMajor * 1000 * 1000) / 1000;
         // int currentPatch = (backupVersion - currentMajor * 1000 * 1000 - currentMinor * 1000);
 
-
         if (backupMajor <= 1 && backupMinor < 7) {
-            // Backups older than the version where backups were introduces (1.7.0) are considered
+            // Backups older than the version where backups were introduced (1.7.0) are considered
             // invalid since this should not happen!
             return false;
         }

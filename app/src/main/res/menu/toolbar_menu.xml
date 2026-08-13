@@ -5,6 +5,8 @@
         android:id="@+id/toolbar_btn_gps_follow"
         android:icon="@drawable/ic_location_searching"
         app:showAsAction="ifRoom"
+        android:checkable="true"
+        android:checked="false"
         android:title="@string/toolbar_gps_follow_mode">
     </item>
     <item

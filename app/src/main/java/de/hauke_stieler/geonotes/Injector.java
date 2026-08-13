@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import org.osmdroid.views.MapView;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,6 +12,8 @@ import de.hauke_stieler.geonotes.export.Exporter;
 import de.hauke_stieler.geonotes.notes.NoteIconProvider;
 
 import static android.content.Context.MODE_PRIVATE;
+
+import org.maplibre.android.maps.MapView;
 
 interface ClassBuilder<T> {
     T build();
@@ -34,7 +34,6 @@ public class Injector {
         classBuilders.put(Database.class, () -> buildDatabase());
         classBuilders.put(Exporter.class, () -> buildExporter());
         classBuilders.put(SharedPreferences.class, () -> buildSharedPreferences());
-        classBuilders.put(MapView.class, () -> buildMapView());
         classBuilders.put(NoteIconProvider.class, () -> buildNoteIconProvider());
         classBuilders.put(de.hauke_stieler.geonotes.map.Map.class, () -> buildMap());
     }
@@ -74,16 +73,11 @@ public class Injector {
         return context.getSharedPreferences(context.getString(R.string.pref_file), MODE_PRIVATE);
     }
 
-    private static MapView buildMapView() {
-        return activity.findViewById(R.id.map);
-    }
-
     private static NoteIconProvider buildNoteIconProvider() {
         return new NoteIconProvider(context, get(Database.class));
     }
 
     private static de.hauke_stieler.geonotes.map.Map buildMap() {
-        MapView mapView = get(MapView.class);
-        return new de.hauke_stieler.geonotes.map.Map(context, mapView, get(Database.class), get(SharedPreferences.class), get(NoteIconProvider.class));
+        return new de.hauke_stieler.geonotes.map.Map(context, get(Database.class), get(SharedPreferences.class), get(NoteIconProvider.class));
     }
 }

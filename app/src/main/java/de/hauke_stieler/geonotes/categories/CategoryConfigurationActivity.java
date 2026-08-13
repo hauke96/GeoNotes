@@ -9,12 +9,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
 
 import java.util.List;
 
 import de.hauke_stieler.geonotes.Injector;
 import de.hauke_stieler.geonotes.R;
+import de.hauke_stieler.geonotes.common.AppCompatExtension;
 import de.hauke_stieler.geonotes.database.Database;
 
 public class CategoryConfigurationActivity extends AppCompatActivity {
@@ -25,7 +28,12 @@ public class CategoryConfigurationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_categories);
+
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View rootView = inflater.inflate(R.layout.activity_categories, null);
+        setContentView(rootView);
+
+        AppCompatExtension.setupWindowInsetListener(rootView, findViewById(R.id.category_list_toolbar));
 
         Toolbar toolbar = findViewById(R.id.category_list_toolbar);
         setSupportActionBar(toolbar);

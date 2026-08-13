@@ -88,27 +88,30 @@
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/map_marker_fragment"
+        android:layout_above="@+id/map_symbol_fragment"
         android:layout_below="@+id/toolbar"
         android:orientation="vertical">
 
-        <org.osmdroid.views.MapView
-            android:id="@+id/map"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+        <!-- This is the place there the MapView is placed but it's created in the Java code -->
 
-        <TextView
-            android:id="@+id/copyright"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@color/white_transparent"
-            android:padding="3dp" />
+        <!-- View for the note-symbol to stay calm in the center of the screen
+         when the user moves the map underneath. The height and padding are used
+         to correctly center the icon since its origin is at the _bottom_ center,
+         not at the top. -->
+        <ImageView
+            android:id="@+id/map_icon_move_view"
+            android:layout_width="50dp"
+            android:layout_height="100dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:clickable="false"
+            android:focusable="false"
+            android:paddingBottom="50dp" />
     </RelativeLayout>
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/map_marker_fragment"
-        android:name="de.hauke_stieler.geonotes.map.MarkerFragment"
+    <RelativeLayout
+        android:id="@+id/map_symbol_fragment"
+        android:name="de.hauke_stieler.geonotes.map.SymbolFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" />

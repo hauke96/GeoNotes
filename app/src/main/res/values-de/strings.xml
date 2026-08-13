@@ -9,7 +9,6 @@
     <!-- Misc strings -->
     <string name="ok">OK</string>
     <string name="reset">Zurücksetzen</string>
-    <string name="osm_contribution">© <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> Mitwirkende</string>
 
     <!-- Dialog buttons -->
     <string name="dialog_yes">Ja</string>
@@ -26,7 +25,6 @@
     <string name="toolbar_open_filter_dialog">Filterdialog öffnen</string>
 
     <!-- Settings -->
-    <string name="show_zoom_buttons">Zoom-buttons anzeigen</string>
     <string name="map_scaling_factor">Skalierungsfaktor Karte</string>
     <string name="snap_note_to_gps_location">Notiz auf GPS Position einrasten</string>
     <string name="enable_rotating_the_map">Kartenrotation aktivieren</string>

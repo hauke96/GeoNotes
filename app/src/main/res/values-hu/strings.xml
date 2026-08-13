@@ -9,7 +9,6 @@
     <!-- Misc strings -->
     <string name="ok">Rendben</string>
     <string name="reset">Visszaállítás</string>
-    <string name="osm_contribution">© <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> közreműködők</string>
 
     <!-- Dialog buttons -->
     <string name="dialog_yes">Igen</string>
@@ -26,7 +25,6 @@
     <string name="toolbar_open_filter_dialog">Szűrés párbeszédablak megnyitása</string>
 
     <!-- Settings -->
-    <string name="show_zoom_buttons">Nagyítási gombok megjelenítése</string>
     <string name="map_scaling_factor">Térképnagyítási tényező</string>
     <string name="snap_note_to_gps_location">Jegyzet GPS-helyadathoz rögzítése</string>
     <string name="enable_rotating_the_map">Térkép forgatásának engedélyezése</string>

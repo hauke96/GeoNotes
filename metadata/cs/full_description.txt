@@ -1,0 +1,11 @@
+Jednoduchá aplikace pro vytváření a správu georeferencovaných poznámek (text a fotky) na mapě. Cílem je rychlé vytváření poznámek bez jakékoli zbytečné interakce. Typickým využitím je sbírání geoprostorových dat, která lze později nahrát do OpenStreetMap.
+
+Základní funkce:
+<ul>
+<li>Vytváření, přesouvání a mazání poznámek na mapě</li>
+<li>Připojování fotek k poznámkám</li>
+<li>Kategorizace poznámek</li>
+<li>Seznam všech poznámek</li>
+<li>Zobrazení a sledování aktuální polohy</li>
+<li>Export všech poznámek ve formátu GeoJSON nebo GPX</li>
+</ul>

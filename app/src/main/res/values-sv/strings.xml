@@ -9,7 +9,6 @@
     <!-- Misc strings -->
     <string name="ok">OK</string>
     <string name="reset">Återställ</string>
-    <string name="osm_contribution">© <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors</string>
 
     <!-- Dialog buttons -->
     <string name="dialog_yes">Ja</string>
@@ -27,7 +26,6 @@
     <string name="toolbar_open_filter_dialog">Öppna filtrering</string>
 
     <!-- Settings -->
-    <string name="show_zoom_buttons">Visa zoom-knappar</string>
     <string name="map_scaling_factor">Kartans skalningsfaktor</string>
     <string name="snap_note_to_gps_location">Snäpp anteckning till GPS-position</string>
     <string name="enable_rotating_the_map">Tillåt rotering av kartan</string>

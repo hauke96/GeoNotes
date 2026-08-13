@@ -1,24 +1,29 @@
 package de.hauke_stieler.geonotes;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,7 +31,6 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 import androidx.camera.core.CameraSelector;
@@ -34,16 +38,16 @@ import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.LifecycleCameraController;
+import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.common.util.concurrent.ListenableFuture;
 
-import org.osmdroid.api.IGeoPoint;
-import org.osmdroid.events.DelayedMapListener;
-import org.osmdroid.events.MapListener;
-import org.osmdroid.events.ScrollEvent;
-import org.osmdroid.events.ZoomEvent;
+import org.maplibre.android.MapLibre;
+import org.maplibre.android.maps.MapLibreMapOptions;
+import org.maplibre.android.maps.MapView;
+import org.maplibre.android.plugins.annotation.Symbol;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,37 +58,41 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.hauke_stieler.geonotes.categories.CategoryConfigurationActivity;
+import de.hauke_stieler.geonotes.common.AppCompatExtension;
 import de.hauke_stieler.geonotes.common.ExifHelper;
 import de.hauke_stieler.geonotes.common.FileHelper;
 import de.hauke_stieler.geonotes.database.Database;
-import de.hauke_stieler.geonotes.databinding.ActivityMainBinding;
 import de.hauke_stieler.geonotes.export.BackupImportDialog;
 import de.hauke_stieler.geonotes.export.Exporter;
-import de.hauke_stieler.geonotes.map.GeoNotesMarker;
+import de.hauke_stieler.geonotes.map.GeoNotesSymbol;
 import de.hauke_stieler.geonotes.map.Map;
-import de.hauke_stieler.geonotes.map.MarkerFragment;
+import de.hauke_stieler.geonotes.map.SymbolFragment;
 import de.hauke_stieler.geonotes.note_list.NoteListActivity;
 import de.hauke_stieler.geonotes.notes.NoteIconProvider;
 import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
 import de.hauke_stieler.geonotes.settings.SettingsActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LocationListener {
 
     static final String BUNDLE_KEY_CAMERA_IS_OPEN = "CAMERA_IS_OPEN";
     static final String BUNDLE_KEY_SELECTED_NOTE_ID = "SELECTED_NOTE_ID";
 
-    static final int REQUEST_CATEGORIES_REQUEST_CODE = 5;
-    static final int REQUEST_NOTE_LIST_REQUEST_CODE = 4;
-    static final int REQUEST_PERMISSIONS_REQUEST_CODE = 3;
     static final int REQUEST_CAMERA_PERMISSIONS_REQUEST_CODE = 2;
+    static final int REQUEST_PERMISSIONS_REQUEST_CODE = 3;
+    static final int REQUEST_NOTE_LIST_REQUEST_CODE = 4;
+    static final int REQUEST_CATEGORIES_REQUEST_CODE = 5;
+    static final int REQUEST_SETTINGS_REQUEST_CODE = 6;
+    static final int REQUEST_EXPORT_GEOJSON_RESULT_CODE = 7;
+    static final int REQUEST_EXPORT_GPX_RESULT_CODE = 8;
+    static final int REQUEST_EXPORT_BACKUP_RESULT_CODE = 9;
 
     private Map map;
+    private int mapViewId;
     private SharedPreferences preferences;
     private Database database;
     private Exporter exporter;
     private Toolbar toolbar;
     private NoteIconProvider noteIconProvider;
-    private ActivityMainBinding viewBinding;
     private LifecycleCameraController cameraController;
     private Bundle savedInstanceState;
     private BroadcastReceiver gpsSwitchStateReceiver;
@@ -92,22 +100,26 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        MapLibre.getInstance(this);
+
         Injector.registerActivity(this);
 
-        viewBinding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(viewBinding.getRoot());
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View rootView = inflater.inflate(R.layout.activity_main, null);
+        setContentView(rootView);
+
+        AppCompatExtension.setupWindowInsetListener(rootView, findViewById(R.id.toolbar));
 
         database = Injector.get(Database.class);
         preferences = Injector.get(SharedPreferences.class);
         exporter = Injector.get(Exporter.class);
         noteIconProvider = Injector.get(NoteIconProvider.class);
 
+        mapViewId = View.generateViewId();
+
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        // Set HTML text of copyright label
-        ((TextView) findViewById(R.id.copyright)).setMovementMethod(LinkMovementMethod.getInstance());
-        ((TextView) findViewById(R.id.copyright)).setText(Html.fromHtml(getString(R.string.osm_contribution)));
 
         String storagePermission = "";
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
@@ -124,14 +136,14 @@ public class MainActivity extends AppCompatActivity {
 
         addBackListener();
 
-        createMarkerFragment();
+        createSymbolFragment();
         createMap();
 
         gpsSwitchStateReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().matches("android.location.PROVIDERS_CHANGED")) {
-                    map.enableLocationsOverlay();
+                    map.enableLocationsComponent();
                 }
             }
         };
@@ -140,18 +152,18 @@ public class MainActivity extends AppCompatActivity {
         this.savedInstanceState = savedInstanceState;
     }
 
-    private void createMarkerFragment() {
-        MarkerFragment markerFragment = (MarkerFragment) getSupportFragmentManager().findFragmentById(R.id.map_marker_fragment);
-        if (markerFragment == null) {
-            markerFragment = new MarkerFragment();
+    private void createSymbolFragment() {
+        SymbolFragment symbolFragment = (SymbolFragment) getSupportFragmentManager().findFragmentById(R.id.map_symbol_fragment);
+        if (symbolFragment == null) {
+            symbolFragment = new SymbolFragment();
 
             getSupportFragmentManager().beginTransaction()
                     .setReorderingAllowed(true)
-                    .add(R.id.map_marker_fragment, markerFragment, null)
+                    .add(R.id.map_symbol_fragment, symbolFragment, null)
                     .commit();
         }
 
-        markerFragment.setOnCreatedHandler(() -> {
+        symbolFragment.setOnCreatedHandler(() -> {
             if (savedInstanceState != null) {
                 long selectedNoteId = savedInstanceState.getLong(BUNDLE_KEY_SELECTED_NOTE_ID, -1);
                 if (selectedNoteId != -1) {
@@ -159,40 +171,21 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if (savedInstanceState.getBoolean(BUNDLE_KEY_CAMERA_IS_OPEN, false)) {
-                    GeoNotesMarker marker = map.getSelectedMarker();
-                    startCamera(Long.parseLong(marker.getId()), marker.getPosition().getLongitude(), marker.getPosition().getLatitude());
+                    Symbol symbol = map.getSelectedSymbol();
+                    startCamera(GeoNotesSymbol.getNoteId(symbol), symbol.getLatLng().getLongitude(), symbol.getLatLng().getLatitude());
                 }
             }
         });
 
-        Injector.put(markerFragment);
+        Injector.put(symbolFragment);
     }
 
     private void createMap() {
         map = Injector.get(Map.class);
 
         addMapListener();
-    }
 
-    void loadPreferences() {
-        boolean showZoomButtons = preferences.getBoolean(getString(R.string.pref_zoom_buttons), true);
-        map.setZoomButtonVisibility(showZoomButtons);
-
-        float mapScale = preferences.getFloat(getString(R.string.pref_map_scaling), 1.0f);
-        map.setMapScaleFactor(mapScale);
-
-        boolean snapNoteToGps = preferences.getBoolean(getString(R.string.pref_snap_note_gps), false);
-        map.setSnapNoteToGps(snapNoteToGps);
-
-        boolean enableRotatingMap = preferences.getBoolean(getString(R.string.pref_enable_rotating_map), false);
-        float mapRotation = preferences.getFloat(getString(R.string.pref_map_rotation), 0f);
-        map.updateMapRotation(enableRotatingMap, mapRotation);
-
-        float lat = preferences.getFloat(getString(R.string.pref_last_location_lat), 0f);
-        float lon = preferences.getFloat(getString(R.string.pref_last_location_lon), 0f);
-        float zoom = preferences.getFloat(getString(R.string.pref_last_location_zoom), 2);
-
-        map.setLocation(lat, lon, zoom);
+        createMapView();
     }
 
     private void showExportPopupMenu() {
@@ -203,22 +196,31 @@ public class MainActivity extends AppCompatActivity {
         exportPopupMenu.getMenu().add(0, 2, 2, "Backup (ZIP)");
 
         exportPopupMenu.setOnMenuItemClickListener(menuItem -> {
+            int requestCode = -1;
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_CREATE_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+
             switch (menuItem.getItemId()) {
                 case 0:
-                    exporter.shareAsGeoJson();
+                    intent.putExtra(Intent.EXTRA_TITLE, Exporter.getGeojsonFilename());
+                    intent.setType(Exporter.GEOJSON_MIME_TYPE);
+                    requestCode = REQUEST_EXPORT_GEOJSON_RESULT_CODE;
                     break;
                 case 1:
-                    exporter.shareAsGpx();
+                    intent.putExtra(Intent.EXTRA_TITLE, Exporter.getGpxFilename());
+                    intent.setType(Exporter.GPX_MIME_TYPE);
+                    requestCode = REQUEST_EXPORT_GPX_RESULT_CODE;
                     break;
                 case 2:
-                    try {
-                        exporter.shareAsBackup(preferences);
-                    } catch (IOException e) {
-                        Log.e("export", "Cannot export backup", e);
-                        Toast.makeText(getApplicationContext(), "Error creating backup file", Toast.LENGTH_SHORT).show();
-                    }
+                    intent.putExtra(Intent.EXTRA_TITLE, Exporter.getBackupFilename());
+                    intent.setType(Exporter.BACKUP_MIME_TYPE);
+                    requestCode = REQUEST_EXPORT_BACKUP_RESULT_CODE;
                     break;
             }
+
+            startActivityForResult(intent, requestCode);
+
             return true;
         });
         exportPopupMenu.show();
@@ -232,35 +234,37 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.toolbar_btn_gps_follow:
-                boolean followingLocationEnabled = !map.isFollowLocationEnabled();
-                this.map.setLocationFollowMode(followingLocationEnabled);
+        int itemId = item.getItemId();
+        if (itemId == R.id.toolbar_btn_gps_follow) {
+            boolean newFollowingLocationState = !item.isChecked();
 
-                if (followingLocationEnabled) {
-                    item.setIcon(R.drawable.ic_my_location);
-                } else {
-                    item.setIcon(R.drawable.ic_location_searching);
-                }
-                return true;
-            case R.id.toolbar_btn_export:
-                showExportPopupMenu();
-                return true;
-            case R.id.toolbar_btn_import:
-                new BackupImportDialog().show(getSupportFragmentManager(), BackupImportDialog.class.getName());
-                return true;
-            case R.id.toolbar_btn_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
-                return true;
-            case R.id.toolbar_btn_categories:
-                startActivityForResult(new Intent(this, CategoryConfigurationActivity.class), REQUEST_CATEGORIES_REQUEST_CODE);
-                return true;
-            case R.id.toolbar_btn_note_list:
-                startActivityForResult(new Intent(this, NoteListActivity.class), REQUEST_NOTE_LIST_REQUEST_CODE);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+            this.map.setLocationFollowMode(newFollowingLocationState);
+
+            if (newFollowingLocationState) {
+                item.setChecked(true);
+                item.setIcon(R.drawable.ic_my_location);
+            } else {
+                item.setChecked(false);
+                item.setIcon(R.drawable.ic_location_searching);
+            }
+            return true;
+        } else if (itemId == R.id.toolbar_btn_export) {
+            showExportPopupMenu();
+            return true;
+        } else if (itemId == R.id.toolbar_btn_import) {
+            new BackupImportDialog().show(getSupportFragmentManager(), BackupImportDialog.class.getName());
+            return true;
+        } else if (itemId == R.id.toolbar_btn_settings) {
+            startActivityForResult(new Intent(this, SettingsActivity.class), REQUEST_SETTINGS_REQUEST_CODE);
+            return true;
+        } else if (itemId == R.id.toolbar_btn_categories) {
+            startActivityForResult(new Intent(this, CategoryConfigurationActivity.class), REQUEST_CATEGORIES_REQUEST_CODE);
+            return true;
+        } else if (itemId == R.id.toolbar_btn_note_list) {
+            startActivityForResult(new Intent(this, NoteListActivity.class), REQUEST_NOTE_LIST_REQUEST_CODE);
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -269,24 +273,17 @@ public class MainActivity extends AppCompatActivity {
 
         outState.putBoolean(BUNDLE_KEY_CAMERA_IS_OPEN, findViewById(R.id.camera_layout).getVisibility() == View.VISIBLE);
 
-        GeoNotesMarker marker = map.getSelectedMarker();
-        if (marker != null) {
-            outState.putLong(BUNDLE_KEY_SELECTED_NOTE_ID, Long.parseLong(marker.getId()));
+        Symbol symbol = map.getSelectedSymbol();
+        if (symbol != null) {
+            outState.putLong(BUNDLE_KEY_SELECTED_NOTE_ID, GeoNotesSymbol.getNoteId(symbol));
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        loadPreferences();
         map.onResume();
         registerReceiver(gpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
-    }
-
-    @Override
-    public void onPause() {
-        map.onPause();
-        super.onPause();
     }
 
     @Override
@@ -299,11 +296,13 @@ public class MainActivity extends AppCompatActivity {
     private void requestPermissionsIfNecessary(String[] permissions) {
         ArrayList<String> permissionsToRequest = new ArrayList<>();
         for (String permission : permissions) {
-            if (!hasPermission(permission)) { // Permission is not granted
+            if (hasPermission(permission)) {
+                handleGrantedPermission(permission, true);
+            } else { // Permission is not granted yet
                 permissionsToRequest.add(permission);
             }
         }
-        if (permissionsToRequest.size() > 0) {
+        if (!permissionsToRequest.isEmpty()) {
             ActivityCompat.requestPermissions(
                     this,
                     permissionsToRequest.toArray(new String[0]),
@@ -318,13 +317,30 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < permissions.length; i++) {
             String permission = permissions[i];
             boolean granted = grantResults[i] == PackageManager.PERMISSION_GRANTED;
+            handleGrantedPermission(permission, granted);
+        }
+    }
 
-            switch (permission) {
-                case Manifest.permission.ACCESS_FINE_LOCATION:
-                    if (!granted) {
-                        toolbar.getMenu().findItem(R.id.toolbar_btn_gps_follow).setVisible(false);
+    private void handleGrantedPermission(String permission, boolean granted) {
+        switch (permission) {
+            case Manifest.permission.ACCESS_FINE_LOCATION:
+                if (granted) {
+                    if (map != null) { // The map might not be loaded yet
+                        map.enableLocationsComponent();
                     }
-            }
+
+                    // Manually register for location updates. Otherwise, the default location
+                    // provider of MapLibre will not properly update the location but instead show
+                    // either just the last location or a very coarse location. Without this, it
+                    // might also happen, that the location "jumps" quite a large distance of
+                    // multiple hundred meters.
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 1, this);
+                    }
+                } else {
+                    toolbar.getMenu().findItem(R.id.toolbar_btn_gps_follow).setVisible(false);
+                }
         }
     }
 
@@ -332,38 +348,61 @@ public class MainActivity extends AppCompatActivity {
         return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED;
     }
 
+    private void createMapView() {
+        float mapScale = preferences.getFloat(getString(R.string.pref_map_scaling), Float.NaN);
+
+        MapLibreMapOptions options = MapLibreMapOptions.createFromAttributes(this);
+        if (!Float.isNaN(mapScale)) {
+            options.pixelRatio(mapScale);
+        }
+
+        RelativeLayout layout = findViewById(R.id.main_layout);
+
+        MapView oldMapView = layout.findViewById(this.mapViewId);
+
+        MapView newMapView = new MapView(this, options);
+        newMapView.setId(this.mapViewId);
+        newMapView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        newMapView.onCreate(savedInstanceState);
+
+        if (oldMapView != null) {
+            layout.removeView(oldMapView);
+        }
+        layout.addView(newMapView, 0);
+
+        this.map.initMapViewAnyRegisterHandlers(newMapView);
+    }
+
     private void addMapListener() {
-        DelayedMapListener delayedMapListener = new DelayedMapListener(new MapListener() {
-            @Override
-            public boolean onScroll(ScrollEvent event) {
-                storeLocation();
-                return true;
-            }
-
-            @Override
-            public boolean onZoom(ZoomEvent event) {
-                storeLocation();
-                return true;
-            }
-        }, 500);
-
-        @SuppressLint("RestrictedApi")
         Map.TouchDownListener touchDownCallback = () -> {
-            ActionMenuItemView menuItem = findViewById(R.id.toolbar_btn_gps_follow);
+            MenuItem menuItem = toolbar.getMenu().findItem(R.id.toolbar_btn_gps_follow);
             if (menuItem != null) {
-                menuItem.setIcon(getResources().getDrawable(R.drawable.ic_location_searching));
+                menuItem.setChecked(false);
+                menuItem.setIcon(R.drawable.ic_location_searching);
             }
         };
 
-        Map.NoteMovedListener noteMovedCallback = (noteId, longitude, latitude) -> {
-            File externalFilesDir = getExternalFilesDir(FileHelper.GEONOTES_EXTERNAL_DIR_NAME);
-            database.getPhotos(noteId).forEach(photo -> {
-                File photoFile = new File(externalFilesDir, photo);
-                addPositionToImageExifData(photoFile, longitude, latitude);
-            });
+        Map.NoteMovedListener noteMovedCallback = new Map.NoteMovedListener() {
+            @Override
+            public void onNoteMoveStarted(Long categoryId, boolean isPhotoNote) {
+                Drawable icon = noteIconProvider.getIcon(categoryId, true, isPhotoNote);
+                ((ImageView) findViewById(R.id.map_icon_move_view)).setImageDrawable(icon);
+            }
+
+            @Override
+            public void onNoteMoveEnded(Long noteId, Double longitude, Double latitude) {
+                File externalFilesDir = getExternalFilesDir(FileHelper.GEONOTES_EXTERNAL_DIR_NAME);
+                database.getPhotos(noteId).forEach(photo -> {
+                    File photoFile = new File(externalFilesDir, photo);
+                    addPositionToImageExifData(photoFile, longitude, latitude);
+                });
+
+                ImageView imageView = findViewById(R.id.map_icon_move_view);
+                imageView.setImageDrawable(null);
+            }
         };
 
-        map.addMapListener(delayedMapListener, touchDownCallback, noteMovedCallback);
+        map.addMapListener(touchDownCallback, noteMovedCallback);
         map.addRequestPhotoHandler(this::startCamera);
     }
 
@@ -415,6 +454,7 @@ public class MainActivity extends AppCompatActivity {
 
         // If Intent was successful
         if (resultCode == RESULT_OK) {
+            Uri targetFile;
             switch (requestCode) {
                 case REQUEST_NOTE_LIST_REQUEST_CODE:
                     long selectedNoteId = data.getLongExtra(NoteListActivity.EXTRA_CLICKED_NOTE, -1L);
@@ -425,6 +465,28 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case REQUEST_CATEGORIES_REQUEST_CODE:
                     noteIconProvider.updateIcons();
+                    map.reloadAllNotes();
+                    break;
+                case REQUEST_SETTINGS_REQUEST_CODE:
+                    createMapView();
+                    map.loadPreferences();
+                    break;
+                case REQUEST_EXPORT_GEOJSON_RESULT_CODE:
+                    targetFile = data.getData();
+                    exporter.shareAsGeoJson(targetFile);
+                    break;
+                case REQUEST_EXPORT_GPX_RESULT_CODE:
+                    targetFile = data.getData();
+                    exporter.shareAsGpx(targetFile);
+                    break;
+                case REQUEST_EXPORT_BACKUP_RESULT_CODE:
+                    targetFile = data.getData();
+                    try {
+                        exporter.shareAsBackup(targetFile, preferences);
+                    } catch (IOException e) {
+                        Log.e(MainActivity.class.getName(), "save backup: ", e);
+                        throw new RuntimeException(e);
+                    }
                     break;
             }
         }
@@ -455,7 +517,7 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.toolbar).setVisibility(View.INVISIBLE);
         findViewById(R.id.main_layout).setVisibility(View.INVISIBLE);
-        findViewById(R.id.map_marker_fragment).setVisibility(View.INVISIBLE);
+        findViewById(R.id.map_symbol_fragment).setVisibility(View.INVISIBLE);
 
         findViewById(R.id.camera_layout).setVisibility(View.VISIBLE);
         findViewById(R.id.image_capture_button).setOnClickListener(view -> {
@@ -463,7 +525,7 @@ public class MainActivity extends AppCompatActivity {
             takePhoto(noteId, longitude, latitude);
         });
 
-        int numerOfPhotos = database.getPhotos(noteId + "").size();
+        int numerOfPhotos = database.getPhotos(noteId).size();
         ((TextView) findViewById(R.id.image_capture_image_count_label)).setText(numerOfPhotos + "");
 
         cameraController = new LifecycleCameraController(getBaseContext());
@@ -471,7 +533,8 @@ public class MainActivity extends AppCompatActivity {
         try {
             cameraController.bindToLifecycle(this);
             cameraController.setCameraSelector(CameraSelector.DEFAULT_BACK_CAMERA);
-            viewBinding.cameraPreview.setController(cameraController);
+            PreviewView cameraPreview = findViewById(R.id.camera_preview);
+            cameraPreview.setController(cameraController);
         } catch (Exception e) {
             Log.e("startCamera", "Error while unbinding and binding camera lifecycle: ", e);
             throw new RuntimeException(e);
@@ -504,7 +567,7 @@ public class MainActivity extends AppCompatActivity {
     private void closeCamera() {
         findViewById(R.id.toolbar).setVisibility(View.VISIBLE);
         findViewById(R.id.main_layout).setVisibility(View.VISIBLE);
-        findViewById(R.id.map_marker_fragment).setVisibility(View.VISIBLE);
+        findViewById(R.id.map_symbol_fragment).setVisibility(View.VISIBLE);
 
         findViewById(R.id.camera_layout).setVisibility(View.INVISIBLE);
 
@@ -515,8 +578,8 @@ public class MainActivity extends AppCompatActivity {
 
             // Re-select the note so that the input field is selected and the keyboard comes up.
             // Makes it easier to add text after taking pictures.
-            if (map.getSelectedMarker() != null) {
-                map.selectNote(Long.parseLong(map.getSelectedMarker().getId()));
+            if (map.getSelectedSymbol() != null) {
+                map.selectNote(GeoNotesSymbol.getNoteId(map.getSelectedSymbol()));
             }
         } catch (Exception e) {
             Log.e("closeCamera", "Error while unbinding camera lifecycle: ", e);
@@ -542,7 +605,7 @@ public class MainActivity extends AppCompatActivity {
                         addPositionToImageExifData(photoFile, longitude, latitude);
 
                         addPhotoToDatabase(noteId, photoFile);
-                        List<String> photosOfFragment = map.addImagesToMarkerFragment();
+                        List<String> photosOfFragment = map.addImagesToSymbolFragment();
 
                         ((TextView) findViewById(R.id.image_capture_image_count_label)).setText(photosOfFragment.size() + "");
 
@@ -610,20 +673,27 @@ public class MainActivity extends AppCompatActivity {
         try {
             ThumbnailUtil.writeThumbnail(getContentResolver(), photoFile, sizeInPixel);
         } catch (IOException e) {
-            Toast.makeText(getApplicationContext(), R.string.note_list_create_thumbnail_failed, Toast.LENGTH_SHORT);
+            Toast.makeText(getApplicationContext(), R.string.note_list_create_thumbnail_failed, Toast.LENGTH_SHORT).show();
         }
     }
 
-    /**
-     * Stores the current map location and zoom in the shared preferences.
-     */
-    private void storeLocation() {
-        IGeoPoint location = map.getLocation();
-        float zoom = map.getZoom();
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putFloat(getString(R.string.pref_last_location_lat), (float) location.getLatitude());
-        editor.putFloat(getString(R.string.pref_last_location_lon), (float) location.getLongitude());
-        editor.putFloat(getString(R.string.pref_last_location_zoom), zoom);
-        editor.commit();
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        Log.d(this.getClass().getName(), "On location update: " + location);
+    }
+
+    // Empty handler needed for Android backward compatibility (at least for Android 10)
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+    }
+
+    // Empty handler needed for Android backward compatibility (at least for Android 10)
+    @Override
+    public void onProviderEnabled(@NonNull String provider) {
+    }
+
+    // Empty handler needed for Android backward compatibility (at least for Android 10)
+    @Override
+    public void onProviderDisabled(@NonNull String provider) {
     }
 }

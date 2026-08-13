@@ -8,7 +8,6 @@
 
     <!-- Preference keys -->
     <string name="pref_file" translatable="false">geonotes_preferences</string>
-    <string name="pref_zoom_buttons" translatable="false">PREF_ZOOM_BUTTONS</string>
     <string name="pref_map_scaling" translatable="false">PREF_MAP_SCALING</string>
     <string name="pref_snap_note_gps" translatable="false">PREF_SNAP_NOTE_GPS</string>
     <string name="pref_enable_rotating_map" translatable="false">PREF_ENABLE_ROTATING_MAP</string>
@@ -25,7 +24,6 @@
     <string name="feedback_mail_local_part" translatable="false">geonotes</string>
     <string name="ok">OK</string>
     <string name="reset">Reset</string>
-    <string name="osm_contribution">© <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors</string>
 
     <!-- Dialog buttons -->
     <string name="dialog_yes">Yes</string>
@@ -42,7 +40,6 @@
     <string name="toolbar_open_filter_dialog">Open Filter dialog</string>
 
     <!-- Settings -->
-    <string name="show_zoom_buttons">Show zoom-buttons</string>
     <string name="map_scaling_factor">Map scaling factor</string>
     <string name="snap_note_to_gps_location">Snap note to GPS location</string>
     <string name="enable_rotating_the_map">Enable rotating the map</string>

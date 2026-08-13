@@ -27,6 +27,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import org.apache.commons.text.StringEscapeUtils;
+import org.maplibre.android.plugins.annotation.Symbol;
 
 import java.io.File;
 import java.util.Date;
@@ -40,19 +41,19 @@ import de.hauke_stieler.geonotes.database.Database;
 import de.hauke_stieler.geonotes.notes.Note;
 import de.hauke_stieler.geonotes.photo.ThumbnailUtil;
 
-public class MarkerFragment extends Fragment {
-    private static final String LOGTAG = MarkerFragment.class.getName();
+public class SymbolFragment extends Fragment {
+    private static final String LOGTAG = SymbolFragment.class.getName();
 
-    public interface MarkerFragmentEventHandler {
-        void onDelete(GeoNotesMarker marker);
+    public interface SymbolFragmentEventHandler {
+        void onDelete(Symbol symbol);
 
-        void onSave(GeoNotesMarker marker);
+        void onSave(Symbol symbol);
 
-        void onClose(GeoNotesMarker marker);
+        void onClose(Symbol symbol);
 
-        void onMove(GeoNotesMarker marker);
+        void onMove(Symbol symbol);
 
-        void onCategoryChanged(GeoNotesMarker marker);
+        void onCategoryChanged(Symbol symbol);
     }
 
     public interface OnCreatedHandler {
@@ -79,10 +80,10 @@ public class MarkerFragment extends Fragment {
         EDITING
     }
 
-    private MarkerFragmentEventHandler markerEventHandler;
+    private SymbolFragmentEventHandler symbolEventHandler;
     private RequestPhotoEventHandler requestPhotoHandler;
     private OnCreatedHandler onCreatedHandler;
-    private GeoNotesMarker selectedMarker;
+    private Symbol selectedSymbol;
     private State state;
     private Spinner categorySpinner;
     private CategorySpinnerAdapter categorySpinnerAdapter;
@@ -90,12 +91,12 @@ public class MarkerFragment extends Fragment {
     private Database database;
     private SharedPreferences preferences;
 
-    public MarkerFragment() {
-        super(R.layout.marker_fragment);
+    public SymbolFragment() {
+        super(R.layout.symbol_fragment);
     }
 
-    public void addEventHandler(MarkerFragmentEventHandler markerEventHandler) {
-        this.markerEventHandler = markerEventHandler;
+    public void addEventHandler(SymbolFragmentEventHandler symbolEventHandler) {
+        this.symbolEventHandler = symbolEventHandler;
     }
 
     void addRequestPhotoHandler(RequestPhotoEventHandler handler) {
@@ -145,9 +146,9 @@ public class MarkerFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Category selectedCategory = categorySpinnerAdapter.getItem(position);
-                selectedMarker.setCategoryId(selectedCategory.getId());
-                if (markerEventHandler != null) {
-                    markerEventHandler.onCategoryChanged(selectedMarker);
+                GeoNotesSymbol.setCategoryId(selectedSymbol, selectedCategory.getId());
+                if (symbolEventHandler != null) {
+                    symbolEventHandler.onCategoryChanged(selectedSymbol);
                 }
             }
 
@@ -179,19 +180,16 @@ public class MarkerFragment extends Fragment {
         }
     }
 
-    public void selectMarker(GeoNotesMarker marker, boolean transferEditTextContent) {
-        selectedMarker = marker;
+    public void selectSymbol(Symbol symbol, boolean transferEditTextContent) {
+        if(selectedSymbol != null){
+            saveAndReset();
+        }
+
+        selectedSymbol = symbol;
         state = State.EDITING;
 
-        Note note = database.getNote(marker.getId());
+        Note note = database.getNote(GeoNotesSymbol.getNoteId(symbol));
         View view = getView();
-
-        // Title
-        TextView titleView = view.findViewById(R.id.bubble_title);
-        String title = marker.getTitle();
-        if (title != null && titleView != null) {
-            titleView.setText(title);
-        }
 
         // Creation date
         try {
@@ -213,8 +211,8 @@ public class MarkerFragment extends Fragment {
             // Use already typed text
             if (transferEditTextContent) {
                 description = descriptionView.getText().toString();
-            } else { // Use text from marker
-                description = marker.getSnippet();
+            } else { // Use text from symbol
+                description = GeoNotesSymbol.getDescription(symbol);
                 if (description == null) {
                     description = "";
                 }
@@ -233,18 +231,17 @@ public class MarkerFragment extends Fragment {
 
         Button deleteButton = view.findViewById(R.id.delete_button);
         deleteButton.setOnClickListener(v -> {
-            markerEventHandler.onDelete(marker);
-            markerEventHandler.onClose(marker);
-            reset();
+            symbolEventHandler.onDelete(symbol);
+            symbolEventHandler.onClose(symbol);
+            saveAndReset();
 
             descriptionView.clearFocus();
         });
 
         Button saveButton = view.findViewById(R.id.save_button);
         saveButton.setOnClickListener(v -> {
-            markerEventHandler.onSave(marker);
-            markerEventHandler.onClose(marker);
-            reset();
+            saveAndReset();
+            symbolEventHandler.onClose(symbol);
 
             descriptionView.clearFocus();
         });
@@ -253,20 +250,21 @@ public class MarkerFragment extends Fragment {
         moveButton.setOnClickListener(v -> {
             state = State.DRAGGING;
             updatePanelVisibility();
-            markerEventHandler.onMove(marker);
+            symbolEventHandler.onMove(symbol);
         });
 
         ImageButton cameraButton = view.findViewById(R.id.camera_button);
         cameraButton.setOnClickListener(v -> {
-            markerEventHandler.onSave(marker);
-            requestPhotoHandler.onRequestPhoto(Long.parseLong(marker.getId()), marker.getPosition().getLongitude(), marker.getPosition().getLatitude());
+            saveSymbol(symbol);
+            long noteId = GeoNotesSymbol.getNoteId(symbol);
+            requestPhotoHandler.onRequestPhoto(noteId, symbol.getLatLng().getLongitude(), symbol.getLatLng().getLatitude());
         });
 
-        selectCategory(marker.getCategoryId());
+        selectCategory(GeoNotesSymbol.getCategoryId(symbol));
     }
 
-    public GeoNotesMarker getSelectedMarker() {
-        return selectedMarker;
+    public Symbol getSelectedSymbol() {
+        return selectedSymbol;
     }
 
     public void resetImageList() {
@@ -310,21 +308,20 @@ public class MarkerFragment extends Fragment {
     }
 
     /**
-     * Resets the fragment but not the selected marker. The content and icon of the marker stays
-     * unchanged even though it's not selected anymore!
+     * Resets the fragment but not the selected symbol. If there is a selected symbol, a save action
+     * will be triggered.
      */
-    public void reset() {
-        if (selectedMarker != null) {
-            selectedMarker.setSnippet(((EditText) getView().findViewById(R.id.note_description)).getText().toString());
-            markerEventHandler.onSave(selectedMarker);
+    public void saveAndReset() {
+        if (selectedSymbol != null) {
+            saveSymbol(selectedSymbol);
         }
 
         if (getView() == null) {
             return;
         }
 
-        // First reset the marker, so that change events fired by input fields do not have any effect
-        selectedMarker = null;
+        // First reset the symbol, so that change events fired by input fields do not have any effect
+        selectedSymbol = null;
 
         ((EditText) getView().findViewById(R.id.note_description)).setText("");
 
@@ -333,6 +330,14 @@ public class MarkerFragment extends Fragment {
 
         state = State.NEW;
         updatePanelVisibility();
+    }
+
+    private void saveSymbol(Symbol symbol) {
+        // Store input in symbol properties
+        String newDescription = ((EditText) getView().findViewById(R.id.note_description)).getText().toString();
+        GeoNotesSymbol.setDescription(selectedSymbol, newDescription);
+        // Trigger saving the symbol
+        symbolEventHandler.onSave(symbol);
     }
 
     private void updatePanelVisibility() {

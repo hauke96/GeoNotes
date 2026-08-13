@@ -1,0 +1,99 @@
+<resources>
+    <string name="app_name">GeoNotes</string>
+
+    <!-- Activity titles -->
+    <string name="title_activity_settings">Ajustes</string>
+    <string name="title_activity_note_list">Todas las notas</string>
+    <string name="title_activity_categories">Categorías</string>
+
+    <!-- Misc strings -->
+    <string name="feedback_mail_domain" translatable="false">hauke-stieler.de</string>
+    <string name="feedback_mail_local_part" translatable="false">geonotes</string>
+    <string name="ok">OK</string>
+    <string name="reset">Restablecer</string>
+
+    <!-- Dialog buttons -->
+    <string name="dialog_yes">Sí</string>
+    <string name="dialog_no">No</string>
+
+    <!-- Toolbar -->
+    <string name="toolbar_gps_follow_mode">Modo de seguimiento GPS</string>
+    <string name="toolbar_export">Exportar</string>
+    <string name="toolbar_import">Importar</string>
+    <string name="toolbar_list_of_notes">Lista de notas</string>
+    <string name="toolbar_categories">Categorías</string>
+    <string name="toolbar_settings">Ajustes</string>
+    <string name="toolbar_remove_all_notes">Eliminar todas las notas</string>
+    <string name="toolbar_open_filter_dialog">Abrir diálogo de filtro</string>
+
+    <!-- Settings -->
+    <string name="map_scaling_factor">Factor de escalado del mapa</string>
+    <string name="snap_note_to_gps_location">Anclar nota a la ubicación GPS</string>
+    <string name="enable_rotating_the_map">Habilitar rotación del mapa</string>
+    <string name="background_map_cache">Caché del mapa de fondo</string>
+    <string name="clear">Borrar</string>
+    <string name="tap_long_to_create_a_note">Mantener presionado para crear una nota</string>
+    <string name="keep_camera_open">Mantener la cámara abierta después de tomar una foto</string>
+    <string name="feedback">Comentarios</string>
+    <string name="geonotes_version">Versión de GeoNotes</string>
+    <string name="no_mail_client_found">No se encontró aplicación de correo electrónico</string>
+    <string name="cache_cleared">Caché borrado</string>
+    <string name="cache_cleared_error">¡Error al borrar la caché!</string>
+
+    <!-- Marker -->
+    <string name="marker_instructions">1. Mueve el mapa\n2. Suelta para guardar la ubicación</string>
+    <string name="enter_text_for_a_new_note">Ingresa texto para una nueva nota:</string>
+    <string name="marker_move">Mover</string>
+    <string name="marker_delete">Eliminar</string>
+
+    <!-- Exporter -->
+    <string name="gpx_export_failed">Error al exportar el archivo GPX</string>
+
+    <!-- Note List -->
+    <string name="note_list_delete_all_notes">¿Realmente quieres eliminar TODAS las notas? ¡Esto no se puede deshacer!</string>
+    <string name="note_list_delete_all_filtered_notes">¿Realmente quieres eliminar las notas FILTRADAS? ¡Esto no se puede deshacer!</string>
+    <string name="note_list_create_thumbnail_failed">Error al crear la miniatura</string>
+    <string name="note_list_only_photo">"(solo foto)"</string>
+
+    <!-- Filter dialog-->
+    <string name="filter_dialog_filter_by_note_text">Filtrar por texto de la nota:</string>
+    <string name="filter_dialog_filter_by_category">Filtrar por categoría:</string>
+
+    <!-- Category list -->
+    <string name="category_list_save">Guardar</string>
+    <string name="category_list_color_notice">El cambio de color aún no es posible, esta función aún está por llegar.</string>
+    <string name="category_cannot_delete_with_notes">Existen notas con esta categoría, no puedes eliminarla.</string>
+    <string name="category_new">+ Nueva</string>
+
+    <!-- Initial color names -->
+    <string name="initial_color_red">Rojo</string>
+    <string name="initial_color_pink">Rosa</string>
+    <string name="initial_color_purple">Morado</string>
+    <string name="initial_color_blue">Azul</string>
+    <string name="initial_color_light_blue">Azul claro</string>
+    <string name="initial_color_teal">Verde azulado</string>
+    <string name="initial_color_green">Verde</string>
+    <string name="initial_color_yellow">Amarillo</string>
+    <string name="initial_color_orange">Naranja</string>
+    <string name="initial_color_brown">Marrón</string>
+    <string name="initial_color_grey">Gris</string>
+
+    <!-- Backup import dialog -->
+    <string name="import_title">Importar copia de seguridad</string>
+    <string name="import_file_chooser_title">1. Selecciona un archivo de copia de seguridad ".zip" o ".geojson"</string>
+    <string name="import_file_chooser">Selecciona archivo</string>
+    <string name="import_overwrite_append">2. Elige si deseas agregar partes de la copia de seguridad a la aplicación actual o sobrescribir todo. Si se importan los ajustes, estos sobrescriben todo independientemente de esta selección.</string>
+    <string name="import_append">Sobrescribir</string>
+    <string name="import_overwrite">Agregar</string>
+    <string name="import_what_to_import">3. Elige qué partes de la copia de seguridad importar</string>
+    <string name="import_notes">Notas</string>
+    <string name="import_photos">Fotos</string>
+    <string name="import_categories">Categorías</string>
+    <string name="import_settings">Ajustes</string>
+    <string name="import_overwrite_warning">PRECAUCIÓN: Elegiste sobrescribir los datos actuales.\n\nAntes de continuar: Asegúrate de haber creado una copia de seguridad de la aplicación actual.\n\n¡Todos los datos (notas, categorías, fotos) de esta aplicación serán eliminados durante la importación! ¡Esto no se puede deshacer!</string>
+    <string name="import_start">Importar</string>
+    <string name="import_loading">Importando copia de seguridad …</string>
+    <string name="import_done_label">Listo ✓</string>
+    <string name="import_close_button">Cerrar</string>
+    <string name="import_error_label">Importación abortada debido a un error.</string>
+</resources>

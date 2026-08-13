@@ -1,0 +1,7 @@
+1.8.0:
+
+Changes:
+
+* Migration from osmdroid to MapLibre
+  * Removal of zoom buttons (zoom by pinching-gesture or by tapping twice and moving finger up/down)
+* Save exports as normal files, i.e. via file-chooser instead of share-dialog

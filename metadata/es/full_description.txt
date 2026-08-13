@@ -1,0 +1,12 @@
+<p>Una aplicación sencilla para crear y gestionar notas georreferenciadas (texto y fotos) en un mapa. El objetivo es crear notas de manera muy rápida y sin sobrecargar interacciones innecesarias. El caso de uso típico es recopilar datos geoespaciales que luego pueden cargarse en OpenStreetMap.</p>
+
+<p>Actualmente, las características básicas son:</p>
+<ul>
+<li>Crear, mover y eliminar notas en un mapa</li>
+<li>Adjuntar fotos a una nota</li>
+<li>Categorizar notas</li>
+<li>Lista de todas las notas</li>
+<li>Mostrar y seguir la ubicación actual</li>
+<li>Exportar todas las notas en formato GeoJSON o GPX</li>
+<li>Crear y restaurar copias de seguridad completas</li>
+</ul>

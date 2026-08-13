@@ -6,13 +6,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import org.osmdroid.util.GeoPoint;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import de.hauke_stieler.geonotes.R;
 import de.hauke_stieler.geonotes.categories.Category;
@@ -63,7 +60,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public long addNote(String description, double lat, double lon, long categoryId, String createdAt) {
-        return noteStore.addNote(getWritableDatabase(), description, lat, lon, categoryId);
+        return noteStore.addNote(getWritableDatabase(), description, lat, lon, categoryId, createdAt);
     }
 
     public void updateNoteDescription(long noteId, String newDescription) {
@@ -74,8 +71,8 @@ public class Database extends SQLiteOpenHelper {
         noteStore.updateCategory(getWritableDatabase(), noteId, categoryId);
     }
 
-    public void updateNoteLocation(long noteId, GeoPoint location) {
-        noteStore.updateLocation(getWritableDatabase(), noteId, location);
+    public void updateNoteLocation(long noteId, double lat, double lng) {
+        noteStore.updateLocation(getWritableDatabase(), noteId, lat, lng);
     }
 
     public void removeNote(long id) {
@@ -112,36 +109,25 @@ public class Database extends SQLiteOpenHelper {
         photoStore.addPhoto(getWritableDatabase(), noteId, photoFile);
     }
 
-    public List<String> getPhotos(String noteId) {
+    public List<String> getPhotos(Long noteId) {
         return photoStore.getPhotos(getReadableDatabase(), noteId);
-    }
-
-    public List<String> getAllPhotos() {
-        return getAllNotes().stream()
-                .map(n -> getPhotos(n.getId() + ""))
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
     }
 
     public Map<Long, List<String>> getAllPhotosMap() {
         HashMap<Long, List<String>> result = new HashMap<>();
         getAllNotes().forEach(n -> {
-            List<String> photos = getPhotos(n.getId() + "");
+            List<String> photos = getPhotos(n.getId());
             result.put(n.getId(), photos);
         });
         return result;
     }
 
     public boolean hasPhotos(long noteId) {
-        return hasPhotos("" + noteId);
-    }
-
-    public boolean hasPhotos(String noteId) {
-        return getPhotos(noteId).size() > 0;
+        return !getPhotos(noteId).isEmpty();
     }
 
     public void removePhotos(long noteId, File storageDir) {
-        List<String> photos = getPhotos("" + noteId);
+        List<String> photos = getPhotos(noteId);
 
         photoStore.removePhotos(getWritableDatabase(), noteId);
 
@@ -156,17 +142,12 @@ public class Database extends SQLiteOpenHelper {
         }
     }
 
-    public Note getNote(String noteId) {
+    public Note getNote(long noteId) {
         return noteStore.getNote(getReadableDatabase(), noteId);
     }
 
-
     public long addCategory(String color, String name, long sortKey) {
         return categoryStore.addCategory(getWritableDatabase(), color, name, sortKey);
-    }
-
-    public Category getCategory(String id) {
-        return categoryStore.getCategory(getReadableDatabase(), id);
     }
 
     public List<Category> getAllCategories() {

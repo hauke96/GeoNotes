@@ -24,13 +24,18 @@
         <activity
             android:name=".categories.CategoryConfigurationActivity"
             android:label="@string/title_activity_categories" />
+
         <activity android:name=".note_list.NoteListActivity"
             android:label="@string/title_activity_note_list" />
+
         <activity
             android:name=".settings.SettingsActivity"
             android:label="@string/title_activity_settings" />
+
+        <!-- configChanges: Prevent destruction of activity when rotating device -->
         <activity
             android:name=".MainActivity"
+            android:configChanges="orientation|screenSize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

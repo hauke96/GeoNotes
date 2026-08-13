@@ -1,0 +1,7 @@
+1.8.0:
+
+Változtatások:
+
+* Költöztetés az osmdroid programkönyvtárról a MapLibre programkönyvtárra
+* Nagyítási gombok eltávolítása (nagyítás összecsippentéses kézmozdulattal vagy kétszeri koppintással, majd az ujj felfelé/lefelé mozgatásával)
+* Exportálások mentése normál fájlokként, azaz a fájlválasztón keresztül a megosztás párbeszédablak helyett
